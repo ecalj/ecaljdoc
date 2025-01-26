@@ -5,6 +5,7 @@
  * 小谷先生のQiitaでの解説(https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)
 
 
+[Web版](https://msobt.github.io/ecaljdoc)
 
 ## vitepress メモ
 
@@ -20,7 +21,8 @@ npm run docs:build
 npm run docs:preview
 ```
 
-
 ## Github Page
-* [参考] (https://vitepress.dev/guide/deploy#github-pages)
+* [参考](https://vitepress.dev/guide/deploy#github-pages)
+
+
 
