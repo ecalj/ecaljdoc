@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base : '/',
+  base : '/ecaljdoc/',
   title: "ecaljdoc",
   description: "document of ecalj",
   markdown: {
