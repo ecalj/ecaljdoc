@@ -1,41 +1,28 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
-title: Home
 
 hero:
-  name: ecalj
-  tagline: |
-    <span class="formerly">Pronounced "MEEZ ahn plahs"</span>
+  name: "ecaljdoc"
+  text: "document of ecalj"
+  tagline: My great project tagline
   actions:
     - theme: brand
-      text: Getting Started
-      link: /getting-started
+      text: Getteing started
+      link: /guide/install
     - theme: alt
-      text: About
-      link: /about
+      text: Demo
+      link: /demo
     - theme: alt
-      text: GitHub
-      link: https://github.com/tkotani/ecalj
-    - theme: alt
-      text: Discord
-      link: https://discord.gg/xxxx
+      text: Theory
+      link: /theory/zmel
 
 features:
-  - title: DFT
-    icon: 🛠️
-    details:
-  - title: QSGW
-    details:
-    icon: ⚙
-  - title: Tasks
-    details:
-    icon: ⚡
+  - title: Feature A
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Feature B
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Feature C
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
-<style>
-.formerly {
-    font-size: 0.7em;
-    color: #666;
-}
-</style>
