@@ -1,25 +1,38 @@
-# ecaljの使用メモ
- * [ISSP Othaka](./guide/setting_ohtaka.md)
- * [ISSP Kugui](./guide/setting_kugui.md)
+# ecalj documentation
 
- * 小谷先生のQiitaでの解説(https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)
+This is the documentation for *ecalj*, first-principles electronic structure calculation package.
+This document is powered by vitepress and opened [HERE](https://ecalj.github.io/ecaljdoc).
 
+For the developer of this document. Get the access of the repository from msobt.
 
-[Web版](https://ecalj.github.io/ecaljdoc)
+## Guide of edit
 
-## vitepress メモ
+- Pull the repository.
+```
+git pull git@github.com:ecalj/ecaljdoc.git
+```
 
-### ローカル
+- Install the dependency
 ```bash
-npm install  <- 初回のみ
+npm install
+```
+
+- Generate document site (ecaljdoc) in your local
+```bash
 npm run docs:dev
 ```
-`npm run docs:dev` ではmarkdown ファイルを更新したら自動的にビルドされる。もしくは
+If it works, you will find the following message
 
-```bash
-npm run docs:build
-npm run docs:preview
 ```
+  vitepress v1.6.3
 
-## Github Page
-* [参考](https://vitepress.dev/guide/deploy#github-pages)
+  ➜  Local:   http://localhost:5173/ecaljdoc/
+  ➜  Network: use --host to expose
+  ➜  press h to show help
+``` 
+The generated document site can be seen from `http://localhost:5173/ecaljdoc/`. Use the URL with your web browser.
+
+:::hint
+Main page configuration: `index.md`
+Sidebar configuration: `.vitepress/config.mts`
+:::

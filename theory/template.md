@@ -1,3 +1,2 @@
 # Markdown Extension Examples
 
-AAA

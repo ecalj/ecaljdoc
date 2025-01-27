@@ -13,7 +13,6 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
     ],
 
     sidebar: [
@@ -26,21 +25,22 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Demo',
+        text: 'Manual',
         items: [
-          { text: 'Demo', link: '/demo/demo.md' },
+          { text: 'lmf', link: '/manual/lmf' },
+          { text: 'job_band', link: '/manual/job_band' },
         ]
       },
       {
         text: 'Theory',
         items: [
-          { text: 'zmel ', link: '/theory/zmel.md' },
+          { text: 'zmel ', link: '/theory/zmel' },
         ]
       },
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/ecalj/ecaljdoc' }
+      { icon: 'github', link: 'https://github.com/tkotani/ecalj' },
     ]
   }
 })

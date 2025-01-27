@@ -5,24 +5,23 @@ layout: home
 hero:
   name: "ecaljdoc"
   text: "document of ecalj"
-  tagline: My great project tagline
+  tagline:
   actions:
     - theme: brand
       text: Getteing started
       link: /guide/install
     - theme: alt
-      text: Demo
-      link: /demo
+      text: Manual
+      link: /manual/lmf
     - theme: alt
       text: Theory
       link: /theory/zmel
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: quasi-particle self-constent 𝘎𝘞 calculations
+    details: Completly parameter-free first-principles electronic structure calculations
+  - title: All-electorns calculations with th PMT method
+    details: High accuracy and effciency
+  - title: Suuport the wide range of materials with default settings
+    details: Easy integration with VASP, Quantum ESPRESSO, etc.
 ---
-
