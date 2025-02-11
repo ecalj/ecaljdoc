@@ -59,24 +59,19 @@ $$
  = \frac{4\pi e^{i𝑹_I ⋅(𝑮'-𝑮)}}{|𝑮'-𝑮|} \int_0^{R_I} dr r \sin(|𝑮'-𝑮|r)
 $$
 
-
 ### Formula of inner product
 This is for checking the orthonormality of wave function, but it is good for better understanding.
 $$
-\begin{align}
-\braket{Ψ_{𝒌n}|Ψ_{𝒌m}} =& \sum_{𝑹uu'} α_{𝑹u}^{𝒌n*} α_{𝑹u'}^{𝒌m}\braket{φ^𝒌_{𝑹u}|φ^𝒌_{𝑹u'}} + \sum_{𝑮𝑮'} β_{𝑮}^{𝒌n*} β_{𝑮'}^{𝒌m}\braket{P^𝒌_{𝑮}|P^𝒌_{𝑮'}} \\
-                       &+ \sum_{𝑹u𝑮'} α_{𝑹u*}^{𝒌n*}β_{𝑮'}^{𝒌m}\braket{φ^𝒌_{𝑹u}|P^𝒌_{𝑮'}}
-                       + \sum_{𝑹u'𝑮} β_{𝑮}^{𝒌n*}α_{𝑹u'}^{𝒌m}\braket{P^𝒌_{𝑮}|φ^𝒌_{𝑹u'}}
-\end{align}
+\braket{Ψ_{𝒌n}|Ψ_{𝒌m}} = \sum_{𝑹uu'} α_{𝑹u}^{𝒌n*} α_{𝑹u'}^{𝒌m}\braket{φ^𝒌_{𝑹u}|φ^𝒌_{𝑹u'}} + \sum_{𝑮𝑮'} β_{𝑮}^{𝒌n*} β_{𝑮'}^{𝒌m}\braket{P^𝒌_{𝑮}|P^𝒌_{𝑮'}}
 $$
-Some of them are becomes zero due to the feature of basis functions...
+The cross term are vanished.
 
 ## Product basis $M$
 The basis set to represent product of one-particle wave functions.
 This is the way to reduce the dimension of product.
 $$
 \ket{M^𝒌_I}  = \{ \ket{φ^{𝒌_1*}_{𝑹u} φ^{𝒌_2}_{𝑹u'}},  \ket{P^{𝒌_1*}_{𝑮_1} P^{𝒌_2}_{𝑮_2}} \}
- \equiv \{ \ket{M^𝒌_I}_\mathrm{MT}, \ket{M^𝒌_{𝑮}}_\mathrm{I} \}
+ \equiv \{ \ket{M^𝒌_I}_\mathrm{MT}, \ket{M^𝒌_{𝑮}}_\mathrm{IPW} \}
 $$
 ,where $𝒌 = 𝒌_2 - 𝒌_1, 𝑮 = 𝑮_2 - 𝑮_1$.
 Some of pairs of ($𝒌_1$,$𝒌_2$) or ($𝑮_1$,$𝑮_2$) which has the same $𝒌$ or $𝑮$ are got rid of in the set of $M$.
@@ -86,9 +81,29 @@ In this notation, $\ket{φ^{𝒌_1*}_{𝑹u} φ^{𝒌_2}_{𝑹u'}}$ DOES NOT ind
 $\braket{ 𝒓| φ^{𝒌_1*}_{𝑹u} φ^{𝒌_2}_{𝑹u'}} = φ^{𝒌_1*}_{𝑹u}(𝒓)φ^{𝒌_2}_{𝑹u'}(𝒓)$
 :::
 ## Product basis $E$
+
+The MPB $M$ introduced above does not satisfy orthogonality. Therefore, we introduce an orthogonal basis.
+This basis also diagonalizes the Coulomb matrix. By doing so, the calculation of the exchange self-energy becomes easier.
+In equations, new product basis $E$ is represent by the liner combination of $M$, i.e.:
 $$
-\ket{E^𝒒_μ} = \sum_{I} z^𝒒_{μI}\ket{M^𝒒_I} 
+\ket{E^𝒒_μ} = \sum_{I} z^𝒒_{μI}\ket{M^𝒒_I}.
 $$
+Then, $E$ is satisfy the following releations.
 $$
-v(𝒒)=\sum_{μ} \ket{E^𝒒_μ}v_μ(𝒒)\bra{E^𝒒_μ}
+\braket{E^𝒒_μ|E^𝒒_ν} = δ_{μν},
+v(𝒒) \ket{E^𝒒_μ} =v_μ(𝒒)\ket{E^𝒒_μ}
 $$
+where $v(𝒒)$ is Coulomb matrix and $v_μ(𝒒)$ is eigen value. The coefficient $z^𝒒_{μI}$ and $v_μ(𝒒)$ are obtained by soliving following generalized eigenvalue equation:
+$$
+\sum_J (v_{IJ}^{𝒒} - v_{\mu}(𝒒) O^{𝒒}_{IJ} ) z^{𝒒}_{\mu J} = 0,
+$$
+where $v_{IJ}^{𝒒}$  is Coulomb matrix represented by $M$, namely, $\braket{M^{𝒒}_{I}|v|{M^{𝒒}_J}}$. 
+By using $E$, Coulomb interaction operator is represented as follows:
+$$
+v(𝒒)=\sum_{μ} \ket{E^𝒒_μ}v_μ(𝒒)\bra{E^𝒒_μ}.
+$$
+
+::: warning about $\braket{M^{𝒒}_{I}|v|{M^{𝒒}_J}}$
+Since $v$ is a non-local function, the calculation of this matrix element includes cross terms of $M_\text{MT}$ and $M_\text{IPW}$.
+:::
+
