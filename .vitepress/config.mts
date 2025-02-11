@@ -34,7 +34,10 @@ export default defineConfig({
       {
         text: 'Theory',
         items: [
-          { text: 'zmel ', link: '/theory/zmel' },
+          { text: 'basis', link: '/theory/basis' },
+          { text: 'zmel', link: '/theory/zmel' },
+          { text: 'GW', link: '/theory/gw' },
+          { text: 'QSGW', link: '/theory/qsgw' },
         ]
       },
     ],

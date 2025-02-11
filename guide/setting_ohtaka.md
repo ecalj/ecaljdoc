@@ -1,6 +1,4 @@
-# ecalj: 補足情報
-
-## ISSP System B: Ohtaka での実行について
+# ISSP System B: Ohtaka での実行について
 
  - moduleの設定
 OneAPI(Intel) + OpenMPI を推奨
@@ -8,8 +6,9 @@ OneAPI(Intel) + OpenMPI を推奨
 module purge
 module load openmpi/4.1.5-oneapi-2023.0.0-classic  
 ```
-[!Tip] OneAPI_MPIの方が若干早いが安定性に難あり.
-
+::: tip
+ OneAPI_MPIの方が若干早いが安定性に難あり.
+:::
  - スクリプトの変換
 ecaljのMPI計算実行コマンドはmpirun を想定している．(スクリプト内に記載がある)
 インストール前に,ISSPの仕様に合わせて以下のファイルの`mpirun -np` を `srun -n` に変更する．(`mpirun` でも動くが警告がでる場合がある)
@@ -36,7 +35,9 @@ def run_arg(argin, mpi_size, nfpgw, command, output, *target):
     serial_run = ""  # standard
     mpi_run = f"mpirun -np {mpi_size}"  # standard
 ```
-[!Tip] インストール後の `~/bin/` の中のファイルを変更でもOKだけど, 再インストールすると上書きされます．
+::: tip
+インストール後の `~/bin/` の中のファイルを変更でもOKだけど, 再インストールすると上書きされます．
+:::
 
  - InstallAll について
 InstallAll は コンパイルとテスト計算の実行を含んでいます．Ohtakaでは, フロントエンドでのMPIプロセスの実行は禁止されているため，テスト計算部分が実行できません．
@@ -55,7 +56,10 @@ ulimit -s unlimited
 
 FC=ifort ./InstallAll --clean
 ```
-[!Tip] `InstallAll` の内部でも`mpirun`を一部使用されているのですが，経験上TestInstall は通ります(単一ノードの使用だから?)．
+
+::: tip
+ `InstallAll` の内部でも`mpirun`を一部使用されているのですが，経験上TestInstall は通ります(単一ノードの使用だから?)．
+:::
 
 ## 並列数の補足情報
 
@@ -70,4 +74,6 @@ OpenMP 並列は効果が薄いので，基本はMPI並列数を取ること．
 #SBATCH --ntasks-per-node=32
 #SBATCH -t 24:00:00
 ```
-[!Tip] 実行時にMKL(Intel Math Kernel Library)のエラーがでる場合は, `-c 1` とすること。
+::: tip
+実行時にMKL(Intel Math Kernel Library)のエラーがでる場合は, `-c 1` とすること。
+::: 

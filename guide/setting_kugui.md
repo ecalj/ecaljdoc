@@ -1,15 +1,15 @@
-# ecalj: 補足情報
+# ISSP System C: Kugui での実行について
 
-## ISSP System C: Kugui での実行について
- - GPUの使用を前提
+- GPUの使用を前提
  - moduleの設定
 nvfortran + OpenMPI
 ```bash
 module purge
 module load nvhpc-nompi/24.7 openmpi_nvhpc compiler-rt tbb mkl
 ```
-[!Tip] 数学ライブラリはIntelのMKLも使用する(CPU計算のため)．NVIDIAやGNU fortran からも利用できる．
-
+::: tip
+数学ライブラリはIntelのMKLも使用する(CPU計算のため)．NVIDIAやGNU fortran からも利用できる．
+:::
 - MPS(複数MPIプロセスが1つのGPUを共有できる)の利用のために `~/.bashrc` に以下を記載
 ```bash ~/.bashrc
 if which nvidia-cuda-mps-control > /dev/null 2>&1 ; then
@@ -55,4 +55,6 @@ gwsc -np 64 -np2 4 --gpu 5 $id > lgwsc
 * `-np2` でGPUで実行される計算の並列数を指定．通常は使用できるGPU数とする.
 * `--gpu`  GPU版の実行ファイルが利用される．
 
-[!Tip] GPU版は系が小さいと高速化は期待できないが, 4GPUで40原子程度までは計算可能(計算条件による。k点が多いと大変。k点数の2乗で計算コストがかかる点に注意)．
+::: tip
+GPU版は系が小さいと高速化は期待できないが, 4GPUで40原子程度までは計算可能(計算条件による。k点が多いと大変。k点数の2乗で計算コストがかかる点に注意)．
+:::
