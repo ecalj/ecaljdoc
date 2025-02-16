@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "ecaljdoc"
-  text: "document of ecalj"
+  text: "In development: document of ecalj"
   tagline:
   actions:
     - theme: brand

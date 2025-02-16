@@ -1,3 +1,9 @@
-# Markdown Extension Examples
+# GW approaximation
 
-AAA
+$$
+\begin{align}
+\varSigma = iGW \\
+W = ϵ^{-1}v \\
+P = -iGG \\
+\end{align}
+$$

@@ -9,7 +9,7 @@ For the developer of this document. Get the access of the repository from msobt.
 
 - Pull the repository.
 ```
-git pull git@github.com:ecalj/ecaljdoc.git
+git clone git@github.com:ecalj/ecaljdoc.git
 ```
 
 - Install the dependency
