@@ -1,18 +1,14 @@
 import { defineConfig } from 'vitepress'
-import { configureDiagramsPlugin } from "vitepress-plugin-diagrams";
+import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default withMermaid({
   base : '/ecaljdoc/',
   title: "ecaljdoc",
   description: "document of ecalj",
   cleanUrls: true,
   markdown: {
     math: true,
-    config: (md) => {
-      configureDiagramsPlugin(md, {
-        });
-    },
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -20,36 +16,61 @@ export default defineConfig({
       { text: 'Home', link: '/' },
     ],
 
+    search: {
+      provider: 'local'
+    },
+
     sidebar: [
       {
         text: 'Guide',
         items: [
           { text: 'Install', link: '/guide/install' },
-          { text: 'Server config: Ohtaka', link: '/guide/setting_ohtaka' },
-          { text: 'Server config: Kugui', link: '/guide/setting_kugui' },
+          { text: 'Server', link: '/guide/server_config'},
+          { text: 'Parallelization', link: '/guide/parallel_config'},
+        ]
+      },
+      {
+        text: 'Input files',
+        items: [
+          { text: 'ctrl file', link: '/manual/ctrlfile' },
+          { text: 'syml file', link: '/manual/syml' },
+          { text: 'GWinput', link: '/manual/gwinput' },
         ]
       },
       {
         text: 'Manual',
         items: [
-          { text: 'lmf', link: '/manual/lmf' },
-          { text: 'job_band', link: '/manual/job_band' },
+          { text: 'DFT lmf', link: '/manual/lmf' },
+          { text: 'Density of states', link: '/manual/dos' },
+          { text: 'Band dispersion', link: '/manual/band' },
+          { text: 'Fermi surface', link: '/manual/fs' },
+          { text: 'Spin-orbit interaction', link: '/manual/soi' },
+          { text: 'Spin response function', link: '/manual/chipm' },
+          { text: 'Dielecric function', link: '/manual/eps' },
+          { text: 'Structural optimization', link: '/manual/opts' },
+          { text: 'Quasi-particle self-consistent GW', link: '/manual/gwsc' },
+          { text: 'Quasi-particle\'s life time', link: '/manual/gwsc' },
+          { text: 'Spectrum function', link: '/manual/spec' },
         ]
       },
       {
         text: 'Theory',
         items: [
-          { text: 'basis', link: '/theory/basis' },
-          { text: 'product basis', link: '/theory/product_basis' },
-          { text: 'zmel', link: '/theory/zmel' },
-          { text: 'GW', link: '/theory/gw' },
-          { text: 'QSGW', link: '/theory/qsgw' },
+          { text: 'PMT', link: '/theory/pmt' },
+          { text: 'Spin-orbit interaction', link: '/theory/soi' },
+          { text: 'GW approximation', link: '/theory/gw' },
+          { text: 'Quasi-particle self-consistent GW', link: '/theory/qsgw' },
+          { text: 'Basis', link: '/theory/gw_basis' },
+          { text: 'Product basis', link: '/theory/gw_product_basis' },
+          { text: 'Zmel', link: '/theory/gw_zmel' },
+          { text: 'Optical properties', link: '/theory/optical_properties' },
         ]
       },
       {
         text: 'Implementation',
         items: [
-          { text: 'hx0fp', link: '/implementation/hx0' },
+          { text: 'hrcxq/hx0fp', link: '/implementation/hx0' },
+          { text: 'hsfp0_sc', link: '/implementation/hsfp0' },
         ]
       },
     ],
@@ -57,5 +78,7 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/tkotani/ecalj' },
     ]
-  }
+  },
+ mermaid: { theme: 'forest' },
+ mermaidPlugin: { class: 'mermaid my-class' }
 })

@@ -1,3 +1,0 @@
-# Markdown Extension Examples
-
-AAA

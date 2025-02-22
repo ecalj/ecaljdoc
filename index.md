@@ -15,7 +15,7 @@ hero:
       link: /manual/lmf
     - theme: alt
       text: Theory
-      link: /theory/basis
+      link: /theory/gw
 
 features:
   - title: quasi-particle self-constent 𝘎𝘞 calculations
