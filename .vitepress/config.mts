@@ -41,23 +41,23 @@ export default withMermaid({
         text: 'Manual',
         items: [
           { text: 'DFT lmf', link: '/manual/lmf' },
-          { text: 'Density of states', link: '/manual/dos' },
-          { text: 'Band dispersion', link: '/manual/band' },
-          { text: 'Fermi surface', link: '/manual/fs' },
-          { text: 'Spin-orbit interaction', link: '/manual/soi' },
-          { text: 'Spin response function', link: '/manual/chipm' },
-          { text: 'Dielecric function', link: '/manual/eps' },
-          { text: 'Structural optimization', link: '/manual/opts' },
-          { text: 'Quasi-particle self-consistent GW', link: '/manual/gwsc' },
-          { text: 'Quasi-particle\'s life time', link: '/manual/gwsc' },
-          { text: 'Spectrum function', link: '/manual/spec' },
+          // { text: 'Quasi-particle self-consistent GW', link: '/manual/gwsc' },
+          // { text: 'Density of states', link: '/manual/dos' },
+          // { text: 'Band dispersion', link: '/manual/band' },
+          // { text: 'Fermi surface', link: '/manual/fs' },
+          // { text: 'Spin-orbit interaction', link: '/manual/soi' },
+          // { text: 'Spin response function', link: '/manual/chipm' },
+          // { text: 'Dielecric function', link: '/manual/eps' },
+          // { text: 'Structural optimization', link: '/manual/opts' },
+          // { text: 'Quasi-particle\'s life time', link: '/manual/lifetime' },
+          // { text: 'Spectrum function', link: '/manual/spec' },
         ]
       },
       {
         text: 'Theory',
         items: [
-          { text: 'PMT', link: '/theory/pmt' },
-          { text: 'Spin-orbit interaction', link: '/theory/soi' },
+          // { text: 'PMT', link: '/theory/pmt' },
+          // { text: 'Spin-orbit interaction', link: '/theory/soi' },
           { text: 'GW approximation', link: '/theory/gw' },
           { text: 'Quasi-particle self-consistent GW', link: '/theory/qsgw' },
           { text: 'Basis', link: '/theory/gw_basis' },
@@ -69,7 +69,7 @@ export default withMermaid({
       {
         text: 'Implementation',
         items: [
-          { text: 'hrcxq/hx0fp', link: '/implementation/hx0' },
+          { text: 'hrcxq/hx0fp', link: '/implementation/hx0fp' },
           { text: 'hsfp0_sc', link: '/implementation/hsfp0' },
         ]
       },

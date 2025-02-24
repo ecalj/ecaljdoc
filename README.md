@@ -32,7 +32,5 @@ If it works, you will find the following message
 ``` 
 The generated document site can be seen from `http://localhost:5173/ecaljdoc/`. Use the URL with your web browser.
 
-:::hint
-Main page configuration: `index.md`
-Sidebar configuration: `.vitepress/config.mts`
-:::
+- Main page configuration: `index.md`
+- Sidebar configuration: `.vitepress/config.mts`

@@ -1,47 +1,28 @@
 # Optical Properties
 
-## written by Copilot
-
-The optical properties of a material can be calculated using Density Functional Theory (DFT).
-The key formula used in these calculations is the complex dielectric function, which is given by:
-$$
-\epsilon(\omega) = \epsilon_1(\omega) + i\epsilon_2(\omega) 
-$$
-
-where:
-- $\epsilon(\omega)$ is the complex dielectric function,
-- $\epsilon_1(\omega)$ is the real part of the dielectric function,
-- $\epsilon_2(\omega)$ is the imaginary part of the dielectric function,
-- $\omega$ is the frequency of the incident light.
-
-The imaginary part $\epsilon_2(\omega)$ can be calculated using the following expression:
-$$
-\epsilon_2(\omega) = \frac{4\pi^2 e^2}{m^2 \omega^2} \sum_{c,v} \int_{\text{BZ}} \frac{d^3k}{(2\pi)^3} | \langle \psi_c(\mathbf{k}) | \mathbf{e} \cdot \mathbf{r} | \psi_v(\mathbf{k}) \rangle |^2 \delta(E_c(\mathbf{k}) - E_v(\mathbf{k}) - \hbar\omega)
-$$
-
-where:
-- $e$ is the electron charge,
-- $m$ is the electron mass,
-- $\mathbf{e}$ is the polarization vector of the incident light,
-- $\mathbf{r}$ is the position operator,
-- $\psi_c(\mathbf{k})$ and $\psi_v(\mathbf{k})$ are the conduction and valence band wave functions, respectively,
-- $E_c(\mathbf{k})$ and $E_v(\mathbf{k})$ are the energies of the conduction and valence bands, respectively,
-- $\hbar$ is the reduced Planck constant,
-- $\mathbf{k}$ is the wave vector,
-- BZ denotes the Brillouin zone.
-
-The real part $\epsilon_1(\omega)$ can be obtained from $\epsilon_2(\omega)$ using the Kramers-Kronig relations.
-
-## dielectric function in microscale
+## dielectric function in micro-scale
 
 $$
 \begin{align}
 𝛿𝜌 = 𝜒𝛿𝜙_{ext} = 𝑃𝛿𝜙 \\
 𝜖𝛿𝜙 = 𝛿𝜙_\mathrm{ext} \\
-𝛿𝜙 = 𝜖^{-1}𝛿𝜙_\mathrm{ext} \\
+𝛿𝜙 = 𝜖^{-1}𝛿𝜙_\mathrm{ext}
 \end{align}
 $$
-
+where:
+- $𝛿𝜌$: Change in charge density
+- $𝜒$: Electric susceptibility
+- $𝛿𝜙_{ext}$: External potential change
+- $𝑃$: Polarization function
+- $𝜖$: dielectric function
+- $𝛿𝜙 = 𝛿𝜙_\mathrm{ext} + 𝛿𝜙_\mathrm{ind}$: total potential change, which is sum of changes in the external potential and induced one
+::: info
+the short formula is used above equations 
+$$
+(𝜒𝛿𝜙_{ext})(𝒓,𝒓',𝜔)= \int d𝒓'' 𝜒(𝒓,𝒓'',𝜔)𝛿𝜙_{ext}(𝒓'',𝒓',𝜔)
+$$
+:::
+From these equations, we obtain the following equations straightforwardly
 $$
 \begin{align}
 𝜖 &= 1 - 𝑣𝑃  \\
@@ -50,18 +31,18 @@ $$
 \end{align}
 $$
 where:
-- $𝜖$: dielectric function
 - $𝑣$: Coulomb potential
-- $𝜒$: 
-- $𝑃$: polarization function 
 
-RPA Approxiamation
+## RPA Approxiamation:
 $$
 𝑃 = 𝛱
 $$
 where
  - $𝛱$: Kohn-Sham density response function
 
+$$
+ \epsilon(\mathbf{r}, \mathbf{r}', \omega) = \delta(\mathbf{r} - \mathbf{r}') - \int d\mathbf{r}'' \, v(\mathbf{r} - \mathbf{r}'') 𝛱(\mathbf{r}'', \mathbf{r}', \omega)
+$$
 
 ## macroscale dielectric function
 $$

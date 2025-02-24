@@ -63,7 +63,7 @@ FC=ifort ./InstallAll --clean
  Although `mpirun` is used internally in `InstallAll`, TestInstall passes based on experience (perhaps because it uses a single node?).
 :::
 
-## Additional information on parallelism
+### Additional information on parallelism
 
  - Specifying the number of parallel processes
 OpenMP parallelism is less effective, so basically use MPI parallelism.
