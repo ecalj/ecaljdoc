@@ -3,16 +3,16 @@
 ## MPI
 
 ```mermaid
-sequenceDiagram
-    participant p1
-    participant p2
-    participant p3
-    participant p4
-note over p1,p2:AA
-note over p3,p4:AA
-p2-->>p1:send
-p3-->>p1:send
-p4-->>p1:send
+graph TB
+    world[MPI_COMM_WORLD]
+    world --> comm_q1[Communicator q]
+    world --> comm_q2[Communicator q]
+    subgraph comm1 0
+     comm_q1_b1
+     comm_q1_b2
+     comm_q1_b3
+     comm_q1_b4
+    end
 ```
 
 ## $Z$:zmel
