@@ -64,6 +64,7 @@ export default withMermaid({
           { text: 'Product basis', link: '/theory/gw_product_basis' },
           { text: 'Zmel', link: '/theory/gw_zmel' },
           { text: 'Optical properties', link: '/theory/optical_properties' },
+          { text: 'Basic', link: '/theory/basic' },
         ]
       },
       {

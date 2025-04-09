@@ -48,4 +48,23 @@ While the GW approximation provides a more accurate description of quasiparticle
 5. **Limited Accuracy for Strongly Correlated Systems**: The GW approximation may not be accurate for systems with strong electron correlation effects, such as transition metal oxides or heavy fermion systems. In such cases, more advanced methods like Dynamical Mean Field Theory (DMFT) or GW+DMFT may be required.
 
 Despite these challenges, the GW approximation remains a valuable tool for studying the electronic properties of materials, particularly for systems where electron-electron interactions play a significant role.
+
+
+## Self-energy
+
+$$
+G(x_1, x_2) = G_0(x_1, x_2) + \int dx_3 dx_4  G_0(x_1, x_3) \varSigma(x_3, x_4) G(x_4, x_2)
+$$
+
+### Hedin's Equation
+$$
+\begin{aligned}
+P(x_1, x_2) &= -i \int dx_3 dx_4  G(x_4, x_2) G(x_2, x_3) \Gamma(x_3, x_4, x_1) \\
+W(x_1, x_2) &= v(x_1, x_2) + \int dx_3 dx_4  v(x_1, x_3) P(x_3, x_4) W(x_4, x_2) \\
+\varSigma(x_1, x_2) &= \frac{i}{\hbar} \int dx_3 dx_4 \, G(x_1, x_4) \Gamma(x_4, x_2, x_3) W(x_1^+, x_3) \\
+\Gamma(x_1, x_2, x_3) &= \delta(x_1, x_2) \delta(x_1, x_3) + \int dx_4 dx_5 dx_6 dx_7 
+\frac{\delta \varSigma(x_1, x_2)}{\delta G(x_4, x_5)} G(x_4, x_6) G(x_7, x_5) \Gamma(x_6, x_7, x_3)
+\end{aligned}
+$$
+
 ## Refs

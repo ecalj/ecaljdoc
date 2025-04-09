@@ -103,7 +103,11 @@ fi
 ```
 
  - Script modification: Optional
-When using OpenMP parallelism for CPU calculations, change `mpirun -np` to `mpiexec --bind-to none -np`.
+When using OpenMP parallelism for CPU calculations, change `mpirun -np` to `mpiexec --bind-to none --map-by node -np`.
+`--map-by node` is nessesary to to specify the different number of MPI processes in the single jobs.
+::: warning
+`--bind-to none` and `--map-by node` are the options in OpenMPI. It may not work in other MPI library.
+:::
 Replace the `ecalj` directory path with your own.
 ```
 ~/ecalj/SRC/exec/gwutil.py
@@ -112,7 +116,7 @@ Replace the `ecalj` directory path with your own.
 def run_program(commandline, ncore=0,x0=0):
     import subprocess,datetime
     xdate=datetime.datetime.now() #today().isoformat()
-    mpirun='mpiexec --bind-to none -np %d '%ncore if ncore!=0 else ''
+    mpirun='mpiexec --bind-to none --map-by node -np %d '%ncore if ncore!=0 else ''
 ```
 Also, change `mpirun` in other scripts as needed.
 
