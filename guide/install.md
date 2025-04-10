@@ -19,7 +19,7 @@ FC=ifort ./Installall [Options]
 
 Following options are valid
 Options:
-* `-np` <value>:
+* `-np` [value]:
    default: 8
    specify the number of MPI parallelization in test calculation
 * `--clean`
