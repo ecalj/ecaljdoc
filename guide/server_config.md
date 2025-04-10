@@ -8,9 +8,9 @@ OneAPI(Intel) + OpenMPI is recommended
 module purge
 module load openmpi/4.1.5-oneapi-2023.0.0-classic  
 ```
-::: tip
- OneAPI_MPI is slightly faster but less stable.
-:::
+> [!TIP]
+> OneAPI_MPI is slightly faster but less stable.
+
  - Script modification
 The ecalj MPI execution command assumes `mpirun`. (It is specified in the script)
 Before installation, change `mpirun -np` to `srun -n` in the following files to match the ISSP specifications. (It will work with `mpirun` but may give warnings)
@@ -37,9 +37,8 @@ def run_arg(argin, mpi_size, nfpgw, command, output, *target):
     serial_run = ""  # standard
     mpi_run = f"mpirun -np {mpi_size}"  # standard
 ```
-::: tip
-You can also modify the files in `~/bin/` after installation, but they will be overwritten if you reinstall.
-:::
+> [!TIP]
+> You can also modify the files in `~/bin/` after installation, but they will be overwritten if you reinstall.
 
  - About InstallAll
 InstallAll includes compilation and test calculations. On Ohtaka, running MPI processes on the frontend is prohibited, so the test calculation part cannot be executed.
@@ -59,9 +58,8 @@ ulimit -s unlimited
 FC=ifort ./InstallAll --clean
 ```
 
-::: tip
- Although `mpirun` is used internally in `InstallAll`, TestInstall passes based on experience (perhaps because it uses a single node?).
-:::
+> [!TIP]
+> Although `mpirun` is used internally in `InstallAll`, TestInstall passes based on experience (perhaps because it uses a single node).
 
 ### Additional information on parallelism
 
@@ -76,9 +74,8 @@ However, if you run out of memory, reduce the number of cores per node to ensure
 #SBATCH --ntasks-per-node=32
 #SBATCH -t 24:00:00
 ```
-::: tip
-If you encounter MKL (Intel Math Kernel Library) errors during execution, set `-c 1`.
-::: 
+> [!TIP]
+> If you encounter MKL (Intel Math Kernel Library) errors during execution, set `-c 1`.
 
 ## Running on ISSP System C: Kugui
 
@@ -89,9 +86,8 @@ nvfortran + OpenMPI
 module purge
 module load nvhpc-nompi/24.7 openmpi_nvhpc compiler-rt tbb mkl
 ```
-::: tip
-The Intel MKL math library is also used for CPU calculations. It can be used from NVIDIA or GNU Fortran.
-:::
+> [!TIP]
+> The Intel MKL math library is also used for CPU calculations. It can be used from NVIDIA or GNU Fortran.
 - To use MPS (multiple MPI processes sharing a single GPU), add the following to `~/.bashrc`
 ```bash ~/.bashrc
 if which nvidia-cuda-mps-control > /dev/null 2>&1 ; then

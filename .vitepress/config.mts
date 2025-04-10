@@ -41,6 +41,7 @@ export default withMermaid({
         text: 'Manual',
         items: [
           { text: 'DFT lmf', link: '/manual/lmf' },
+          { text: 'ecalj auto', link: '/manual/auto' },
           // { text: 'Quasi-particle self-consistent GW', link: '/manual/gwsc' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion', link: '/manual/band' },
