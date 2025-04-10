@@ -14,7 +14,7 @@ pip3 install pandas seekpath spglib --user
 ### python のImportError が発生する場合
 
 python の version や環境によって以下のようなエラーがでる場合がある(ISSP python3.6で発生)
-```OUTPUT/testSGA/start@xxxxxxx/job0.out
+```text OUTPUT/testSGA/start@xxxxxxx/job0.out
 Traceback (most recent call last):
   File "/home/k0413/k041300/ecalj/ecalj_auto/OUTPUT/testSGA/start@20250410-095838/job_mp.py", line 3, in <module>
     import pandas as pd
@@ -30,7 +30,7 @@ pytz: No module named 'pytz'
 type mise > /dev/null 2>&1 || curl https://mise.run | sh
 eval "$(~/.local/bin/mise activate bash)"
 ```
-> [!HINT]
+>  [!NOTE]
 > mise は パッケージ管理ソフトの一種であり、詳細は [mise](https://mise.jdx.dev/) を参考にして下さい。
 
 その後 ~/.bashrc  の再読み込みを行うと mise がインストールされ使用できるようになる。
