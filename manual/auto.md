@@ -4,10 +4,13 @@
 
 ## 依存関係
 通常のecaljの計算に加え
- - python3.9以上 + 以下のpython libraryが必要
+ - python3.9以上
+python ライブラリ
  - pandas
  - seekpath
  - spglib
+
+python ライブラリのinstall は pip で以下のように行う
 ```bash
 pip3 install pandas seekpath spglib --user
 ```
@@ -82,6 +85,21 @@ On the slurm case: e.g., ISSP system B, Othtaka
 ```python ~/ecalj/ecalj_auto/auto/joball.py L126
             os.system(f'qsub {jobx}')
 ```
+#### SLURM の場合: 例 ISSP system B
+はqsub をsbatchに変更する
 ```python
             os.system(f'sbatch {jobx}')
 ```
+
+## Query
+
+MPからのPROCARの取得方法
+
+依存関係: 以下のpython ライブラリが必要
+- pymatgen
+- mp-api
+インストールはpipから
+```bash
+pip3 install pymatgen mp-api --user
+```
+material project のAPI key が必要であり `ecalj_auto/config.ini` に記載する
