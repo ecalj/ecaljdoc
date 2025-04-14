@@ -16,7 +16,7 @@ $$
 
 - $\hat 𝜓_\mathrm{H}(𝒓,t)$ :ハイゼンベルグ表示での場の演算子であり, $\hat 𝜓_\mathrm{H}(𝒓,t) = e^{i\hat Ht/\hbar}\hat 𝜓(𝒓)e^{-i\hat Ht/\hbar}$．
 - $\hat 𝜓^†_\mathrm{H}(𝒓,t) = e^{i\hat Ht/\hbar}\hat 𝜓^†(𝒓)e^{-i\hat Ht/\hbar}$である．
-- フェルミ粒子の場の演算子には反交換関係があり$\{𝜓_\mathrm{H}(𝒓_1,t),𝜓_\mathrm{H}(^†(𝒓_2,t)\} = 𝛿(𝒓_1-𝒓_2)$. 時刻が異なるハイゼンベルグ表示の演算子の反交換関係ではないことに注意。
+- フェルミ粒子の場の演算子には反交換関係があり$\{𝜓_\mathrm{H}(𝒓_1,t),𝜓_\mathrm{H}^†(𝒓_2,t)\} = 𝛿(𝒓_1-𝒓_2)$. 同時刻の反交換関係であることに注意。
 - $T$は時間順序積であり, 時間$t$の順序を左側に未来の時間, 右側に過去の時間となるように並べ変える．
 - $𝜃(t)$: ステップ関数 $t>0$なら1, $t<0$なら0である．
 - $\Psi_0$:ハイゼンベルグ表示の$N$粒子での基底状態 $\hat H\ket{\Psi_0} = E \ket{\Psi_0}$
@@ -55,8 +55,9 @@ $$
 - 生成と消滅は同じ1粒子状態$n$に対して行なわれる．そうでない場合はゼロになる．
 - 正孔の生成状態も励起状態であり基底状態からの，励起エネルギーは$-𝜀_n>0$である．
 
-> [!WARNING]
-> ここの導出はちゃんと書けていない
+::: details 導出
+
+:::
 
 よって, 
 $$
@@ -145,6 +146,26 @@ iD(𝒓_1t_1,𝒓_2t_2) =
 $$
 
 ## 相互作用がない系での時間秩序分極関数
-
-
-
+相互作用がない系では、N積項は消えるためWickの定理により
+$$
+\begin{align}
+iD(𝒓_1t_1,𝒓_2t_2) = 
+\braket{T[\hat {𝛿𝜌}(𝒓_1,t_1)\hat {𝛿𝜌}(𝒓_2,t_2)]} = G(𝒓_1t_1,𝒓_2t_2)G(𝒓_2t_2,𝒓_1t_1)
+\end{align}
+$$
+となる。
+<!-- ::: details 導出 -->
+<!-- $$ -->
+<!-- \begin{align} -->
+<!-- \braket{T[\hat {𝛿𝜌}(𝒓_1,t_1)\hat {𝛿𝜌}(𝒓_2,t_2)]} &=  -->
+<!--    \braket{T[\hat 𝜌_\mathrm{H}(𝒓_1,t_1) \hat 𝜌_\mathrm{H}(𝒓_2,t_2)]} -->
+<!--  - \braket{T[\hat 𝜌_\mathrm{H}(𝒓_1,t_1) \braket{\hat \rho_\mathrm{H}(𝒓_2,t_2)}]}  \\ -->
+<!-- &- \braket{T[\hat 𝜌_\mathrm{H}(𝒓_2,t_2) \braket{\hat \rho_\mathrm{H}(𝒓_1,t_1)}]}  -->
+<!-- + \braket{T[\braket{\hat \rho_\mathrm{H}(𝒓_1,t_1)} \braket{\hat \rho_\mathrm{H}(𝒓_2,t_2)}]} \\ -->
+<!-- &= \braket{T[\hat 𝜌_\mathrm{H}(𝒓_1,t_1) \hat 𝜌_\mathrm{H}(𝒓_2,t_2)]}+{\braket{\hat \rho_\mathrm{H}(𝒓_1,t_1)} \braket{\hat \rho_\mathrm{H}(𝒓_2,t_2)}} \\ -->
+<!-- \end{align} -->
+<!-- $$ -->
+<!---->
+<!-- ここで $\hat \rho_\mathrm{H}(𝒓,t) = \hat 𝜓^\dagger_\mathrm{H}(𝒓,t) \hat 𝜓_\mathrm{H}(𝒓,t)$ であるため,  -->
+<!-- \braket{T[\hat 𝜓^†_\mathrm{H}(𝒓_1,t_1)𝜓_\mathrm{H}(𝒓_1,t_1)𝜓^†_\mathrm{H}(𝒓_1,t_1)𝜓_\mathrm{H}(𝒓_2,t_2)]} =  -->
+<!-- ::: -->
