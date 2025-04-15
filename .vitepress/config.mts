@@ -27,7 +27,6 @@ export default withMermaid({
           { text: 'Install', link: '/guide/install' },
           { text: 'Homework', link: '/guide/homeworkecalj' },
           { text: 'Server', link: '/guide/server_config'},
-          { text: 'Parallelization', link: '/guide/parallel_config'},
         ]
       },
       {
