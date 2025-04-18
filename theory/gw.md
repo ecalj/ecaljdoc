@@ -1,6 +1,6 @@
 # $GW$ approximation
 
-## $GW$ approximation: general formula
+## $GW$ approximation
 The $GW$ approximation is a method used in many-body perturbation theory to describe the electronic structure of systems.
 The usefulness of $GW$ calculations in various systems has been demonstrated in the previous investigation. 
 It improves upon the standard Density Functional Theory (DFT) by including the effects of electron-electron interactions more accurately.
@@ -8,7 +8,7 @@ This method is well known as a highly predictive method that does not rely on an
 
 In the GW approximation, the self-energy $𝛴$ is expressed as:
 $$
-𝛴(𝒓_1t_1,𝒓_2t_2) = iG(𝒓_1t_1,𝒓_2t_2)W(𝒓_1t_1,𝒓_2t_2^+),
+𝛴(𝒓_1t_1,𝒓_2t_2) = iG(𝒓_1t_1,𝒓_2t_2)W(𝒓_1t_1^+,𝒓_2t_2),
 $$
 where $G$ and $W$ are one-particle Green's function and screened Coulomb interaction, respectively.
 The Fourie representation of $𝛴(𝒓_1t_1,𝒓_2t_2)$,  $𝛴(𝒓_1,𝒓_2;𝜔)$ is represented as follows:
@@ -32,7 +32,7 @@ $$
 
 The screened Coulomb interaction $W$ is related to the bare Coulomb interaction $v$ and the dielectric function $𝜖$ by:
 $$
-W(𝒓_1,𝒓_2,𝜔) = \int 𝒓_3 (\epsilon^{-1})(𝒓_1,𝒓_3;𝜔) v(𝒓_3,𝒓_2).
+W(𝒓_1,𝒓_2,𝜔) = \int d𝒓_3 \epsilon^{-1}(𝒓_1,𝒓_3;𝜔) v(𝒓_3,𝒓_2).
 $$
 In short notation, $W(𝜔) = 𝜀^{-1}(𝜔)v$.
 The dielectric function is connected to the polarization function $P$, i.e., $ϵ = 1 - vP$.
@@ -45,6 +45,29 @@ $$
 $$
 
 ### The meaning of $GW$
+The $GW$ approximation can be understood as incorporating the screening effect of surrounding electrons into the exchange interaction in Hartree-Fock approach.
+Note that $iGv$ gives the Fock exchange.
+::: details The formula of $iGv$
+$$
+\begin{align}
+𝛴^\mathrm{x} (𝒓_1,𝒓_2) &≡ \frac{i}{2\pi} \int d𝜔' G(𝒓_1,𝒓_2; 𝜔-𝜔') v(𝒓_1,𝒓_2)e^{-iη𝜔'} \\
+& = \sum_{n} 𝜙_n(𝒓_1)\frac{1}{|𝒓_1 -𝒓_2|}𝜙^*_n(𝒓_2)\frac{i}{2\pi} \int d𝜔' \frac{e^{-iη𝜔'}}{𝜔- 𝜔'- 𝜀_n + iη \text{sgn}(𝜀_n - E_\mathrm{F})} \\
+& = -\sum_{n}^\mathrm{occ} 𝜙_n(𝒓_1)\frac{1}{|𝒓_1 -𝒓_2|}𝜙^*_n(𝒓_2)
+\end{align}
+$$
+We consider the contour integral in the lower half-plane of the complex $𝜔'$ plane (as shown in the figure), which includes only the poles of the occupied states. 
+Since $e^{-iη𝜔'} → 0$, the $Γ^+$ in the figure does not contribute to the integral.
+Therefore, by the residue theorem, the $𝜔'$ integral is "2𝜋i" for occupied states and 0 for unoccupied states. 
+As a result, expected value of $iGv$ on state $n$ is as follows:
+$$
+\begin{align}
+\braket{𝜙_n|𝛴^\mathrm{x} (𝒓_1,𝒓_2) |𝜙_n}
+ = -\sum_{m}^\mathrm{occ} \int d𝒓_1 d𝒓_2 𝜙^*_n(𝒓_1)𝜙_m(𝒓_1)\frac{1}{|𝒓_1 -𝒓_2|}𝜙^*_m(𝒓_2)𝜙_n(𝒓_2)
+\end{align}.
+$$
+This corresponds to the Fock exchange.
+![積分経路](./figures/integral_path_exchnage.png){ width=50% class="centered-image" }
+:::
 
 
 ## $G_0W_0$ approach
