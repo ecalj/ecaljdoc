@@ -82,5 +82,6 @@ export default withMermaid({
     ]
   },
  mermaid: { theme: 'forest' },
- mermaidPlugin: { class: 'mermaid my-class' }
+ mermaidPlugin: { class: 'mermaid my-class' },
+ sitemap :{ hostname: 'https://tkotani.github.io/ecaljdoc/' }
 })
