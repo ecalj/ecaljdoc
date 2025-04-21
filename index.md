@@ -8,14 +8,17 @@ hero:
   tagline:
   actions:
     - theme: brand
+      text: Install
+      link: /guide/install
+    - theme: alt
       text: Getteing started
       link: /guide/install
     - theme: alt
-      text: Manual
-      link: /manual/lmf
-    - theme: alt
       text: Theory
       link: /theory/gw
+    - theme: alt
+      text: Manual
+      link: /manual/lmf
 
 features:
   - title: quasi-particle self-constent 𝘎𝘞 calculations
