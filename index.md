@@ -12,7 +12,7 @@ hero:
       link: /install/install
     - theme: alt
       text: Get started
-      link: /manual/lmf
+      link: /manual/README_tutorial
     - theme: alt
       text: Theory
       link: /theory/gw
