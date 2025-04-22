@@ -78,6 +78,7 @@ export default withMermaid({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/tkotani/ecalj' },
+      { icon: 'github', link: 'https://github.com/ecalj/ecaljdoc' },
     ]
   },
  mermaid: { theme: 'forest' },

@@ -52,12 +52,12 @@ pip install numpy pandas seekpath spglib pymatgen mp-api scipy plotly
 ## 3. Install and InstallTest
 **For ohtaka and kugui in ISSP, skip here and see [here](./installISSP.md)**
 
-We recommend you to check ecalj/InstAll at first. InstallAll writes files to your $HOME/bin. 
+We recommend you to check ecalj/InstallAll at first. InstallAll writes files to your $HOME/bin. 
 Add $HOME/bin to your path. (The install directory is ```BINDIR = os.path.join(HOME, 'bin')```.  to ```BINDIR = os.path.join(HOME, 'bin2')```, for example, to change install directory).  
 
 Run the following command at ecalj/
 ```bash
-FC=ifort ./Installall [Options]
+FC=ifort ./InstallAll [Options]
 (We can use gfortran or nvfortran instead of ifort)
 ```
 It performs compile and link followed by the install test at ecalj/SRC/TestInstall/. (testecalj.py is the script for test)
@@ -77,6 +77,6 @@ Options:
    compile the GPU and GPU-MP version
 
 
-#### 
+####  補足
 
 * Qiitaでの解説(https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)

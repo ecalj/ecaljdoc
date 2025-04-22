@@ -26,16 +26,17 @@ fi
 
 
 #### 4.ecaljのインストールとテスト
-```
+```bash
 git clone https://github.com/tkotani/ecalj.git
 cd ecalj
 ```
 そのあとインストール＋テストのコマンドを打ちます。コンソールで
+```bash
+qsub jobinstall_kugui.sh
 ```
-qsub job_install_kugui.sh --gpu
-```
-です。これを実行すると、コンパイルのあとテスト計算が進んでいく。--gpuが必要。
-InstallAllは$HOME/binを作りそこへecaljのバイナリやスクリプトのコピーを行います。
+
+です。これを実行すると、コンパイルのあとテスト計算が進んでいく。`jobinstall_kugui.sh` ではCPU版とGPU版の両方がインストールされます。
+InstallAllは`$HOME/bin`ディレクトリを作りそこへecaljのバイナリやスクリプトのコピーを行います。
 困る場合は現在のコピーのバックアップをとったうえでecaljに上書きさせる、
 というのでもいいかもしれないです。あるいはInstallAllの中でbinを検索し書き直してください。
 そこにパスを通しておく必要があります。テストはOKを出しながら進んでいきます
@@ -89,7 +90,7 @@ OK! ==== All calclation finished for  gwsc ====
 で終了していればOKです。
 
 #### 6. 使い方メモ
-[使い方メモ](MachineSpecific.md)
+[使い方メモ](./UsageISSP.md)
 
 ## ohtakaでのインストール
 ほぼ同様です。`~/.bashrc`の最後に
@@ -115,6 +116,6 @@ sbatch job_ohtaka.sh
 
 
 ## ISSPシステムでのカスタマイズについて
-[ecaljソースコードの変更点](./MachineSpecific.md)
+[ecaljソースコードの変更点](UsageISSP.md)
 あるいはecalj packageのecalj/job_install_kugui.sh
 を見てください。
