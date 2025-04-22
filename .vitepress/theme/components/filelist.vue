@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-  const pdfFiles = Object.entries(import.meta.glob('/unchecked/**/*.{pdf,md}')).map(([path]) => {
+  const pdfFiles = Object.entries(import.meta.glob('/unchecked/**/*.pdf')).map(([path]) => {
   const name = path.split('/').pop(); // ファイル名を取得
   return { link: path, name };
 });

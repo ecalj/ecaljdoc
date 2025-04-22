@@ -1,10 +1,11 @@
 {
   "scripts": {
     "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
+    "docs:build": "vitepress build && node copy-files.js",
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
+    "fs-extra": "^11.3.0",
     "markdown-it-mathjax3": "^4.3.2",
     "mermaid": "^11.6.0",
     "vitepress": "^1.6.3",

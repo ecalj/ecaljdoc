@@ -4,6 +4,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 export default withMermaid({
   base : '/ecaljdoc/',
   title: "ecaljdoc",
+  vite: { publicDir: 'public' },
   description: "document of ecalj",
   cleanUrls: true,
   ignoreDeadLinks: true,
@@ -92,7 +93,4 @@ export default withMermaid({
       { icon: 'github', link: 'https://github.com/ecalj/ecaljdoc' },
     ]
   },
- mermaid: { theme: 'forest' },
- mermaidPlugin: { class: 'mermaid my-class' },
- sitemap :{ hostname: 'https://ecalj.github.io/ecaljdoc/' }
 })
