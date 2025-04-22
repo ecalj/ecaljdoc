@@ -9,6 +9,8 @@
 <script setup>
   const pdfFiles = Object.entries(import.meta.glob('/unchecked/**/*.pdf')).map(([path]) => {
   const name = path.split('/').pop(); // ファイル名を取得
-  return { link: path, name };
+  const link = `/ecaljdoc${path}`; // ecaljdoc をリンクに追加
+  console.log(link); // 出力: /ecaljdoc/unchecked/file.txt
+  return { link: link, name };
 });
 </script>
