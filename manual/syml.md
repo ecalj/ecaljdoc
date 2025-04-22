@@ -1,3 +1,5 @@
+# syml file
+
 ## Get symmetry lines for band plot and Brillouwin zone plot.
 syml.* is generated from ctrl.*. syml.* is needed for band plot.
 After generated, you can easily edit syml.* for job_band.

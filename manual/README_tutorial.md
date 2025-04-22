@@ -1,14 +1,14 @@
-## ecalj tutorial 
+# ecalj tutorial 
 (不親切です。)[Qiitaでの解説](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)も参考にしてください。
 
-### 基礎知識check 
+## 基礎知識check 
 * LDA計算の流れ。基底関数。MTOやAPW（MT division of space, Augmentation, radial function).
 * バンド計算法として PMT=LMTO+LAPWを基本にしている. 3-component formalism. 優位性
 * 独立粒子近似とは。
 * Hartree-Fock とLDA、ハイブリッド法
 * GW近似。分極媒質中を走る粒子のイメージ
 
-### ecalj 何ができるか？　
+## ecalj 何ができるか？
 
 * LDA計算 
 VWN,GGA,LDA+U, 
@@ -34,7 +34,8 @@ MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余
 ### 実際の計算のながれ
 #### 1. POSCARからctrlsファイル生成。
 ctrls.foobarはecaljの構造ファイル。vasp2ctrlで生成する。サンプルがあるのでたとえば以下の手順でPOSCARを準備
->cd ecalj
+```bash
+cd ecalj
 mkdir TEST
 cd TEST
 mkdir test1
@@ -42,15 +43,16 @@ mkdir test2
 cat ecalj_auto/INPUT/testSGA/joblist.bk
 cp ../ecalj_auto/INPUT/testSGA/POSCARALL/POSCAR.mp-2534 test1
 cp ../ecalj_auto/INPUT/testSGA/POSCARALL/POSCAR.mp-8062 test2
-
+```
 これらのPOSCARをvasp2ctrlで変換する。cifのときは一度POSCARに直してからvasp2ctrlを行う。
->vasp2ctrl POSCAR.mp-2534 
->mv ctrls.POSCAR.mp-2534.vasp2ctrl ctrls.POSCAR.mp-2534
->cat ctrls.mp-2534
-
+```
+vasp2ctrl POSCAR.mp-2534 
+mv ctrls.POSCAR.mp-2534.vasp2ctrl ctrls.POSCAR.mp-2534
+cat ctrls.mp-2534
+```
 ctrls.mp-2534 contains crystal structure equivalent to POSCAR:
 ```
-$cat ctrls.mp-2534 
+cat ctrls.mp-2534 
 STRUC
      ALAT=1.8897268777743552
      PLAT=       3.52125300000       0.00000000000       2.03299700000  
@@ -72,24 +74,26 @@ ctrlはecaljの基本入力ファイル。ctrlgenM1.pyで生成する。
 lmf起動時に-vnspin=2などでconst foobar=1 などと書かれている変数{foobar}がoverrideできる。
 対称性、AF対称性を課した計算が可能(QSGWでも)。ctrlgenM1.pyの内部ではlmfa,lmchk(原子球サイズ決定）などを呼んでいる。
 これ以後の計算にはctrl.foobarのみ残しておけば良い（ムダファイルが大量にできているのは消して良い）. 
->ctrlgenM1.py mp-2534
->cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
-
+```bash
+ctrlgenM1.py mp-2534
+cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
+```
 - ctrlでセットされるいくつかの変数
- nk1,nk2,nk3 
- xcfun
- ssig 
- pwemax
- gmax
- so
- socaxis
+  * nk1,nk2,nk3 
+  * xcfun
+  * ssig 
+  * pwemax
+  * gmax
+  * so
+  * socaxis
 ctrlに書き込める[インプットの表](./lmf_input.md).
 
 #### 3. LDA計算
 lmfa,lmfの順で行う。lmfaは瞬時に終わる。初期条件のための球対称原子の計算。lmfaの出力をgrep confすると、原子の電子配置が見て取れる。lmfaは繰り返しても副作用なし。PlatQlat.chk, SiteInfo, estatpot.dat,ECOREなどのファイルができる。grep gap llmfでバンドギャップ確認。
 
->lmfa ctrl.mp-2534
-
+```bash
+lmfa ctrl.mp-2534
+```
 gives spherical atom calculation for initialization. No side effects to repeat.
 
 >lmfa ctrl.mp-2534 |grep conf
@@ -103,8 +107,9 @@ ves* : obsolate
 log* : just for debug log
 
 Main part calculation:
-> mpirun -np 8 lmf mp-2534 |tee llmf 
-
+```bash
+mpirun -np 8 lmf mp-2534 |tee llmf 
+```
 * mp-2534 gives 5.75 \AA for GaAs, while the experimental value is 5.65\AA
 * llmf contains iteration log. band eigenvalue, and so on. Check band gap.
 * rst.mp-2534 is generated. Self-consistent charge included.
@@ -120,27 +125,31 @@ Repeat lmf stops with two iteration.
 
 #### 4. job_pdos,job_tdos, job_fermisurface,job_band などでバンドプロットなどをおこなう
 job_band実行前にバンドプロットの対称ラインsyml.foobarが必要。これはgetsyml foobarとして取得できる。
-> getsyml mp-2534
-
+```
+getsyml mp-2534
+```
 これでsyml.mp-2534ができる。BZ.htmlにはBZ図とシンメトリラインが描かれる。
 bandplotを行うには
->job_band mp-2534 -np 8 [options]
-
+```
+job_band mp-2534 -np 8 [options]
+```
 とする。job_bandの最後にoptionとして vso=1 -vnspin=2とすればSOCを摂動として加えたバンドがプロットできる。
 結果はgnuplotファイルに書かれる bandplot.isp1.glt。
 
 #### 5. QSGW計算
 
 QSGW計算を行うには、mkGWinput foobarでGWinputを作っておくこと。
->mkGWinput ctrl.mp-2534
-
+```
+mkGWinput ctrl.mp-2534
+```
 生成されたGWinput.tmpをあ編集してGWinputとする。
 n1n2n3のk点数は小さめに取らざるをえない。Siで6x6x6が目安。
 それ以外はあまりいじらない。gwscで実行できる。半導体で数回回すと良い。QPUファイルにGW計算の対角項の成分が書かれる。Mixed Produce basisのコンセプトがこのGW計算のキーになる。
 
 #### QSGW計算の流れ
->gwsc -np NP [--phispinsym] [--gpu] [--mp] nloop extension
-
+```
+gwsc -np NP [--phispinsym] [--gpu] [--mp] nloop extension
+```
 (--phispinsym is for magnetic materials to keep the same basis for up and down)
 を実行すると、
 
@@ -198,16 +207,21 @@ lmchk mp-2534
 ### memo
 #### スピン軌道相互作用を入れたバンドプロット
 method 1: only band plot
->job_band mp-2534 -np 8 -vso=1 -vnspin=2: band plot only
-
+```bash
+job_band mp-2534 -np 8 -vso=1 -vnspin=2: band plot only
+```
 Caution: when you set nspin=2, rst is twiced. No way to move it back to rst for nspin=1.
 
 method 2. single iteration and SO=1
->mpirun -np 8 lmf -vso=1 -vnspin=2 -vnit=1
+```bash
+mpirun -np 8 lmf -vso=1 -vnspin=2 -vnit=1
+```
 job_band mp-2534 -np 8 : band plot only
 
 method 3. full iteration SO=1
->mpirun -np 8 lmf -vso=1 -vnspin=2 -vnit=1
+```bash
+mpirun -np 8 lmf -vso=1 -vnspin=2 -vnit=1
+```
 job_band mp-2534 -np 8 : band plot only
 
 Caution: when you set nspin=2, rst is twiced. No way to move it back to rst for nspin=1.
