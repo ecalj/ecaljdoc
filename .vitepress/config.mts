@@ -7,10 +7,10 @@ export default withMermaid({
   title: "ecaljdoc",
   description: "document of ecalj",
   cleanUrls: true,
+  ignoreDeadLinks: true,
   markdown: {
     math: true,
   },
-  srcExclude: ['./unchecked/*.md'],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
