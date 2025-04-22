@@ -8,12 +8,24 @@ function getUncheckedFiles() {
   if (!fs.existsSync(uncheckedDir)) {
     return [];
   }
-  return fs.readdirSync(uncheckedDir)
-    .filter(file => file.endsWith('.md'))
-    .map(file => ({
-      text: path.basename(file, '.md'), // ファイル名をタイトルとして使用
-      link: `/unchecked/${file}`       // リンクを生成
-    }));
+  function getFilesRecursively(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    const files = entries.flatMap(entry => {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        return getFilesRecursively(fullPath); // 再帰的に検索
+      } else if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.pdf'))) {
+        return fullPath;
+      }
+      return [];
+    });
+    return files;
+  }
+  const files = getFilesRecursively(uncheckedDir);
+  return files.map(file => ({
+    text: path.basename(file, path.extname(file)), // 拡張子を除いたファイル名をタイトルとして使用
+    link: `/unchecked/${path.relative(uncheckedDir, file).replace(/\\/g, '/')}` // 相対パスをリンクに変換
+  }));
 }
 
 // https://vitepress.dev/reference/site-config
@@ -41,13 +53,13 @@ export default withMermaid({
         text: 'Install',
         items: [
           { text: 'Install', link: '/install/install' },
-          { text: 'InstallISSP', link: '/install/installISSP' }
+          { text: 'Install ISSP', link: '/install/installISSP' }
         ]
       },
       {
         text: 'Get Started',
         items: [
-          { text: 'tutorial', link: '/manual/README_tutorial' },
+          { text: 'Tutorial', link: '/manual/README_tutorial' },
         ]
       },
       {
@@ -98,7 +110,7 @@ export default withMermaid({
       },
       {
         text: 'Unchecked',
-        items: getUncheckedFiles() // 動的に追加
+        items: getUncheckedFiles()
       },
     ],
 
