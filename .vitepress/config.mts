@@ -10,6 +10,7 @@ export default withMermaid({
   markdown: {
     math: true,
   },
+  srcExclude: ['./unchecked/*.md'],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
