@@ -1,5 +1,20 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from "vitepress-plugin-mermaid";
+import fs from 'fs';
+import path from 'path';
+
+function getUncheckedFiles() {
+  const uncheckedDir = path.resolve(__dirname, '../unchecked');
+  if (!fs.existsSync(uncheckedDir)) {
+    return [];
+  }
+  return fs.readdirSync(uncheckedDir)
+    .filter(file => file.endsWith('.md'))
+    .map(file => ({
+      text: path.basename(file, '.md'), // ファイル名をタイトルとして使用
+      link: `/unchecked/${file}`       // リンクを生成
+    }));
+}
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
@@ -74,6 +89,10 @@ export default withMermaid({
           { text: 'hrcxq/hx0fp', link: '/implementation/hx0fp' },
           { text: 'hsfp0_sc', link: '/implementation/hsfp0' },
         ]
+      },
+      {
+        text: 'Unchecked',
+        items: getUncheckedFiles() // 動的に追加
       },
     ],
 
