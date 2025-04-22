@@ -1,0 +1,131 @@
+\begin{thebibliography}{10}
+
+\bibitem{kotani2015pmt}
+Takao Kotani, Hiori Kino, and Hisazumu Akai.
+\newblock Formulation of the augmented plane-wave and muffin-tin orbital
+  method.
+\newblock {\em Journal of the Physical Society of Japan}, 84(3):034702, March
+  2015.
+
+\bibitem{kotani_quasiparticle_2014}
+Takao Kotani.
+\newblock Quasiparticle self-consistent {GW} method based on the augmented
+  plane-wave and muffin-tin orbital method.
+\newblock {\em J. Phys. Soc. Jpn.}, 83(9):094711 [11 Pages], September 2014.
+\newblock {WOS}:000340822100029.
+
+\bibitem{kotani07a}
+Takao Kotani, Mark van Schilfgaarde, and Sergey~V. Faleev.
+\newblock Quasiparticle self-consistent gw method: A basis for the
+  independent-particle approximation.
+\newblock {\em Physical Review B}, 76(16):165106, 2007.
+
+\bibitem{kotani_linearized_2013}
+Takao Kotani and Hiori Kino.
+\newblock Linearized augmented plane-wave and muffin-tin orbital method with
+  the {PBE} exchange-correlation: Applied to molecules from h-2 through kr-2.
+\newblock {\em J. Phys. Soc. Jpn.}, 82(12):124714 [8 Pages], December 2013.
+\newblock {WOS}:000327350700043.
+
+\bibitem{pmt1}
+Takao Kotani and Mark van Schilfgaarde.
+\newblock Fusion of the lapw and lmto methods: The augmented plane wave plus
+  muffin-tin orbital method.
+\newblock {\em Phys. Rev. B}, 81(12):125117, Mar 2010.
+
+\bibitem{kotani_quasiparticle_2007}
+Takao Kotani and Mark van Schilfgaarde.
+\newblock Quasiparticle self-consistent {GW} method: A basis for the
+  independent-particle approximation.
+\newblock {\em Physical Review B}, 76(16), October 2007.
+\newblock {WOS:000250620600028}.
+
+\bibitem{friedrich_efficient_2010}
+Christoph Friedrich, Stefan Bl\"{u}gel, and Arno Schindlmayr.
+\newblock {Efficient implementation of the \{GW\} approximation within the
+  all-electron \{FLAPW\} method}.
+\newblock {\em Physical Review B}, 81(12), March 2010.
+
+\bibitem{Freysoldt2007}
+Christoph Freysoldt, Philipp Eggert, Patrick Rinke, Arno Schindlmayr, R.W.
+  Godby, and Matthias Scheffler.
+\newblock {Dielectric anisotropy in the GW space^^e2^^80^^93time method}.
+\newblock {\em Computer Physics Communications}, 176(1):1--13, January 2007.
+
+\bibitem{kotani_fusion_2010}
+Takao Kotani and Mark van Schilfgaarde.
+\newblock Fusion of the {LAPW} and {LMTO} methods: The augmented plane wave
+  plus muffin-tin orbital method.
+\newblock {\em Physical Review B}, 81(12), March 2010.
+\newblock {WOS:000276248900054}.
+
+\bibitem{kotani_all-electron_2002}
+Takao Kotani and M.~van Schilfgaarde.
+\newblock All-electron {\$gw\$} approximation with the mixed basis expansion
+  based on the full-potential {LMTO} method.
+\newblock {\em Solid State Commun.}, 121:461, 2002.
+
+\bibitem{aryasetiawan_product-basis_1994}
+F.~Aryasetiawan and O.~Gunnarsson.
+\newblock Product-basis method for calculating dielectric matrices.
+\newblock {\em Phys. Rev. B}, 49:16214, 1994.
+
+\bibitem{rath_generalized_1975}
+J~Rath and A~J Freeman.
+\newblock {Generalized magnetic susceptibilities in metals: Application of the
+  analytic tetrahedron linear energy method to Sc}.
+\newblock {\em Phys. Rev. B}, 11:2109, 1975.
+
+\bibitem{hamann09}
+D.~R. Hamann and David Vanderbilt.
+\newblock Maximally localized wannier functions for gw quasiparticles.
+\newblock {\em Phys. Rev. B}, 79:045109, Jan 2009.
+
+\bibitem{svane_evaluation_1986}
+A.~Svane and O.~K. Andersen.
+\newblock Evaluation of four-center integrals with the linear muffin-tin
+  orbital tight-binding method.
+\newblock {\em Physical Review B}, 34(8):5512, 1986.
+
+\bibitem{freysoldt_dielectric_2007}
+Christoph Freysoldt, Philipp Eggert, Patrick Rinke, Arno Schindlmayr, {R.W.}
+  Godby, and Matthias Scheffler.
+\newblock Dielectric anisotropy in the {GW} space^^e2^^80^^93time method.
+\newblock {\em Computer Physics Communications}, 176(1):1--13, January 2007.
+
+\bibitem{pick_microscopic_1970}
+Robert~M. Pick, Morrel~H. Cohen, and Richard~M. Martin.
+\newblock Microscopic theory of force constants in the adiabatic approximation.
+\newblock {\em Physical Review B}, 1(2):910, 1970.
+
+\bibitem{vogl_microscopic_1976}
+P.~Vogl.
+\newblock Microscopic theory of electron-phonon interaction in insulators or
+  semiconductors.
+\newblock {\em Physical Review B}, 13(2):694, 1976.
+
+\bibitem{giannozzi_ab_1991}
+Paolo Giannozzi, Stefano De~Gironcoli, Pasquale Pavone, and Stefano Baroni.
+\newblock Ab initio calculation of phonon dispersions in semiconductors.
+\newblock {\em Physical Review B}, 43(9):7231, 1991.
+
+\bibitem{sjakste_wannier_2015}
+J.~Sjakste, N.~Vast, M.~Calandra, and F.~Mauri.
+\newblock Wannier interpolation of the electron-phonon matrix elements in polar
+  semiconductors: {Polar}-optical coupling in {GaAs}.
+\newblock {\em Physical Review B}, 92(5), August 2015.
+
+\bibitem{kotani_formulation_2015}
+Takao Kotani, Hiori Kino, and Hisazumu Akai.
+\newblock Formulation of the {Augmented} {Plane}-{Wave} and {Muffin}-{Tin}
+  {Orbital} {Method}.
+\newblock {\em Journal of the Physical Society of Japan}, 84(3):034702, March
+  2015.
+
+\bibitem{sasioglu_wannier-function_2010}
+Ersoy ^^c5^^9ea^^c5^^9f^^c4^^b1o^^c4^^9flu, Arno Schindlmayr, Christoph
+  Friedrich, Frank Freimuth, and Stefan Bl^^c3^^bcgel.
+\newblock Wannier-function approach to spin excitations in solids.
+\newblock {\em Physical Review B}, 81(5), February 2010.
+
+\end{thebibliography}

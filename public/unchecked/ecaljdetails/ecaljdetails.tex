@@ -1,0 +1,4409 @@
+% !TEX root = main.tex
+%#BIBTEX bibtex ecaljdetails
+\documentclass[a4paper,10pt,fleqn]{article}
+%\documentclass[a4paper]{jsarticle}
+\setlength{\mathindent}{0mm}
+%\usepackage[dvipdfm]{graphicx} 
+%\usepackage{bmpsize}
+\oddsidemargin=1cm\pagebreak[2]
+\topmargin=-1cm
+\setlength{\textwidth}{15cm}
+\setlength{\textheight}{24cm}
+
+\pagestyle{plain}
+%
+\usepackage{amsmath}
+\usepackage{graphicx}	% required for `\includegraphics' (yatex added)
+
+
+%\author{Takao Kotani}
+%\title{ecalj --- Get statrted} 
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{ulem}
+\usepackage[usenames]{color}
+\usepackage{makeidx}
+\usepackage{ascmac}
+\usepackage{listings}
+\usepackage{amsmath}
+\lstset{language=[90]Fortran,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{red},
+  commentstyle=\color{green},
+  morecomment=[l]{!\ }% Comment only with space after !
+}%\bibliographystyle{apsrev4-1}
+\bibliographystyle{unsrt}
+\setstretch{1.1}
+
+\def\psibar{\bar{\psi}}
+\def\psidotbar{\dot{\bar{\psi}}}
+\def\scgw{{sc{\em GW}}}
+\def\G0{G^0}
+\def\tphi{{\tilde{\phi}}}
+\def\calR{{\cal A}}
+\def\qsgw{QS{GW}}
+\def\QSGW{QS{GW}}
+\def\ldagw{{lda{\it GW}}}
+\def\GLDA{{G^{\rm LDA}}}
+\def\WLDA{{W^{\rm LDA}}}
+\def\ekn{{\varepsilon_{{\bf k}n}}}
+\def\phidot{\dot{\phi}}
+\def\phidottilde{\dot{\tilde{\phi}}}
+\def\phitilde{\tilde{{\phi}}}
+\def\epsilonaone{\epsilon^{(1)}_a}
+\def\epsilonatwo{\epsilon^{(2)}_a}
+\def\ei{\varepsilon_i}
+\def\eis{\varepsilon_{i\sigma}}
+\def\ej{\varepsilon_j}
+\def\Ekn{{E_{{\bf k}n}}}
+\def\Psikn{\Psi_{{\bf k}n}}
+\def\Psiqn{{\Psi_{{\bf q}n}}}
+\def\Psiqm{{\Psi_{{\bf q}m}}}
+\def\DVo{{\it \Delta}V(\omega)}
+\def\DVoret{{\it \Delta}V^R(\omega)}
+\def\DVoadv{{\it \Delta}V^A(\omega)}
+\def\DV{{\it \Delta}V}
+\def\DVhat{{\it \Delta}\hat{V}}
+\def\HLDA{H^{\rm LDA}}
+\def\veff{V^{\rm eff}}
+\def\vxc{V^{\rm xc}}
+\def\Dvxc{{\it \Delta} V^{\rm xc}}
+\def\vc{V^{\rm c}}
+\def\vext{V^{\rm ext}}
+\def\hVext{\hat{V}^{\rm ext}}
+\def\hVeff{\hat{V}^{\rm eff}}
+\def\hvnl{\hat{V}^{\rm nl}}
+\def\vnl{V^{\rm nl}}
+\def\vh{V^{\rm H}}
+\def\vgw{V^{GW}}
+\def\ReDVo{ {\rm Re}[{\it \Delta}V(\omega)] }
+\def\ImDVo{ {\rm Im}[{\it \Delta}V(\omega)] }
+\def\gwa{$GW$\!A}
+\def\hVee{\hat{V}^{\rm ee}}
+\def\hVext{\hat{V}^{\rm ext}}
+\def\hHk{\hat{H}^{\rm k}}
+\def\Sigmax{{\Sigma}^{\rm x}}
+\def\Sigmac{{\Sigma}^{\rm c}}
+\def\Heff{\hat{H}^{\rm eff}}
+\def\vbar{\bar{V}}
+\def\Sbarc{\bar{\Sigma}^{\rm c}}
+\def\scgw{{QS{\em GW}}}
+\def\ldagw{{lda{\em GW}}}
+\def\ekn{{\varepsilon_{{\bf k}n}}}
+\def\ekm{{\varepsilon_{{\bf k}m}}}
+\def\eknp{{\varepsilon_{{\bf k}n'}}}
+\def\Ekn{{E_{{\bf k}n}}}
+\def\Psiqkm{{\Psi_{{\bf q}-{\bf k}m}}}
+\def\Psikn{{\Psi_{{\bf k}n}}}
+\def\Psikm{{\Psi_{{\bf k}m}}}
+\def\Psikmstar{{ \Psi_{{\bf k}m}^*} }
+\def\Psiknp{{\Psi_{{\bf k}n'}}}
+\def\Psiqnp{{\Psi_{{\bf q}n'}}}
+\def\Psiqn{{\Psi_{{\bf q}n}}}
+\def\brl{{\bf R}L}
+\def\brlp{{{\bf R}'L'}}
+\def\tili{{\widetilde{i}}}
+\def\tilj{{\widetilde{j}}}
+\def\tiln{{\widetilde{n}}}
+\def\tilm{{\widetilde{m}}}
+\def\eak{\varepsilon_{\rm a}(\bfk)}
+\def\ebk{\varepsilon_{\rm b}(\bfk)}
+\def\iDelta{{\it \Delta}}
+\def\efermi{\mbox{$E_{\rm F}$}}
+\def\we{\mbox{$\omega_\varepsilon$}}
+\def\eal{\varepsilon_{al}}
+\def\eallo{\varepsilon^{\rm Lo}_{al}}
+\def\smh{smHankel}
+\def\smhs{smHankels}
+\def\shotone{OneShot}
+\def\shotonez{OneShot Z=1}
+\def\x{\mbox{$\times$}}
+\def\xccut{ {\rm xccut} }
+\def\xccutone{ {\rm xccut1} }
+\def\xccuttwo{ {\rm xccut2} }
+\def\ftn[#1]{\rlap{\footnotemark[#1]}}
+\def\tr{{\rm Tr}}
+\def\bQP{{\it bare QP}}
+\def\bQPs{{\it bare QPs}}
+\def\dQP{{\it dressed QP}}
+\def\dQPs{{\it dressed QPs}}
+\def\Re{{\rm Re}}
+\def\EMAX{  E^{\rm APW}_{\rm MAX} }
+\def\EMAXm{ E^{\rm rmesh}_{\rm MAX} }
+\def\EMAXS{E_{\rm MAX}^\Sigma}
+\def\NAPW{N_{\rm APW}}
+\def\RSM{R_{\rm SM}}
+\def\RSMa{R_{{\rm SM},a}}
+\def\RSMal{R_{{\rm SM},al}}
+\def\epsilonal{\epsilon_{al}}
+\def\RGS{R_{\rm G}}
+\def\RGSa{R_{{\rm G},a}}
+\def\pakl{p_{akl}}
+\def\PakL{P_{akL}}
+\def\wPakL{\widetilde{P}_{akL}}
+\def\CakL{C_{akL}}
+\def\CiakL{C^i_{akL}}
+\def\EMAX{  E^{\rm APW}_{\rm MAX} }
+\def\EMAXm{ E^{\rm rmesh}_{\rm MAX} }
+\def\EMAXvxc{ E^{\rm vxc}_{\rm MAX} }
+\def\nc{n^{\rm c}}
+\def\nzc{n^{\rm Zc}}
+\def\nzcv{n^{\rm Zcv}}
+\def\barnzcv{\bar{n}^{\rm Zcv}}
+\def\MM{{\cal M}}
+\def\RR{v}
+\def\inta{\int_{|\bfr|\leq R_a}\!\!\!\!\!\!\!\!\!\!\!\!}
+\def\intaa{\int_{|\bfr|\leq R_a}}
+\def\intad{\int_{|\bfr'|\leq R_a}\!\!\!\!\!\!\!\!\!\!\!\!}
+\def\intar{\int_{|\bfr-\bfR_a|\leq R_a}}
+\def\intard{\int_{|\bfr'-\bfR_a|\leq R_a}}
+\def\rhoij{\rho_{ij}}
+\def\ekcore{E_{\rm k}^{\rm core}}
+\def\ek{E_{\rm k}}
+\def\ehf{E_{\rm Harris}}
+\def\nin{n^{\rm in}}
+\def\nout{n^{\rm out}}
+\def\Vin{V}
+\def\iDelta{{\it \Delta}}
+\def\philo{{\phi}^{\rm Lo}_{al}}
+\def\DEe{{\it \Delta} E_{\rm e}}
+\def\ERPA{E^{\rm RPA}}
+\def\bfp{{\bf p}}
+\def\bfP{{\bf P}}
+\def\EMAX{  E^{\rm APW}_{\rm MAX} }
+\def\H0{H^0}
+\def\hHZ{\hat{H}^0}
+\def\hH{\hat{H}}
+\def\underconstruction{{\it... xxxxx under construction xxxxx...\\}}
+
+\def\HMZ{H^0_{\rm M}}
+\def\hHZ{\hat{H}^0}
+\def\hH{\hat{H}}
+\def\UM{U_{\rm M}}
+\def\USM{U_{\rm SM}}
+\def\HSM{H_{\rm SM}}
+\def\SHFM{\bar{U}_{\rm M}}
+\def\SHFSM{\bar{U}_{\rm SM}}
+
+\def\vM{v_{\rm M}}
+\def\PM{P_{\rm M}}
+\def\Pm{P_{\rm m}}
+\def\vm{v_{\rm m}}
+\def\WM{W_{\rm M}}
+\def\Wm{W_{\rm m}}
+\def\WD{W^{\rm D}}
+\def\mspace{${\cal M}$}
+\def\HM{H_{\rm M}}
+\def\vs{v_{\rm mS}}
+\def\vl{v_{\rm mL}}
+%\bibliographystyle{apsrev4-1}
+
+\newcommand{\fl}[1]{\noindent{\sf $\bullet$ #1\index{\sf #1}} : }
+\newcommand{\fx}[1]{\subsection{\sf #1\index{\sf #1}}}
+\newcommand{\ssx}[1]{\subsection{\bf #1\index{\bf #1}}}
+\newcommand{\ssxx}[2]{\subsection{\bf #1\index{\bf #2}}}
+\newcommand{\infiles}{\noindent\fbox{Input files}}
+\newcommand{\outfiles}{\noindent\fbox{Output files}}
+\newcommand{\GW}{$GW$}
+\newcommand{\GWinput}{{\sf GWinput}\ }
+\newcommand{\GWIN}{{\sf GWIN}\ }
+\newcommand{\gbox}[1]{\noindent{\color{Green}\fbox{\parbox{260mm}{#1}}}}
+\newcommand{\rbox}[1]{\noindent{\color{Red}\fbox{\parbox{260mm}{#1}}}}
+\newcommand{\obox}[1]{\noindent{\color{Orange}\fbox{\parbox{260mm}{#1}}}}
+\newcommand{\cyanbox}[1]{\noindent{\color{Cyan}\fbox{\parbox{260mm}{#1}}}}
+\newcommand{\bluebox}[1]{\noindent{\color{Blue}\fbox{\parbox{260mm}{#1}}}}
+\newcommand{\keyw}[1]{\fbox{\tt #1}}
+\newcommand{\innera}[1]{{[\![#1]\!]_{R_a}}}
+\newcommand{\bfzero}{{\bf 0}}
+\newcommand{\bfq}{{\bf q}}
+\newcommand{\bfk}{{\bf k}}
+\newcommand{\bfr}{{\bf r}}
+\newcommand{\bfX}{{\bf X}}
+\newcommand{\hbfr}{\hat{\bf r}}
+\newcommand{\bfQ}{{\bf Q}}
+\newcommand{\bfT}{{\bf T}}
+\newcommand{\bfG}{{\bf G}}
+\newcommand{\bfR}{{\bf R}}
+\newcommand{\bfK}{{\bf K}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\exe}[1]{{\bf #1}}
+\newcommand{\io}[1]{{\sf  #1}}
+\newcommand{\raw}[1]{{\tt #1}}
+\newcommand{\repp}[1]{p.\pageref{#1}}
+\newcommand{\refeq}[1]{Eq.~(\ref{#1})}
+\newcommand{\reffig}[1]{Fig.\ref{#1}}
+\newcommand{\smH}{{\mathcal H}}
+\newcommand{\YY}{{\cal Y}}
+\newcommand{\GG}{{\cal G}}
+\newcounter{Alist}
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\ocite}[1]{\cite{#1}}
+\newcommand{\ispone}{}
+\newcommand{\isptwo}{}
+\newcommand{\ooplus}{\oplus}
+\newcommand{\oominus}{\ominus}
+
+\newcommand{\req}[1]{\mbox{Eq.~(\ref{#1})}}
+\newcommand{\refsec}[1]{\mbox{Sec.~\ref{#1}}}
+
+\newcommand{\hHzero}{\hat{H}^{0}}
+\newcommand{\CikL}{{C^{(i)}_{kL}}}
+\newcommand{\CiRkL}{{C^{(i)}_{{\bf R}kL}}}
+\newcommand{\tPkL}{{\widetilde{P}_{kL}}}
+\newcommand{\tPRkL}{{\widetilde{P}_{{\bf R}kL}}}
+\newcommand{\PkL}{{P_{kL}}}
+\newcommand{\PRkL}{{P_{{\bf R}kL}}}
+\newcommand{\rmt}{{s_{\bf R}}}
+\newcommand{\val}{{\rm{VAL}}}
+\newcommand{\core}{{\rm{CORE}}}
+\newcommand{\xc}{_{\rm{xc}}}
+\newcommand{\CORE}{{CORE}}
+\newcommand{\COREone}{{CORE1}}
+\newcommand{\COREtwo}{{CORE2}}
+\newcommand{\VAL}{{\rm{VAL}}}
+\newcommand{\EF}{E_{\rm F}}
+\newcommand{\oneshotgw}{1shot-$GW$}
+\newcommand{\incg}[1]{\includegraphics[width=5.9cm]{#1}}
+\newcommand{\incgg}[1]{\includegraphics[width=8.5cm]{#1}}
+\newcommand{\bfe}{{\bf e}}
+\newcommand{\eiqr}{e^{i \bfq \bfr}}
+\newcommand{\figp}[1]{\rotatebox{-90}{\includegraphics[width=10cm]{#1}}}
+\newcommand{\bfex}{{\bf e}_x}
+\newcommand{\bfey}{{\bf e}_y}
+\newcommand{\bfez}{{\bf e}_z}
+\newcommand{\bfa}{{\bf a}}
+\newcommand{\bfb}{{\bf b}}
+\newcommand{\bfS}{{\bf S}}
+\newcommand{\bfiS}{{\it \Delta \bf S}}
+\newcommand{\bfB}{{\bf B}}
+\newcommand{\eps}{\epsilon}
+\newcommand{\D}{{\it \Delta}}
+\newcommand{\figss}[2]{\hspace{-3cm}\rotatebox{-90}{\includegraphics[width=6cm]{#1}}\rotatebox{-90}{\includegraphics[width=6cm]{#2}}}
+\newcommand{\figs}[2]{\hspace{-2cm}\rotatebox{0}{\includegraphics[width=8cm]{#1}}\rotatebox{0}{\includegraphics[width=8cm]{#2}}}
+\newcommand{\lmsuit}{{\tt lmsuit}\ }
+\newcommand{\ecalj}{{\bf ecalj}\ }
+\newcommand{\lmchk}{{\exe{lmchk}\space }}
+\newcommand{\ctrl}{{\io{ctrl.*}\space }}
+\newcommand{\ctrls}{{\io{ctrls.*}\space }}
+\newcommand{\alat}{{\raw{alat}}}
+\newcommand{\plat}{{\raw{plat}}}
+\newcommand{\qlat}{{\raw{qlat}}}
+
+\def\ehf{E_{\rm Harris}}
+\def\ehk{E_{\rm HoKohn}}
+
+%\newenvironment{mspace0}{\baselineskip=1mm}
+%\newenvironment{mspace}{\baselineskip=2mm}
+
+\makeindex
+\begin{document}
+\baselineskip=6mm
+\title{ ecalj details}
+\author{\url{https://github.com/tkotani/ecalj}}
+\maketitle
+%\date{April 2nd 2001}
+
+\abstract{This explains details of ecalj on the based on
+Refs.\cite{kotani2015pmt} and \cite{kotani_quasiparticle_2014}
+(These are contained at ecalj/Document/Manual/ as
+Kotani2114QSGWinPMT.pdf and KotaniKinoAkai2015FormulationPMT.pdf) 
+on top of developments \cite{kotani07a}.}
+
+\tableofcontents
+\vspace{5mm}
+\noindent$\bullet${\bf Reference}
+
+%\input{ecaljmanual_part1.tex}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newpage
+% \section{Change logs:}
+% See git for latest changes. Old are
+
+% \begin{itemize}
+% \item[2017-feb]
+% space-group operation. Check definition of Bloch sum.
+
+% \item[2016-dec]
+% hvccfp0.m.F Bessel part, strx (4$\pi$ factor) corrected.
+
+% \item[2016-nov]
+% Add EIBZ, wave function rotaion in appendix. Magnon project improved.
+
+% \item[2016-03-19]
+% In the offset-$\Gamma$ method(Sec.\ref{sec:kint}),
+% we only use $f_L$ for $L=0$ to keep positive definiteness of integral.
+% \item[2016-03-19]
+% Add description for magnon project.
+% \item[2016-03-20]
+% Add Sec.\ref{sec:mag} and Sec.\ref{sec:mag1}.
+ 
+% \end{itemize}
+
+
+\newpage
+\section{Overview of PMT-QSGW algorithm}
+\label{sec:theory}
+The {\tt ecalj} package is based on the PMT method (=Linearized APW+MTO method)
+\cite{kotani2015pmt,kotani_linearized_2013,pmt1}, which is
+a unique mixed basis method using two kinds of augmented waves simultaneously.
+With {\tt ecalj}, we can do
+
+\begin{itemize}
+\item
+Total energy calculation and atomic-position relaxations within LDA, GGA and LDA/GGA+U.
+In addition, we can add spin-orbit coupling and so on (some limitations).
+
+\item
+QSGW calculations (quasiparticle self-consistent GW). 
+Since it is on top of the PMT method, we call the
+QSGW method in ecalj as the PMT-QSGW method \cite{kotani_quasiparticle_2014}. 
+The calculation of self-energy can give impact ionization energy.
+
+\item
+The maximally localized Wannier functions. cRPA is implemented.
+
+\item
+We can calculate linear responses (dielectric and magetic).
+
+\item
+We use module-based coding in latest fortran (still on the way half).
+In principle, all the data are stored in modules, 
+where data are genereted/read by subroutines in modules.
+Virtually, all the data are protected. 
+When we read data in modules, we declear variables by use,only.
+Thus it is not so difficult to figure out where a data is modified or generated.
+
+\end{itemize}
+
+Original QSGW had implemented in the LMTO\cite{kotani_quasiparticle_2007}, while
+the LMTO-QSGW is very difficult to use. In contrast, PMT-QSGW is rather easier to use.
+
+In addition, we added another developments to the original LMTO-QSGW; 
+some ideas are from papers Ref.\cite{friedrich_efficient_2010} 
+by Friedrich, Bl\"ugel, and Schindlmayr, and Ref.\cite{Freysoldt2007} by Freysoldt et al.
+In this Sec.~\ref{sec:theory}, we try to explain some details along
+the line of Ref.\cite{kotani_quasiparticle_2014}.
+
+
+\subsection{Crystal structure, notations, and common data in code}
+\label{how to represent crystalstructure and symmetry}
+We use unit \alat\ (measured by a.u.=0.528177\AA) as the unit in the code.
+Thus, to convert quantities in the unit of a.u., we multiply \alat\.
+%For example, the primitive cell vectors 
+%in the unit of a.u. are given as
+%\verb!alat*plat(1:3,i),i=1,3))! (plat=PLAT in ctrl file).
+Here is some common notations in {\ecalj}.
+
+\begin{itemize}
+\item
+Primitive cell vectors $\bfp_i$ (in a.u.) are
+\raw{alat*plat(1:3,i)}, where i=1,2,3. For exampke, see \io{LATTC}, 
+which appears in \verb#work/si_gwsc# after install test
+(plat=PLAT given in ctrl file).
+$\bfq_i$=\raw{qlat(1:3,i)} is reciprocal unit vectors such that
+\raw{sum(plat(1:3,i),qlat(1:3,j))}=$\delta_{ij}$.
+
+\item
+The centers of MT sites $\{\bfR\}$ in the primitive cell
+is given by $\{\bfR\}=$\raw{alat*bas(1:3,ibas),ibas=1,nbas} 
+(we use \verb#pos,natom# in cases instead of \verb#bas,nbas#).
+$\{\bfR\}$ is the position vector measured from 
+a center of primitive cell.
+\raw{nbas} is number of atoms.
+
+\item
+Thus the MT sites are specified by $\bfR+\bfT$, where $\bfT$ specify
+centers of primitive 
+cells. $\bfT(n1,n2,n3)=n_1 \bfq_1+n_2 \bfq_2 + n_3 \bfq_3$.
+
+\item
+In the followings, we use $\bfk$ and $\bfq$
+(in cases, mixed up... sorry), both of
+which means vectors in the BZ. In procedures such as $\bfk+\bfk'$, we
+sometimes need to pull it back to the BZ (then $\bfk+\bfk'$ may be
+written as $\bfk+\bfk'=\bfk''+\bfG$, where $\bfG$ is a
+recprocal vector).
+
+\item
+  We specify MTs (atoms) in the primitive cell in ctrl file,
+  where the MTs with the same SPEC (species) can be further 
+  divided into some classes (CLASS). Thus \raw{NBAS >= NSPEC >= NCLASS}.
+  The numbering of MTs (\verb#ibas=1,nbas#) are given 
+  by the order of SITE in ctrl file.
+  We can use \raw{lmchk} to check how they are divided into CLASS.
+
+  
+\item
+\verb#iclass(ibas)# is the id for class. 
+The crystallographcally equivalent MT sites should have the same class 
+id as \verb#iclass(ibas1)=iclass(ibas2)#. 
+However, for the convenience of program developments (historical reason), 
+I assume {\tt ibas=iclass(ibas)} for GW part of programs.
+  
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\subsection{structure of ecalj }
+Make procedure generates fortran programs. 
+
+lmfa,lmf-MPIK,lmfgw-MPIK, lmf2gw, and lmchk
+are main programs for lmf part. 
+Look into \verb#main/lmv7.F#, which is the main programs of lmf-MPIK and lmfgw-MPIK.
+\verb#main/lmv7.F# have a line \verb#call M_lmfinit_init(prgnam)#.
+Then initial data are set by reading ctrl file.
+Except \verb#v_ssite,v_sspec#, all data are protected.
+
+Others are the GW-related and 
+the Wannier-related programs (Wannier source codes are in wannier/ directory).
+
+For GW, we run programs successively as given by scripts \verb#gwsc# and so on. 
+In \verb#gwsc#, the stage up to \verb#lmf2gw# is the preparation stage.
+After we run \verb#lmf2gw#, we have files
+\begin{verbatim}
+BZDATA      EPSwklm   QGcou    QPLIST.lmfgw    efermi.lmf  
+CLASS       GWinput   QGpsi    lmfgw_kdivider  evec.* 
+CphiGeig    HAMindex  Q0P      QIBZ            vxc.*        
+DATA4GW_V2  ZBAK      QBZ      QPLIST.IBZ                
+\end{verbatim}
+These are files required for performing GW calculations. 
+We start GW part from \verb#rdata4gw#, which just reformat these files.
+We do not read rst as well as ctrl in the GW part.
+
+Duplicated informations are kept in 
+\verb#CLASS, DATA4GW_V2#, and \verb#HAMindex#. 
+(and something else, a little confusing).
+I think we need to clean up a little more.
+
+----------------------
+
+Here is a list of variables for GW part (not everyting...). 
+\begin{verbatim}
+alat: unit in a.u. This is in LATTC 
+plat: primitive vector. this is in LATTC (or call genallc_v3)
+qlat: reciprocal primitive vector  
+      \delta_ij= sum(plat(:,i)*qlat(:,j))
+
+QpGcut_psi: cutoff to determine G vector for eigenfunction
+         |q+G|< QpGcut_cou (in a.u.)
+         CAUTION: in code, we usually represent q and G in the unit of
+         2pi/alat, thus the cutoff is (in the program)
+         2*pi/alat*sum((q+G)**2))< QpGcut_cou**2
+         
+QpGcut_cou: cutoff to to determine G vector for Coulmb matrix
+         |q+G|< QpGcut_psi
+
+=== 
+genalloc_v3: this allocate variables in m_genallc_v3. some variables are
+ natom: number of MTs in the primitive cell.
+    corresponding to nbas, we usually use ibas for do loop
+    as "do ibas=1,nbas". Instead of nbas, we sometimes use natom.
+ pos(1:3,nbas): MT centers for R within the cell
+         Cartesian cordinates in the unit of alat.
+ ngrp: number of space group operations. 
+
+ tiat miat: private in m_zmel
+           Space group operations. See document in subrouitne mptauof in suham.F
+
+----------
+Memo for hx0fp0.sc.m.F and so on.
+
+ixc: control of job, read by fortran read
+
+call getkeyvalue("GWinput","ecut_p" ,ecut, default=1d10 )
+    This read "ecut_p" given in GWinput. 
+    We can read  arrays x (real, integer, logical) by the same
+    getkeyvalue (interface judge type of arguments). Instead of read the
+    getkeyvalue.F, check how it is used.
+
+call read_BZDATA():
+    This allocate and give data related to the BZ. 
+    After it is called, we have data given in the m_read_bzdata
+    as shown in "use m_read_bzdata,only:"
+    ngrp: number of space group operation
+    nqbz:  = n1 x n2 x n3, # of BZ 
+    nqibz: # of irreducible k points in the BZ.
+    qbas: probably the same as qlat
+    ginv: inverse of qlat (essentially the same as plat, but transposed).
+    dq_: shift vector for qbzreg mode
+        This is for qbzreg(). (When qbzreg=F, BZ mesh do not
+	contain Gamma point). This mechanism should be reconsidered.
+    qbz: q point in the BZ
+    qibz: qpoints in the irrecucible BZ.
+    wbz:  weight. 1/(n1*n2*n3)
+    wibz: weight for qibz.
+
+qbzreg():
+    If F, we use off-Gamma mesh for qbz.
+
+Radial mesh: hbasfp0
+  a,b, rofi,nr (or aa,bb, nrad).
+  MT site radial data. Radial integrals are only in 
+  subroutine basnfp_v2 in hbasfp0.m.F.
+  We assume r(ir)=b*(exp(aa*(ir-1)-1.), ir=1,nr
+  rhoMT is read.
+\end{verbatim}
+
+
+\subsection{Representation of eigenfunctions}
+In the PMT method \cite{kotani_fusion_2010}, 
+the valence eigenfunctions for a given $\H0$ are represented
+in the linear combinations of the Bloch-summed MTOs
+$\chi^{\bfk}_{\brl{j}}({\bf r})$ and the APWs $\chi^{\bfk}_\bfG (\bfr)$;
+\begin{eqnarray}
+\label{eq:lmtopsi}
+\Psikn(\bfr) = \sum_{\brl{j}} z^{{\bfk}n}_{\brl{j}}
+\chi^{\bfk}_{\brl{j}}({\bfr})+ \sum_{\bfG} z^{\bfk n}_{\bfG}
+\chi^{\bfk}_\bfG(\bfr),
+\label{eqeigen}
+\end{eqnarray}
+where we use indexes of the wave vector $\bfk$, band index $n$, and 
+reciprocal lattice vector $\bfG$. The MTOs in the primitive cell are 
+specified by the index of MT site $\bfR$, 
+angular momentum $L=(l,m)$, and $j$ for radial functions. 
+As for core eigenfunctions, we calculate them under the condition
+that they are restricted within MTs.
+Then we take into accounts the contributions of the cores to the exchange part defined in \req{eq:sigx} in the following. But not to the correlation part. 
+{\small (caution: we now usally apply ``core1 treatment'' give in 
+Ref.\cite{kotani07a} for all cores. Rarely use core2).}
+
+
+\subsubsection{ MTO part}
+Within MTs, the Bloch sum of the MTO, 
+$\chi^{{\bf k}}_{\brl{j}}({\bf r})$, is 
+expressed by a linear combination of atomic like orbitals 
+$A_{\bfR{Lj}}({\bf r})
+\equiv \{ 
+\phi_{\bfR{Lj}}(r),\dot{\phi}_{\bfR{Lj}}(r),\phi^z_{\bfR{Lj}}(r) \}
+\times Y_L$. ($\phi^z$ means local orbital).
+These radial functions are solutions of
+the radial Schr\"odinger equations(or their energy derivatives)
+within $\bfR$. %${\bfR{Lj}}$ is the composite index
+%where $j$ takes 0 for $\phi$, or 1 for $\dot{\phi}$.
+%Recall $\bfR$ is the index to specify atom in the primitive cell.
+The MTO basis is specified by \smh\ functions which
+contains two parameters ($E=-|\kappa|^2,R_{\rm sm}$).
+
+$A_{\bfR{Lj}}({\bf r})$ makes orthonormalized basis for each MT $\bfR$.
+Then the MTO including tail part can be written as
+\begin{eqnarray}
+\label{coeff1}
+\chi^{{\bf k}}_{\bfR{Lj}}({\bf r}) &=& \sum_{\bfR{Lj}} C^{{\bf k}}_{\bfR{Lj}} A^{\bf k}_{\bfR{Lj}}({\bf r})   \ \ \ {\rm \ if \ {\bf r} \in any \ MT} \nonumber \\
+        &=&   H^{\kappa,R_s,{\bf k}}_{\bfR{L}}({\bf r}) \ \ \ {\rm otherwise},
+\end{eqnarray}
+where we use the Bloch sums,
+\begin{eqnarray}
+A^{\bf k}_{\bfR{Lj}}({\bf r}) &\equiv& \sum_{\bf T} A_{\bfR{Lj}}({\bf r-\bfR-\bfT}) \exp(i {\bf kT}), \\
+H^{{\bf k}s}({\bf r})   &\equiv& \sum_{\bf T} H_{s}({\bf r-\bfR-\bfT})
+ \exp(i {\bf kT}).
+\label{eq:blochmto}
+\end{eqnarray}
+%${\bf R_a}$ is the position of the atom $a$ in the primitive unit cell.
+Here the smoothe Hankel functions $H^{{\bf k}s}({\bf r})$ are 
+the envelope functions of MTOs.
+
+The MTOs have the symmetry of the angular momentum $L$.
+This is also the casee for any atomic-like localized functions.
+All such kinds of functions follow the same mapping formulas by space-group operations.
+See Sec.\ref{sec:spacegroupmapping}.
+
+\subsubsection{ APW part}
+The APW $\chi^{{\bf k}}_\bfG({\bf r})$ are 
+given as a linear combination of atomic like orbitals
+\noindent $A_{\bfR{Lu}}({\bf r})\equiv 
+\{ \phi_{\bfR{l}u}(r) Y_L(\hat{\bf r}),
+    \dot{\phi}_{\bfR{l}u}(r) Y_L(\hat{\bf r}) \}$
+within MTs, and just the usual plane waves 
+within the interstitial region. Here
+$\phi_{\bfR{l}u}(r)$ and $\dot{\phi}_{\bfR{l}u}(r)$ 
+denote two solutions of
+the radial Schr\"odinger equations at an energy \verb#enu# 
+for each $l$ (an usual choice of \verb#enu# is the center of 
+gravity of occupied PDOS). $\dot{\phi}$ means energy derivatives
+(or something similar).
+$u$ is the composite index
+to diffrenciate $\phi$ and $\dot{\phi}$.
+$\bfR$ is the index to specify MTs in the primitive cell.
+The APW basis is specified by $s \equiv {\bfR{j}L}$, where
+$L\equiv(l,m)$ is the angular momentum index, 
+and $j$ is the additional index (principle quantum number or so). 
+$A_{\bfR{L}u}({\bf r})$ makes normalized-orthogonal basis in
+each MT $\bfR$.
+The APW can be written as
+\begin{eqnarray}
+\label{coeff2}
+\chi^{\bf k+G}({\bf r}) &=& \sum_{a u} C^{\bf k+G}_{a u} A^{\bf k}_{a u}({\bf r})   \ \ \ {\rm \ if \ {\bf r} \in any \ MT} \nonumber \\
+        &=&   \exp(i ({\bf k+G}){\bf r}) \ \ \ {\rm otherwise},
+\end{eqnarray}
+where we use the Bloch sums,
+\begin{eqnarray}
+A^{\bf k}_{\bfR u}({\bf r}) &\equiv& \sum_{\bf T} 
+A_{\bfR u}({\bf r-R-T}) \exp(i {\bf kT}),
+\end{eqnarray}
+
+%is expanded as the linear combination of the APW as
+%\begin{eqnarray}
+%\label{eigenfunction}
+%{\rm LAPW \ part \ of\ } \Psi^{{\bf k}n}({\bf r}) &=& \sum_{\bf G} z^{\bf k+G}_n \chi^{\bf k+G}({\bf r}) \\
+%&=& \sum_{a u} \alpha^{{\bf k}n}_{au} A^{\bf k}_{a u}({\bf r})
+%  + \sum_{\bf G} z^{\bf k+G}_n P^{\bf k}_{\bf G}({\bf r}),
+%\end{eqnarray}
+%where $n$ is the band index, 
+%and the interstitial plane wave (IPW) $P^{\bf k}_{\bf G}({\bf r})$ 
+%is defined as
+%\begin{eqnarray}
+%P^{\bf k}_{\bf G}({\bf r}) &=& 0  \ \ \ {\rm \ if \ {\bf r} \in any \ MT} \nonumber \\
+%        &=&   \exp (i ({\bf k+G}) {\bf r}) \ \ \ {\rm otherwise}.
+%\end{eqnarray}
+The number of ${\bf G}$ is limited by the condition
+$|{\bf k+G}|< {\tt QpGcut\_psi}$ (IPWpsi).
+The coefficients $\alpha^{{\bf k}n}_{au}$ can be calculated as
+\begin{eqnarray}
+\alpha^{{\bf k}n}_{au} = \sum_{\bf G} C^{{\bf k+G}}_{a u} z^{\bf k+G}_n.
+\end{eqnarray}
+
+\subsection{Re-expansion of eigenfunctions: CPHI and GEIG}
+To perform the $GW$ calculation, we first
+have to prepare all eigenfunctions (and eigenvalues) for
+given setting of BZ mesh. Then the eigenfunctions are
+represented as follows; we
+re-expand $\Psikn(\bfr)$ in \req{eq:lmtopsi}  
+as the sum of the augmentation parts in MTs and the
+PW parts in the interstitial region.
+\begin{eqnarray}
+\Psikn(\bfr)
+= \sum_{\bfR u}  \alpha^{{\bfk}n}_{\bfR u} \varphi^{\bf k}_{\bfR u}({\bf r})
+ + \sum_{\bf G}  \beta^{{\bfk}n}_{\bf G} P^{\bf k}_{\bf G}({\bf r}),
+\label{def:psiexp}
+\end{eqnarray}
+where the interstitial plane wave (IPW) is defined as
+\begin{eqnarray}
+P^{\bf k}_{\bf G}({\bf r}) =
+\begin{cases}
+0    & \text{if {\bf r}} \in \text{any MT} \\
+\exp(i ({\bf k+G})\cdot{\bf r})& \text{otherwise}
+\end{cases}
+\label{eq:defpg}
+\end{eqnarray}
+and $\varphi^{\bf k}_{R u}(\bfr)$ are Bloch sums of the atomic functions
+$\varphi_{R u}(\bfr)$ defined within the MT at $R$,
+\begin{eqnarray}
+\varphi^{\bf k}_{R u}({\bf r}) &\equiv& \sum_{\bf T} \varphi_{R u}({\bf r-R-T}) \exp(i {\bf k\cdot{}T}).
+\end{eqnarray}
+{\bf T} and {\bf G} are lattice translation vectors in real and reciprocal spaces, respectively. 
+We explain how they can be represented in codes
+in Sec.~\ref{sec:crystalstructure}.
+
+
+We expand the eigenfunctions as the sum of the augmentation parts in MTs and the PW parts in the interstitial region
+\begin{eqnarray}
+\Psi_{{\bf k}n} = \sum_{{\bf R}u}\alpha_{{\bf R}u}^{{\bf k}n}\phi_{{\bf R}u}^{\bf k}({\bf r}) + \sum_{\bf G}\beta_{\bf G}^{{\bf k}n}P_{\bf G}^{\bf k}({\bf r})
+\end{eqnarray}
+This is Eq.(17) in Ref.\cite{kotani_quasiparticle_2014}.
+Here, Files \io{CPHI} contains the information of $\alpha_{{\bf R}u}^{{\bf k}n}$ and \io{GEIG} contains $\beta_{\bf G}^{{\bf k}n}$. 
+We use subroutines \verb#readcphi# and \verb#readeig# to
+read them; see \verb#m_zeml.F# for example.
+(In future, we may start from better representation
+based on the 3 component formalism in Ref.\cite{kotani2015pmt}.)
+
+We need $\Psi_{{\bf k}n}$ for given $\bfq$ points 
+(in this text, we mix up $\bfq$ and $\bfk$... Sorry.).
+Then $P_{\bf G}^{\bf k}({\bf r})$ is just specified by 
+$\bfG$, which is generated by \exe{qg4gw}.
+$\phi_{{\bf R}u}^{\bf k}({\bf r})$ is specified by
+radial functions. It is contained in \io{PHIVC} read in hbasfp0.m.F. Number of radial functions are
+\verb#ncore(ic)+nrad(ic)# 
+(dependes on $l,n,\sigma$, but not on $m$).
+For simplicity, maximum of $l$ is fixed by LMXA in ctrl file.
+It must be the same for all MTs.
+
+In the GW calculation of ecalj, important matrix elements related
+to the eigenfunction is only the matrix element as
+\begin{eqnarray}
+\langle E^{\bf q}_\mu \Psi_{{\bf k}n} |\Psi_{{\bf q+k}n'} \rangle,
+\end{eqnarray}
+, where $E^{\bf q}_\mu$ is the MPB (an unitary transformation of MPB).
+The information of eigenfunctions are used to calculate this matrix elements, which is read by \verb#get_zmel#.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{Expansion of the eigenfunction}
+%The eigenfunction $\Psi^{{\bf k}n}$ is expanded as the linear combination of the MTO as
+%\begin{eqnarray}
+%\label{eigenfunction}
+%\Psi^{{\bf k}n}({\bf r}) &=& \sum_s z^{{\bf k}n}_s \chi^{{\bf k}s}({\bf r}) \\
+%&=& \sum_{a u} \alpha^{{\bf k} n}_{au} A^{\bf k}_{a u}({\bf r})
+% + \sum_{\bf G} \beta^{{\bf k}n}_{\bf G} P^{\bf k}_{\bf G}({\bf r}),
+%\end{eqnarray}
+%where the interstitial plane wave (IPW) $P^{\bf k}_{\bf G}({\bf r})$ 
+%is defined as
+%\begin{eqnarray}
+%P^{\bf k}_{\bf G}({\bf r}) &=& 0  \ \ \ {\rm \ if \ {\bf r} \in any \ MT} \nonumber \\
+%        &=&   \exp (i ({\bf k+G}) {\bf r}) \ \ \ {\rm otherwise}.
+%        \label{eq:defpg}
+%\end{eqnarray}
+
+Coefficients of \req{def:psiexp} (here is MTO part only)
+are calculated as
+\begin{eqnarray}
+&&\alpha^{{\bf k} n}_{au} = \sum_s C^{{\bf k}s}_{a u} z^{{\bf k}n}_s \\
+&&\beta^{{\bf k}n}_{\bf G} = \sum_{{\bf G}'s} 
+\langle P^{\bf k}_{\bf G}|P^{\bf k}_{{\bf G}'}\rangle^{-1}
+\langle P^{\bf k}_{{\bf G}'}|H^{{\bf k}s}\rangle z^{{\bf k}n}_s,
+\end{eqnarray}
+where the number of ${\bf G}$ is limited by the condition
+$|{\bf k+G}|< {\tt QpGcut\_psi}$;
+${\bf G}'$ is by $|{\bf k+G}'|< {\tt  QpGcutHakel}$.
+
+
+
+% \begin{quote}
+% \vspace{8mm}
+% ------------I think these are too old. Need check -------------
+% \noindent {\tt lm7K/fp/sugw.F} called from 
+% {\tt lm7K/fp/bndfp.F} is a main part to generate this expansion.
+% Important quantities in {\tt lm7K/fp/sugw.F} are
+% \begin{itemize}
+% \item 
+% $z^{{\bf k}n}_s$ = {\tt zegf(i,j); i=1,ndimh; {\tt j=1,ndimh}} 
+% ({\tt i} is for for basis, and {\tt j} is for band index.)
+	
+% \item 
+% $\alpha^{{\bf k} n}_{au}$ = {\tt cphi}
+
+% \item
+% $\langle \phi Y_L {\ \rm or \ } \dot{\phi}Y_L|\chi^{{\bf k}s} \rangle$= {\tt phichi} 
+	
+% \item 
+% {\tt phichi} is constructed from {\tt phihd}, and {\tt bmat $\times$ phipkl}.
+
+% \item 
+% {\tt bmat} are generated in {\tt hxp\_bl} $\in$ {\tt augm\_q}.
+% It is the coefficients for the expansion of $H^{{\bf k}s}({\bf r})$ 
+% at the another MT center.
+
+% \end{itemize}
+
+% \noindent [${\tt QpGcutHakel}$ is assumed as $={\tt 1.5*QpGcut\_psi}$ now.
+% {\underline But it is not justified enough.}
+% You will be able to utilize more reasonable ones
+% which was used in the LDA calculations.]
+
+% \noindent $\alpha^{{\bf k} n}_{au}$ is calculated by the subroutine {\tt getcoeffas} in 
+% {\tt ng0.m.f}.
+% The subroutine {\tt matgg2} $\in$ {\tt mkppovl2} $\in$ {\tt pplmat2} in {\tt pplmat.f} calculates
+% $\langle P^{\bf k}_{\bf G}|P^{\bf k}_{{\bf G}'} \rangle$ through
+% \begin{eqnarray}
+% \langle P^{\bf k}_{\bf G}|P^{\bf k}_{{\bf G}'} \rangle
+% = \Omega \delta_{{\bf G},{\bf G}'} -  
+% \sum_{a,L} \exp( i ({\bf G}'-{\bf G}) {\bf R_a}) 
+% \times Y_L(\widehat{{\bf G}'-{\bf G}}) \nonumber \\
+% \times \int_{a} \exp(i({\bf G}'-{\bf G}){\bf r}) d^3r.
+% \end{eqnarray}
+% $\langle P^{\bf k}_{{\bf G}'}| H^{{\bf k}s} \rangle$ is also calculated
+% in {\tt pplmat2} through the plane wave expansion of $H^{{\bf k}s}$
+% (Eq.(9.4) of Ref.\cite{bott98}). Then {\tt pplmat2} gives the
+% the coefficients $\beta^{{\bf k}n}_{\bf G}$.\\
+% -----------------------------------------------------------
+% \end{quote}
+
+
+\subsection{Overview of GW calculation}
+
+In the $GW$ calculation, we need not only the basis set for
+eigenfunctions, but also the basis set for expanding the product of eigenfunctions.
+The basis is called the mixed product basis (MPB) $\{M^{\bf k}_I({\bf r}) \}$ first introduced in Ref.\cite{kotani_all-electron_2002} by Kotani. The MPB consists of the product basis (PB) within MTs \cite{aryasetiawan_product-basis_1994}
+and the IPW in the interstitial region.
+Since $\{M^{\bf k}_I({\bf r}) \}$ contains IPWs which are not orthogonal,
+we define dual for $\{M^{\bf k}_I({\bf r}) \}$ as
+\begin{eqnarray}
+&& |\tilde{M}^{\bf k}_{I} \rangle \equiv \sum_{I'}
+   |M^{\bf k}_{I'} \rangle (O^{\bf k})^{-1}_{I'I} \, , \\
+&& O^{\bf k}_{I'I} = \langle M^{\bf k}_{I'} |  M^{\bf k}_I \rangle.
+\label{eq:ovlmpb}
+\end{eqnarray}
+%xxx3004
+%kino1  H = E S : generalized eigenvalue problem
+From $v_{IJ}^\bfk= \langle M^{\bf k}_{I} |v|  M^{\bf k}_J \rangle$,  
+we calculate the eigenfunction for the generalized eigenvalue problem defined by
+$\sum_J (v_{IJ}^\bfk - v^\bfk_\mu O^{\bfk}_{IJ} ) w_{\mu J}^\bfk = 0$, where
+$v_\mu(\bfk)$ are the eigenvalues of the Coulomb interaction matrix.
+Then we have the Coulomb interaction represented by matrix elements as 
+\begin{eqnarray}
+v(\bfk)=\sum_{\mu} | E^{\bfk}_\mu \rangle {v_\mu(\bfk)} 
+\langle E^{\bfk}_\mu |,
+\label{eqvcoue}
+\end{eqnarray}
+where we define a new MPB 
+$|E^{\bf k}_\mu({\bf r})\rangle=\sum_J |M^\bfk_J\rangle w^\bfk_{\mu J}$,
+which is orthonormal and is diagonal to the Coulomb interaction $v(\bfk)$. 
+For the all-electron full-potential $GW$ approximation,
+\req{eqvcoue} is introduced in Ref.\cite{friedrich_efficient_2010}.
+This corresponds to the representation in the plane wave expansion 
+$v(\bfk+\bfG,\bfk+\bfG')=\frac{4 \pi \delta_{\bfG \bfG'}}{|\bfk+\bfG|^2}$.
+$\mu=1$ corresponds to the largest eigenvalue of $v_{\mu}$, and 
+$v_{\mu=1}$ is $\sim \frac{4 \pi e^2}{|\bfk|^2}$, which is related to 
+the divergent term discussed in Sec.\ref{sec:kint}.
+
+With the definition of 
+$\langle A| B\rangle =\int d^3r A^*(\bfr) B(\bfr)$,
+the exchange part of $\Sigma(\omega)$ is written as
+\begin{eqnarray}
+\Sigma^{\rm x}_{nm}(\bfq)=
+\langle \Psiqn|\Sigma_{\rm x} |\Psiqm \rangle
+=-\sum^{\rm BZ}_{{\bf k}}  \sum^{\rm  occ}_{n'}
+\langle \Psiqn| \Psi_{{\bf q-k}n'} E_\mu^{\bf k} \rangle
+v_{\mu}({\bf k})
+\langle E_\mu^\bfk \Psi_{{\bf q-k}n'} | \Psiqm \rangle.
+\label{eq:sigx}
+\end{eqnarray}
+%We evaluate integral on $\bfk$ by a discrete sum on the regular mesh points
+%including $\bfk=0$. However, we need to replace divergent
+%$v_{\mu=1}(\bfk=0)$ with an effective one $\overline{v_{\mu=1}}(\bfk=0)$
+%as explained in Sec.~\ref{sec:kint}.
+
+The screened Coulomb interaction $W(\omega)$ is calculated from
+\begin{equation}
+ W = \epsilon^{-1} v = \left(1-v \Pi\right)^{-1} v,
+\label{eq:defw}
+\end{equation}
+where the Lindhard polarization function $\Pi(\omega)$
+is written as
+\begin{eqnarray}
+\Pi_{\mu \nu}({\bf q},\omega)
+&&=
+\sum^{\rm BZ}_{\bfk} \sum^{\rm occ}_{n \ispone} \sum^{\rm unocc}_{n'\isptwo}
+\frac{
+\langle E^{\bf q}_\mu \Psikn |\Psi_{{\bf q+k}n'} \rangle
+\langle \Psi_{{\bf q+k}n'}| \Psikn E^{\bf q}_\nu \rangle
+}{\omega-(\varepsilon_{{\bf q+k} n'\isptwo}-\varepsilon_{\bfk n\ispone})+i \delta} \nonumber\\
+&&+ \sum^{\rm BZ}_{\bfk} \sum^{\rm  unocc}_{n \ispone} \sum^{\rm occ}_{n'\isptwo}
+\frac{
+\langle E^{\bf q}_\mu \Psi_{{\bf k}n} |\Psi_{{\bf q+k}n'} \rangle
+\langle \Psi_{{\bf q+k}n'}| \Psi_{{\bf k}n} E^{\bf q}_\nu \rangle
+}{-\omega-(\varepsilon_{\bfk n\ispone}-\varepsilon_{{\bf q+k} n'\isptwo})+i \delta}.
+\label{eq:polf0}
+\end{eqnarray}
+When time-reversal symmetry is assumed (if $\Psi_{{\bf k}n}$ is the eigenfunction,
+$\Psi^*_{{\bf k}n}$ is also the eigenfuntion with the same eigenvalue
+$\varepsilon_{\bfk n}$),
+$\Pi(\omega)$ is simplified to be
+\begin{eqnarray}
+\Pi_{\mu \nu}({\bf q},\omega)
+&&=\sum^{\rm BZ}_{{\bf k}}  \sum^{\rm  occ}_{n} \sum^{\rm  unocc}_{n'}
+\langle E^{\bf q}_\mu \Psi_{{\bf k}n} |\Psi_{{\bf q+k}n'} \rangle
+\langle \Psi_{{\bf q+k}n'}| \Psi_{{\bf k}n} E^{\bf q}_\nu \rangle \nonumber \\
+&& \times
+\left(\frac{1}{\omega-\varepsilon_{{\bf q+k}n'}+\varepsilon_{{\bf k}n}+i \delta}
+-\frac{1}{\omega+\varepsilon_{{\bf q+k}n'}-\varepsilon_{{\bf k}n}-i \delta}\right). \label{dieele}
+\label{eq:polf}
+\end{eqnarray}
+This definition is the same as that in the Fetter-Walecka text book.
+At $\omega=0$, this is negative definite matrix. 
+Im part at any $\omega$ is negative definite matrix. This is even function of $\omega$.
+
+To evaluate \req{eq:polf0} or \req{eq:polf},
+we first accumulate the imaginary parts (anti-Hermitian part) of $\Pi_{\mu \nu}(\bfq,\omega)$
+along bins of histograms on the real axis $\omega$
+by the tetrahedron technique \cite{rath_generalized_1975},
+and then determine the real part via the Hilbert transformation.
+The bins are dense near the Fermi energy and coarser at higher energy as described in 
+Ref.\cite{kotani_quasiparticle_2007}.
+This procedure is not only more efficient but also safer than the methods
+of calculating the real part directly. 
+We also use the extended irreducible zone (EIBZ) 
+symmetrization procedure described in Ref.\cite{friedrich_efficient_2010}.
+
+The correlation part of the screened Coulomb interaction $W^c(\omega)=W(\omega)-v$, 
+which is calculated from $v$ and $\Pi(\omega)$, is given as
+\begin{eqnarray}
+W^{\rm c}(\bfk,\omega)=\sum_{\mu\nu} | E^{\bfk}_\mu \rangle {W^{\rm c}_{\mu\nu}(\bfk,\omega)} 
+\langle E^{\bfk}_\mu |.
+\end{eqnarray}
+With this $W^{\rm c}(\bfk,\omega)$, we have the correlation part of the self-energy  as
+\begin{eqnarray}\
+\Sigma^{\rm c}_{n,n'}(\bfq,\omega)= \sum_{\bfk,m} \int_{-\infty}^\infty  \!d \omega' \sum_{\mu,\nu} 
+\frac{\langle\Psiqn|\Psiqkm E^{\bfk}_\mu \rangle 
+W^{\rm c}_{\mu\nu}(\bfk,\omega')\langle E^{\bfk}_\nu \Psiqkm
+|\Psiqnp\rangle e^{-i \delta \omega'}}
+{\omega-\omega'-\epsilon_{\bfq-\bfk m}\pm i \delta}.
+\label{sigmann}
+\end{eqnarray}
+Here, we use $-i \delta$ for occupied states of
+${\bfq\!-\!\bfk m}$, and $+i \delta$ for unoccupied states.
+In \QSGW, we have to calculate the Hermitian part of $\Sigma_{nn'}(\bfq,\epsilon_{\bfq n})$, 
+to obtain $\vxc_\bfq$ using \req{eq:vxceq}.
+
+There are two key points to handle the $GW$ procedure given above.
+The first key point, given in Sec.\ref{sec:kint},
+is the improved offset-$\Gamma$ method, which treats
+the divergence of $W^{\rm c}(\bfk \to 0,\omega)$ in \req{sigmann}. 
+For this purpose, we define the non-divergent 
+effective interaction $\overline{W^{\rm c}}(\bfk=0,\omega)$ instead of
+${W^{\rm c}}(\bfk=0,\omega)$.
+%; for \req{eq:sigx}, so does $\overline{v_{\mu=1}}(\bfk=0)$ instead of ${v_{\mu=1}}(\bfk=0)$.
+Then we can take a simple discrete sum for both expressions of
+Eqs.(\ref{eq:sigx}) and (\ref{sigmann}).
+
+The second point in Sec.\ref{sec:siginterp} is
+how to perform
+%$\vxc_\bfq$ for $\bfq$ in the whole BZ.
+%That is, we need to make 
+an interpolation to give $\vxc_\bfq$ at any $\bfq$ in the whole BZ,
+from $\vxc_\bfq$ calculated only at limited numbers of $\bfq$ points.
+This is required in the offset-$\Gamma$ method shown in Sec.\ref{sec:kint},
+that is, we have to calculate eigenfunctions at some $\bfq$ points near $\bfq=0$.
+For the interpolation, we expand the static
+nonlocal potential $\vxc$ in \req{eq:vxceq} in highly localized
+MTOs in real space. Thus such MTOs are used for two purposes:
+one as the basis of the eigenfunctions; and two as the basis of 
+expanding $\vxc$. The interpolation procedure of $\vxc_\bfk(\bfr,\bfr')$
+becomes stabler and simpler than the
+complicated interpolation procedure in 
+Ref.\cite{kotani_quasiparticle_2007}.
+This is because we now use highly localized MTOs.
+In the planewave-based \QSGW\ method by Hamann and Vanderbilt \cite{hamann09}, 
+they expand $\vxc$ in the maximally localized Wannier functions instead of MTOs.
+
+In practical implementation, the LDA or GGA exchange-correlation
+potential $V^{\rm xc}_{\rm LDA}$ is used to perform efficient numerical calculations.
+That is, it is used in order to generate core eigenfunctions as well as radial functions within MTs
+(in this paper, we use the subscript LDA even when we use GGA. ``LDA/GGA'' means LDA or GGA).
+The difference $\vxc-V^{\rm xc}_{\rm LDA}$ is used 
+for the interpolation in the BZ (explained in Sec.\ref{sec:siginterp}),
+because this difference is numerically small as long as 
+$V^{\rm xc}_{\rm LDA}$ roughly gives an approximation to $\vxc$.
+This procedure utilizing $V^{\rm xc}_{\rm LDA}$ to perform efficient numerical calculations
+give a very weak dependence to the final numerical results in practice as seen in Sec.\ref{sec:numtest},
+although the results formally does not depend on the LDA/GGA exchange-correlation functions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{$\bfq$ and $\bfG$ vector generation. qg4gw}
+\underconstruction
+To see the theory, read Section 3.2 in in \cite{kotani_quasiparticle_2014}
+$\bfk$ points are the regular mesh points used for the integration
+in the BZ. Regular mesh points are given as
+\begin{eqnarray}
+\bfk_{i_1,i2,i3}=(i1/N1)*\bfP_1+(i2/N2)*\bfP_2+(i3/N3)*\bfP_3
+\end{eqnarray}
+, where $\bfP_i$ is the primitive vector $\frac{2\pi}{\rm alat} \times$
+Quantities $f(\bfk)$ (periodic in BZ) can
+be integrated just as a sum on the regular mesh points.
+However, when  $f(\bfk=0)$ is divergent, we have careful treatments.
+
+\qlat(:,i1), where qlat=$\bfQ_i$ is the reciprocal vectors.
+See Sec.3.2 .
+
+mkqg.F is the main part of \exe{qg4gw} (fpgw/main/qg4gw.F).
+iq0pin is the job control of mkqg. iq0pin=101 is only for backward compatibility. 
+The purpose is generates required q and G vectors.
+Not only regular mesh points, or q along symmetry lines, 
+but also offset Gamma points.
+
+iq0pin=1: normal mode. Generate q and G for regular mesh point and Q0P
+points (offset Gamma points).
+
+iq0pin: input to qg4gw
+
+\begin{verbatim}
+
+ncindx, lcindx
+
+getkeyvalue
+phi
+
+radial mesh
+CLASS
+symgg
+core, radial functions
+
+\end{verbatim}
+\subsubsection{Make $G$ vectors: getgv2}
+To get $\bfG$ vectors, we use an algorithm in \verb!fpgw/getgv2.F!, whose head
+is
+\begin{verbatim}
+      subroutine getgv2(alat,plat,qlat,q, QpGcut,job,
+     o                 ng, ngvec)
+!! == Set up a list of recip vectors within cutoff |Q+G| < QpGcut a.u. ==
+!! job==1 -> return ng (number of G ) and imx(as ngvec(1,1));mar2012takao add imx.
+!! job==2 -> return ng and ngvec
+!! True G is given as
+!!    G(1:3,1:ng) = 2*pi/alat * matmul(qlat * ngvec(1:3,1:ng))
+!! NOTE: we need some geometorial consideration for this routine.
+!!   Consiser ellipsoid. Takao need to give more detailed explanation...
+!! -------------------------------------------------------------
+\end{verbatim}
+We can use this to get $\{\bfG\}$ for given $q$.
+The algorism of \verb!getgv2! is a little complicated.
+We first gives the upper and lower limits {\tt n1max} $\le n_1 \le $ {\tt n1min}, 
+where $\bfG= n_1 Q_1 + n_2 Q_2 + n_3 Q_3$, $n_2$ and $n_3$ as well.
+
+\underconstruction
+
+\noindent {\bf Algorithm of {\tt getgv2}.}\\
+Let us consider the three dimensional space of ${\bf x}= \bfq+\bfG$.
+For given $\bfq$, allowed $\bfG$ make a set of regular mesh points $\{\bfq+\bfG\}$.
+The purpose of {\tt getgv2} is picking up only mesh points satisfying
+$|\bfq+\bfG|<${\tt QpGcut} among these mesh points.
+
+At first, we can calculate allowed range of $n_1$ for given maximum of 
+$|\bfq+\bfG|$ (={\tt QpGcut}). Note $|{\bf x}|=|\bfq+\bfG|$={\tt QpGcut}
+gives a sphere; we have to pick up mesh points within the sphere.
+When we spefcify $n_1$, we have a plane 
+(allowing $n_2,n_3$ can take any values).
+The range is determined by the condition that the sphere 
+$|\bfq+\bfG|$={\tt QpGcut} cross the plane specified by $n_1$ 
+(exactly speaking, such $n_1$ is real number).
+The vector normal to the plane is the external product $Q_2 \times Q_3$.
+
+After we get the range of $n_1$, as well as $n_2,n_3$ ,
+we simply test whether $\bfq+\bfG$ for $(n_1,n_2,n_3)$ is allowed or not.
+
+
+\subsubsection{Make $G$ vectors: shortn3}
+Find shortest vector in modulo of $\{Q_i\}$. That is, pull back $\bfq$ in the 1st BZ.
+Caution; it can be not unique when $\bfq$ is on the BZ boundary;
+then we need to know all $\bfq$ and degeneracy.
+
+
+
+\section{Mixed Product basis}
+\label{sec:mpbsec}
+The mixed product basis consists of two types of basis sets, that is 
+the product basis and the IPW:
+$\{M^{\bf k}_I({\bf r}) \}\equiv 
+\{ P^{\bf k}_{\bf G}({\bf r}), B_{\bfR\mu}^{\bf k}({\bf r})\}$,
+where the index $I\equiv \{ {\bf G},\bfR\mu\}$ 
+classifies the members of the basis.
+The PB $B^{\bf k}_{\bfR\mu}({\bf r})$ is defined as
+\begin{eqnarray}
+  B^{\bf k}_{\bfR\mu}({\bf r}) &=& 
+          \sum_{\bf T} B_{\bfR\mu}({\bf r-R}-{\bf T}) e^{i {\bf k\cdot T}},
+\end{eqnarray}
+where $B_{\bfR\mu}({\bf r})$ is made from the products of radial functions.
+$B_{\bfR\mu}({\bf r})$ is real and
+zero for outside of MT, $|{\bf r}| > R$ (See Sec.\ref{sec. PB}).
+%$S_a$ is the size of MT of $a$. 
+We set up $\{B_{\bfR\mu}({\bf r})\}$ so that they are orthonormalized;
+\begin{eqnarray}
+  \int_{|{\bf r}| < R} B_{\bfR\mu}({\bf r}) B_{\bfR\mu'}({\bf r}) d^3r =
+  \delta_{\mu \mu'}.
+  \label{eq. PB-ortho}
+\end{eqnarray}
+In addition, it is trivial that $\{B_{\bfR\mu}({\bf r})\}$ and 
+$\{ P^{\bf k}_{\bf G}({\bf r})\}$ are orthogonal.
+Thus only the elements of overlap matrix is
+\begin{eqnarray}
+ O^{\bf k}_{IJ}= 
+  \int_\Omega \{M_I^{\bf k}({\bf r})\}^* {M}_J^{\bf k}({\bf r}) d^3r,
+  \label{eq. ovlp},
+\end{eqnarray}
+because $\{ P^{\bf k}_{\bf G}({\bf r})\}$
+are not orthogonal.
+Thus it is convenient to define the dual of ${M}^{\bf k}_{I}({\bf r})$ as
+$\tilde{M}^{\bf k}_{I}({\bf r})$ in the manner of \req{eq:ovlmpb}.
+
+Functions made from the product of eigenfunctions can be
+virtually completely expanded in the basis of ${M}^{\bf k}_{I}({\bf r})$
+in this manner;
+\begin{eqnarray}
+\begin{cases}
+  \displaystyle 
+  F^{\bf k}({\bf r}) = \sum_I M_I^{\bf k} ({\bf r}) F_I({\bf k}) & \cr
+  \displaystyle
+  F_I({\bf k}) = 
+  \int_\Omega \{\tilde{M}_I^{\bf k}({\bf r})\}^* 
+  F^{\bf k}({\bf r}) d^3r.
+\end{cases}
+  \label{expandfk}
+\end{eqnarray}
+
+---- NOTE: ----
+Now we use Coulomb matrix orthogonalized basis $\{E^\bfk_\mu\}$ as
+discussed in \req{eqvcoue}.
+
+
+
+\subsection{Product basis (hbasfp0)}
+\label{sec. PB}
+
+We denote the radial function of atom $a$ as
+\begin{eqnarray}
+   u_{apl\sigma}(r) = r \phi_{apl\sigma}(r),
+\end{eqnarray}
+where the index $p$ takes 1 for $\phi$, 2 for $\dot{\phi}$,
+3 for local orbital as well. We do not allow $m$ dependence
+($m$ is $m$ of $L=(l,m)$.) for the radial functions.
+In addition, $p$ can taks indexes to specify core functions:
+we combine core and valence functions (these
+are stored in \verb|PHIVC|, which read in \verb#hbasfp0.m.F#). 
+Here is a part of copy to read \verb#PHIVC# in hvccfp0.m.F
+\begin{quote}
+{\baselineskip=3mm
+\begin{verbatim}
+      ifphi  = iopen('PHIVC', 0,-1,0)! augmentation wave and core
+      read(ifphi) nbas, nradmx, ncoremx
+      allocate(  ncindx(ncoremx,nbas),
+     &           lcindx(ncoremx,nbas),
+     &           nrad(nbas), nindx_r(1:nradmx,1:nbas),
+     &           lindx_r(1:nradmx,1:nbas),
+     &        aa(nbas),bb(nbas),zz(nbas), rr(nrx,nbas), nrofi(nbas) ,
+     &        phitoto(nrx,0:nl-1,nn,nbas,nsp),
+     &        phitotr(nrx,0:nl-1,nn,nbas,nsp),
+     &        nc_max(0:nl-1,nbas),ncore(nbas) )
+      read(ifphi) nrad(1:nbas)
+      read(ifphi) nindx_r(1:nradmx,1:nbas),lindx_r(1:nradmx,1:nbas)
+      nc_max=0
+      do ibas=1,nbas
+        write(6,*)' --- read PHIVC of ibas=',ibas
+        ic = ibas
+        read(ifphi) ncore(ic), ncoremx                            !core
+        read(ifphi) ncindx(1:ncoremx,ibas),lcindx(1:ncoremx,ibas) !core
+        read(ifphi) icx,zz(ic),nrofi(ic),aa(ic),bb(ic)
+        if(ic/=icx) then
+          write(6,*) 'ic icx=',ic,icx
+          call rx( 'hbasfp0: ic/=icx')
+        endif
+        read(ifphi) rr(1:nrofi(ic),ic)
+        do isp = 1, nsp
+          write(6,*)'---  isp nrad ncore(ic)=',isp, nrad(ic),ncore(ic)
+          do icore = 1, ncore(ic)
+            l =  lcindx(icore,ic)
+            n =  ncindx(icore,ic)
+            read(ifphi) phitoto(1:nrofi(ic),l,n, ic,isp)!core orthogonal
+            phitotr(1:nrofi(ic),l,n, ic,isp)=   !we set core raw= core orthgonal
+     &      phitoto(1:nrofi(ic),l,n, ic,isp)       
+            if(n>nc_max(l,ic)) nc_max(l,ic)=n
+          enddo
+          do irad = 1, nrad(ic)
+            l = lindx_r (irad,ic)
+            n = nindx_r (irad,ic) + nc_max(l,ic)
+            read(ifphi) phitoto(1:nrofi(ic),l,n, ic,isp) !valence orthogonal
+            read(ifphi) phitotr(1:nrofi(ic),l,n, ic,isp) !valence raw
+          enddo
+        enddo
+      enddo
+\end{verbatim}
+}
+[note: The orthonomalized radial functions $u_{apl\sigma}(r)$
+are stored in \verb#phitoto#; we also have the un-orthonormalized ones in \verb#phitotr#.]
+\end{quote}
+
+Note that the \textit{true} radial function is
+$\phi_{apl\sigma}(r) = u_{apl\sigma}(r)/r$.
+Normalization is 
+$1=\int_0^{R_a} \{ u_{apl\sigma}(r) \}^2 dr = 
+   \int_0^{R_a} \{ \phi_{apl\sigma}(r) \}^2 r^2dr$.
+The function $u_{apl\sigma}(r)$ is stored in \verb#phitot#.
+
+When producing the product functions,
+we use spin-averaged function \verb#phiav# given as
+\begin{eqnarray}
+   u_{apl}(r) = \frac{1}{N_{\rm spin}}\sum_{\sigma}
+   u_{apl\sigma}(r).
+\end{eqnarray}
+(See \verb|subroutine basnfp_v2|).
+From them, we make the product functions \verb#rprod#
+\begin{eqnarray}
+  \tilde{b}_{al\nu}(r) = \frac{1}{r}{u_{a p l }(r) u_{a p' l'}(r)}
+  = r \phi_{a p l}(r) \phi_{a p' l'}(r),
+\end{eqnarray}
+where the index $l$ runs $|l-l'| \le l \le |l+l'|$;
+$\nu$ is the index of the combination $(p,p')$.
+Note the {\it true} product functions are given as
+\begin{eqnarray}
+  \tilde{B}_{al\nu}(r) = \frac{1}{r}\tilde{b}_{al\nu}(r).
+\end{eqnarray}
+This relation is as same as $\phi_{apl}(r)=u_{apl}(r)/r$.
+
+Then we calculate the overlap matrix \verb#ovmt#,
+\begin{eqnarray}
+  O_{\nu_1\nu_2} = \int_0^{R_a} 
+  \tilde{B}_{al\nu_1}(r) \tilde{B}_{al\nu_2}(r) r^2 dr
+  = \int_0^{R_a}  \phi_{a p_1 l_1}(r) \phi_{a p'_1 l'_1}(r)
+                  \phi_{a p_2 l_2}(r) \phi_{a p'_2 l'_2}(r) r^2 dr
+\end{eqnarray}
+and solve the eigenvalue problem of the overlap matrix,
+$Oz_{\nu}=\epsilon_{\nu} z_{\nu}$, by \verb#call rs(..)#. 
+(See \verb|basnfp_v2|.)
+
+After neglecting eigenvectors
+$z_{\nu}$ with eigenvalues $\epsilon_{\nu} < {\rm tolerance} \sim 10^{-4}$ (given in \io{GWinput}, 
+we finally have the optimal product functions as the linear combinations 
+of the product functions as
+\begin{eqnarray}
+   b_{al\nu}(r) = \frac{1}{\sqrt{\epsilon_{\nu}}}
+   \sum_{\nu'}\tilde{b}_{al\nu'}(r)z_{\nu'\nu},
+\end{eqnarray}
+which are stored in \verb#rprodx# and written into {\sf BASFP*}
+and used in the successive Coulomb matrix routine {\sf hvccfp0.m.f}.
+Of course, \textit{true} product function is 
+$B_{al\nu}(r) = b_{al\nu}(r)/r$.
+
+We check the normalization of the optimal product function
+in standard output 
+(See \verb|lbasC| and \verb|lbas| when you did {\bf gw\_lmf}):
+
+{\baselineskip=4mm
+\begin{verbatim}
+...
+Use rs diagonalization for real symmetric 
+Diag ibx ovv=  1 0.9999999999999930D+00 eb=   0.2716113799D-01 nod=   2
+Diag ibx ovv=  2 0.9999999999999980D+00 eb=   0.4993303381D-01 nod=   3
+Diag ibx ovv=  3 0.1000000000000001D+01 eb=   0.1467546915D+00 nod=   3
+Diag ibx ovv=  4 0.9999999999999996D+00 eb=   0.4415639258D+01 nod=   0
+
+...
+\end{verbatim}
+}
+
+In \verb|basnfp|, we calculate all the required 
+radial integrations $<\phi \phi B>$\verb!=ppbrd!;
+\begin{eqnarray}
+   <\phi \phi B> = \int_0^{R_a}
+   \phi_{ap_1 l_1}(r) \phi_{ap_2 l_2}(r) B_{al\nu}(r) r^2 dr
+   = \int_0^{R_a} \frac{1}{r}
+     u_{ap_1l_1}(r) u_{ap_2l_2}(r) b_{al\nu}(r) dr,
+\end{eqnarray}
+which are stored into \io{PPBRD*}.  
+At \verb!call rdpp(...! in {\sf hx0fp0.m.f hxfp0.m.f},
+we allocate and read \verb!ppbrd!. 
+
+In addition, we read the "rotated Clebsh-Gordon coefficient"
+$C(L,L_1,L_2,g)$ \verb!cgr(lm,lm1,lm2,ng)! 
+, where $g$ is the index for space group
+coefficient ( rotated by point group symmetries).
+
+
+
+
+%#############################################################
+\section{The Coulomb matrix (hvccfp0.m.F)}
+We have to calculate
+$v_{IJ}^\bfk= \langle M^{\bf k}_{I} |v|  M^{\bf k}_J \rangle$, which
+appears right after \req{eq:ovlmpb}.
+Our \verb#hvccfp0.m.F# can handle the
+case $\frac{\exp(- |\kappa| |\bfr_1-\bfr_2|)}{|\bfr_1-\bfr_2|}$.
+The default is the bare Coulomb interaction, that is, $\kappa=0$. 
+The energy variable $E$ is given by $E=\kappa^2$, where
+imaginary part of $\kappa$ is defined to be positive for negative $E$.
+This $E=$\verb#eee=screenfac()# in hvccfp0.m.F. 
+For example, we can set $|\kappa|=0.1$ (a.u.) by a line
+"{\tt TFscreen 0.1}" in \io{GWinput} if necessary. Look for {\tt TFscreen} in \verb#swithes.F#.
+
+The MPB is made of IPWcou ($|\bfq+\bfG|$\verb#<QpGcut_cou#) and PB,
+that is, $\{M^{\bf k}_J\}=\{P_\bfG^\bfk(\bfr), B^\bfk_{\bfR{liL}\mu}(\bfr)\}$.
+For given $\bfk$ (not explicitly shown in cases for simplicity), 
+IPWcou is specified just by the $\bfG$ vector.
+PB can be specified just by the radial functions for each $l$ 
+PB is generated in the manner of Sec.\ref{sec:mpbsec} . 
+(because we have neither $m$ nor spin dependence).
+For $GW$ calculation, we need the Coulomb matrix elements
+$\langle B|v|B \rangle,\langle B|v|P_\bfG \rangle,$ and $\langle B|v|P \rangle$.
+\verb#hvccfp0.m.F-->vcoulq_4# handles these calculations.
+
+
+
+\subsection{Spherical Bessel and related functions}
+We use a notation such that $X_L(\bfr)=X_l(r) Y_L(\hat{r})$; note that
+their radial part is dependent only on $l$.
+The ordinary definition of $L$-dependent spherical 
+For given energy $E$, Bessel functions
+$J_L(E,\bfr),H_L(E,\bfr)$ are 
+(here we introduce $\sqrt{E}=\kappa$, 
+where $\sqrt{E}=\kappa=i|\kappa|$ for $E<0$),
+\begin{eqnarray}
+&&{J}_L(E,\bfr)=
+j_l(\sqrt{E} r)Y_L(\hat{r}) =
+\begin{cases}
+j_l(i|\kappa| r)Y_L(\hat{r}) \ {\rm for} \ E<0, \\
+j_l(\kappa r)Y_L(\hat{r})    \ {\rm for \ E>0},
+\end{cases}
+\nonumber \\
+&&{H}_L(E,\bfr)=h_l(i|\kappa| r)Y_L(\hat{r})
+\ {\rm for \ E<0}, 
+\label{eq:OrdinaryBessel}
+\end{eqnarray}
+where $j_l(z)$ and $h_l(z)$ are usual spherical Bessel and Hankel functions
+which behaves 
+\begin{eqnarray}
+&&j_l(z) \sim \frac{z^l}{(2l+1)!!} \nonumber \\
+&&h_l(z) \sim \frac{-i(2l-1)!!}{z^{l+1}}
+\end{eqnarray}
+at $z \sim 0$.
+For convenience, we define 
+the {\bf Methfessel's Bessel functions (convension)} 
+$\bar{J}_L=\bar{J}_lY_L$ and $\bar{H}_L=\bar{H}_lY_L$, where 
+\begin{eqnarray}
+&&\bar{J}_l(E,\bfr)=j_l(i|\kappa| r) / (i |\kappa|)^l \nonumber \\
+&&\bar{H}_l(E,\bfr)=h_l(i|\kappa| r) i (i |\kappa|)^{l+1}. 
+%&&\bar{J}_l(E,\bfr)=(2l+1)!! j_l(i|\kappa| r) / (i |\kappa|)^l \nonumber \\
+%&&\bar{H}_l(E,\bfr)=\frac{1}{(2l-1)!!} h_l(i|\kappa| r) i (i |\kappa|)^{l+1}. 
+\label{eq:Mbessel}
+\end{eqnarray}
+(memo: for example, $7!!=7\cdot5\cdot3\cdot1$ \verb!;function fac2m(i)!).
+These are real functions for $E\le 0$.
+See note for \verb!genjh! in \verb!mkjp.F!.
+At $E=0$, this is reduced to be 
+\begin{eqnarray}
+&&\bar{J}_l(E=0,\bfr)=r^l/(2l+1)!!, \nonumber \\
+&&\bar{H}_l(E=0,\bfr)=r^{-l-1} (2l-1)!!.
+\label{eq:jhll}
+\end{eqnarray}
+
+(We use very small negetive $E=-10^{-5}$ as default instead of $E=0$
+for Coulomb matrix generator \verb#hvccfp0.m.F#
+to avoid numerical troubles (see default \verb#screenfac# in switch.F)).
+
+The source codes to define bessl is a little confusing because
+of some convensions are mixed up...(note at the beginning of besslr.F).
+
+Main one is \verb#call bessel(ex2,lx,phi(0:lx),psi(0:lx))# in mkjp.F.
+This is defined in \verb#bessl(ex2,lmax,phi,psi)# in \verb#besslr.F# 
+(it calls \verb#besslr# with \verb#loka=F#).
+\verb!lx! is the upper limit of $l$.
+For given \verb#ex2#$=E\times x^2$,
+this return spherical Bessel functions $j_l(\kappa x)$
+in the following manner. 
+\begin{eqnarray}
+\left.
+\begin{array}{ll}
+\bar{J}_l(E,\bfr)=j_l(i|\kappa|r)/(i|\kappa|)^l={\tt phi(l)}r^l\\
+\bar{H}_l(E,\bfr)=h_l(i|\kappa|r){i (i|\kappa|)}^{l+1}={\tt psi(l)}/r^{l+1} 
+\end{array}
+\right\}&& \ {\rm for}\ E<0, \ \kappa=i|\kappa|,
+|\kappa|=\sqrt{|E|} \nonumber \\
+\left.
+\begin{array}{ll}
+\bar{J}_l(E,\bfr)=j_l(\kappa r)/(\kappa )^l = {\tt phi(l)}r^l  \\
+\bar{N}_l(\kappa r) = {\tt psi(l)}\frac{1}{(\kappa)^{l+1}}={\tt psi(l)}/r^{l+1}
+\end{array} 
+\right\}&& \ {\rm for}\ E>0, \ \kappa=\sqrt{E}
+\label{eq:jhpp2} 
+\end{eqnarray}
+for $0\le l \le{\tt lmax}$. These definition gives \verb#phi#$=1/(2l+1)!!$
+and \verb#psi#$=(2l-1)!!$ at $E \to 0$. 
+Here $n_l(r)$ is the spherical Neumann functions.
+That is, \verb!psi! is for Hankel function 
+for negative $E$, and for Neumann function for positive $E$. 
+See \verb#hansmr.F#, for example. \verb!psi! is not used so often.
+We have \verb!lm7K/subs/besslr.F!, it is similar.
+
+For convenience, we sometimes use 
+\begin{eqnarray}
+&&R^{+l}=\bar{J}_l(E,r)(2l+1)!!={\tt psi(l)}r^l(2l+1)!!,  \nonumber \\
+&&R^{-l}=\bar{H}_l(E,r)/(2l-1)!!={\tt psi(l)}r^{-l-1}(2l-1)!!.
+\label{eq:defrp}
+\end{eqnarray}
+Here note $R^{+k} \rightarrow r^k$ for $E\to 0$,and 
+$R^{-k} \rightarrow r^{-k-1}$ for $E\to 0$.
+These $rR^{+k},rR^{-k}$ are \verb#rkpr,rkmr# generated in subroutine \verb#genjh#. \\
+
+
+xxxx We may need to simplify our treatment of bessel functions in
+future... xxxx
+
+
+\paragraph{Electron-phonon coupling in MPB}
+To calculate derivative for electron-phonon (EP) coupling, we need
+\begin{eqnarray}
+&&\frac{\partial}{\partial \bfr_i} \left(\bar{J}_l(E,\bfr)
+				    Y_L(\hat{r})\right)\big|_{\bfr=0}=
+\frac{1}{3} \sqrt{\frac{3}{4\pi}}, \ \ \ \ {\rm only \ for} \ L=1,\ {\rm zero otherwize}.
+\end{eqnarray}
+For real spherical harmonics, cases are: 
+$i=y$ and $L=(1,-1)$; $i=z$ and $L=(1,0)$; $i=x$ and $L=(1,1)$.
+Because we use MPB, it is necessary to evaluate the 
+the bare matrix element of the Coulomb interaction between nucleus and 
+$\langle B\rangle$ as
+\begin{eqnarray}
+&&\langle B|\frac{\partial v(\bfr-\bfR)}{\partial \bfR_i}\rangle
+\end{eqnarray}
+
+ 
+\subsection{Green function}
+(Readers can skip this subsection).
+We explain the free-space Green's function
+$G(\bfr-\bfr',E)$ here.
+%, although this section is not directly to the
+%other part of this manuscript.
+Let us start from $G(\bfr-\bfr',E)$, which satisfies
+\begin{eqnarray}
+(E+i\delta+\nabla^2)G(\bfr-\bfr',E)=\delta(\bfr-\bfr').
+\label{eq:diffg}
+\end{eqnarray}
+($+i\delta$ is to specify the boundary condition along time axis. This pick up the retarded Green's function).
+Roughly speaking, this is $(\omega -H) G=1$.
+Its Fourier transform is easily written as
+$G(\bfk,E)=1/(E-|\bfk|^2+ i \delta)$.
+We apply back Fourier transformation to this, and get $G(\bfr-\bfr',E)$.
+It is
+\begin{eqnarray}
+G(\bfr-\bfr',E)=-\frac{1}{4 \pi} 
+\frac{e^{i \kappa|\bfr-\bfr'|}}{|\bfr-\bfr'|}, \label{eq:greal}
+\end{eqnarray}
+where $\kappa \equiv \sqrt{E}$; Imaginary part of $\kappa$ is positive
+for $E<0$, that is, $\kappa = i |\kappa|= i \sqrt{-E}$ for negative $E$.
+\req{eq:greal} is nothing but the solution of Helmhorz 
+differential equation; it reduces to the usual Poisson equation at
+$E=0$. For $E<0$, we have Thomas-Fermi type function;
+the numerator of \req{eq:greal} is $\exp(i \kappa |\bfr-\bfr'|)=\exp(- |\kappa| |\bfr-\bfr'|)$.
+
+\subsection{Used formulas}
+\label{usedf}
+
+\begin{eqnarray}
+\frac{1}{|\bfr-\bfr'|}
+=4 \pi \sum_K \frac{r^k_<}{r^{k+1}_>}\frac{1}{2k+1}
+Y^*_K(\hat{\bfr})Y_K(\hat{\bfr}) \label{eq:oneorr}
+\end{eqnarray}
+See Appendix A in Ref.\cite{svane_evaluation_1986}.
+This is generalized to be
+\begin{eqnarray}
+\frac{e^{-|\kappa| |\bfr-\bfr'|}}{|\bfr-\bfr'|}
+=4 \pi \sum_K R^{+k}(r_<) R^{-k}(r_>)\frac{1}{2k+1}
+Y^*_K(\hat{\bfr})Y_K(\hat{\bfr}) 
+=4\pi \sum_L 
+\bar{J}_L(E,r_<) \bar{H}_L(E,r_>), \label{eq:oneorr2}
+%Y^*_L(\hat{\bfr})Y_L(\hat{\bfr})
+\end{eqnarray}
+The definition of $\bar{J},R^{+l}$ are in \req{eq:Mbessel} and \req{eq:defrp}.
+Here $E<0$ and $\kappa= i|\kappa|=\sqrt{-E}$.
+
+\begin{eqnarray}
+&&\exp( i {\bf k} {\bf r}) = 4 \pi \sum_L i^l 
+j_l(|{\bf k}|r)  Y^*_L( {\bf \widehat{ k} }) Y_L(\widehat{{\bf r}}) 
+\label{eq:expandpw}\\
+&&\frac{2l+1}{4 \pi} P_l(\cos\Theta) = \sum_m Y^*_L( {\bf \widehat{r}}_1) 
+Y_L({\bf \widehat{r}}_2) \ \ \ \ \ \ 
+[\cos \Theta = {\bf \widehat{r}}_1 \cdot {\bf \widehat{r}}_2].
+\end{eqnarray}
+
+\begin{eqnarray}
+\langle P^{\bf k}_{\bf G}|P^{\bf k}_{{\bf G}'} \rangle
+= \Omega \delta_{{\bf G},{\bf G}'} -  
+\sum_{a,L} \exp( i ({\bf G}-{\bf G}') {\bf R_a}) \times Y_L(\widehat{{\bf k+G}}') 
+Y_L( {\bf \widehat{ k+G} }) \nonumber \\
+\times \int_0^{R_a} j_l(|{\bf k+G}|r)j_l(|{\bf k+G}'|r) 4 \pi^2 r^2 dr,
+\end{eqnarray}
+
+
+
+\subsection{Hankel function and Structure constant}
+We can expand 
+$v(\bfr,\bfr')=\frac{e^{-|\kappa||\bfr-\bfr'|}}{|\bfr-\bfr'|}$
+in the one-center expansion \req{eq:oneorr2}.
+
+For the Hankel function in \req{eq:oneorr2}, we use
+the off-center expansion theorem of the
+Hankel function \req{eq:offexpand}, that is, 
+a Hankel whose center is at $\bfX\equiv\bfR+\bfT$, $H_L(\bfr-\bfX)$, 
+can be expanded in the Bessel functions whose center is at $\bfX'$;
+\begin{eqnarray}
+\bar{H}_L(E,\bfr-\bfX)=\frac{1}{4\pi} \sum_{L'}\bar{J}_{L'}(E,\bfr-\bfX') S_{\bfX'{L'},\bfX{L}}\ ,
+\label{eq:offexpand}
+\end{eqnarray}
+where the Hankel function for negative energy $E$.
+Here $E$-dependence of $S_{\bfX'{L},\bfX{L'}}$ is not explicitly shown. 
+Note the difference between $\bar{J}_L$ and $J_L$ ($\bar{H}_L$, as well).
+
+Thus, for $(\bfR',\bfT')\neq(\bfR,\bfT)$, 
+we have two-center expansion;
+\begin{eqnarray}
+&&
+\frac{e^{-|\kappa||\bfr+\bfR+\bfT-(\bfr'+\bfR'+\bfT')|}}
+{|\bfr+\bfR+\bfT-(\bfr'+\bfR'+\bfT')|}
+%= -4 \pi G(\bfr+\bfR+\bfT-(\bfr'+\bfR'+\bfT'),E)
+%\nonumber \\
+%&&= -4 \pi \sum_L (-i\kappa) \bar{J}_L(E,\hat{\bfr}) 
+%\bar{H}_L(E,\bfr'+\bfR'+\bfT'-\bfR-\bfT) \nonumber
+= \sum_L \sum_{L'}
+{\bar{J}_L(E,\bfr)}
+%{(2l+1)!!} 
+S_{\bfR+\bfT{L},\bfR'+\bfT'{L'}} {\bar{J}_{L'}(E,\bfr')} 
+%{(2l'+1)!!}
+\label{eq:vtwoc}
+\end{eqnarray}
+for $(\bfR',\bfT')\neq(\bfR,\bfT)$. 
+
+The Bloch sum of $S_{{L},\bfX{L'}}$
+gives the structure constant of $\bfk$ as
+\begin{eqnarray}
+S^\bfk_{\bfR{L},\bfR'{L'}}=
+\sum_{\bfT'} S_{\bfR{L},\bfR'+\bfT'{L'}}\exp(i \bfk \bfT').
+\label{eq:fftstrx}
+\end{eqnarray}
+Usually we use bare Coulomb at $E=0$.\\
+%(I think) The phase factor of \req{eq:fftstrx} for the fourier
+%transformation is determined so that
+%the $k$ dependence of 
+%\begin{eqnarray}
+%\langle B_\bfk|S_{\bfR{L},\bfR'+\bfT'{L'}}| B'_\bfk\rangle,
+%\end{eqnarray}
+%is included in the strucrute constant $S_{\bfR{L},\bfR'+\bfT'{L'}}$.
+%Here $B_k(\bfr)$ is a product basis of Bloch sum of $\bfk$
+%(This definision is the same as the definition that 
+%$S^\bfk$ is defined as the ).\\
+
+\noindent \underline{ No 4$\pi$ factor in the definition of $S^{\bfk}_{\bfR{L},\bfR'{L'}}$}\\
+See the top of \verb#strxq# defined in strxq.F (called in hvccfp0.m.F). 
+This routine is for the one-center expansion of 
+usual Bloch summed Hankels. (not for smooth Hankels).
+This result is finally converted to be the 
+Bloch sum of the structure constant 
+$S^{\bfk}_{\bfR{L},\bfR'{L'}}$ used in \req{eq:vkbb}.
+\begin{quote}
+====================\\
+NOTE in strxq.F; it says
+\begin{verbatim}
+-------------------------------------
+Cr Expansion Theorem: H_{RL}(r) = H_L(r-R)
+Cr H_{RL}(E,r) = J_{R'L'}(E,r) * S_{R'L',RL}
+Cr S_R'L',RL = 4 pi Sum_l" C_{LL'L"} (-1)^l (-E)^(l+l'-l")/2 H_L"(E,R-R')
+-----
+CAUTION!: We use R to denote MT position in the primitive cell; 
+thus this R is R+T in our notation.
+--------------------------------
+\end{verbatim}
+\end{quote}
+Thus it seeminly $4 \pi$ factor is missing in \ref{eq:vtwoc}.
+However, righ after the subroutine \verb#strxq# is called, we have added
+$4\pi$ factor as \verb#strx(1:nlx1,ibas1,1:nlx2,ibas2) = fpi*s# in
+\verb#hvcc0.m.F#. Thus Eq. \ref{eq:vtwoc}
+don't include $4\pi$ factors.
+
+%
+%v^\bfk(\bfr,\bfr')=\sum_{L,L'} S^{\bfk}_{\bfR{L},\bfR'{L'}}
+%J_L(\kappa,\bfr-\bfR) J_{L'}(\kappa,\bfr-\bfR')
+%
+%
+%J_L(E,\hat{\bfr'}+\bfR'-\bfR)
+
+
+\subsection{$\langle B|v|B \rangle$ part}
+\label{sec:bvbpart}
+Let us start from $\langle B|v|B \rangle$ part.
+For this calculation, we need structure constant, and a few types of
+radial integrals.
+With the Bloch-summed structure constant \verb!strx!
+$=S^\bfk_{RL,R'L'}$, we have
+\begin{eqnarray}
+v^\bfk(\bfr,\bfr')
+=\sum_{\bfT'} v(\bfr,\bfr'+\bfT') e^{i \bfk \bfT'}
+=e^2 \sum_{L,L'} 
+{\bar{J}_L(E,\bfr-\bfR)}
+%{(2l+1)!!} 
+S^{\bfk}_{\bfR{L},\bfR'{L'}}
+{\bar{J}_{L'}(E,\bfr'-\bfR')},
+%{(2l+1)!!}.
+\label{eq:vkbb}
+\end{eqnarray}
+for $\bfR \ne \bfR'$.
+Note that we use $e^2=1$ (a.u.) in hvccfp0.m.F.
+(See note at the beginning of mkjp.F. And note the normalization check
+at the end of hvccfp0.m.F; $\langle \exp(i \bfq \bfr) |v |\exp(i \bfq \bfr)\rangle=4\pi \Omega/|\bfq|^2$, where $\Omega$ is the cell volume.)
+
+\verb#strx calculated by "call strxq@L806:hvccfp0.m.F"# 
+means $S^\bfk_{\bfR{L},\bfR'L'}$. Note that $4 \pi$ is mulipled right
+after \verb#call strxq# to obtain \verb@strx@. 
+This \verb!strx! is used in  \verb!call vcoulq_4!. 
+\verb#nlx1# means \verb#(l+1)**2# for $R$ 
+\verb#(=ibas1)#, \verb#nlx2# as well.
+
+Except the contribution for $(\bfR,\bfT)=(\bfR',\bfT')$,
+we can evaluate
+$\langle B^\bfk_{\bfR{L}\mu}(\bfr)|v^\bfk(\bfr,\bfr')|B^\bfk_{\bfR'{L'}\mu'}(\bfr') \rangle$, from the\\ \verb#rojb# integrals $\rho^l(B_{\bfR{l}\mu})$  as
+\begin{eqnarray}
+&&\rho^l(B_{\bfR{l}\mu})=
+%\frac{1}{(2l+1)!!} 
+\int_0^{R} r\bar{J}_l(E,r) \ r B_{\bfR{l}\mu}(r)  dr
+= \frac{1}{(2l+1)!!}\int_0^{R} {\tt rkpr(r) \ rprodx(r)} \ dr
+\end{eqnarray}
+Here $B_{\bfR{l}\mu}(r)$ is the radial part of $B_{\bfR{L}\mu}(\bfr)$.
+This \verb!rojb! integrals are calculated in 
+the subrouitne \verb!mkjb_4! in \verb#mkjp.F#.
+We use radial functions 
+\verb!rprodox! $=r B_{\bfR{l}\mu}(r)$, 
+\verb!rkpr!$=r\bar{J}_l(E,r)(2l+1)!!$, 
+and \verb!rkmr!$=r\bar{H}_l(E,r)/(2l-1)!!$.
+(Here \verb!rkpr! and \verb!rkmr! are propotional to
+$r^l$ and $r^{-l-1}$ for $E =0$.)
+
+The contribution from $(\bfR,\bfT)=(\bfR',\bfT')$
+should be added. This is $\bfk$-independent, and
+given by the\\ \verb!sgbb! integral, which is also calculated in \verb!mkjb_4!.
+\begin{eqnarray}
+&&\sigma^l(B_{\bfR{l}\mu},B_{\bfR{l}\nu})=
+{4\pi}
+\int_0^{R}\int_0^{R} (r_<)\bar{J}_l(E,r_<) (r_>)\bar{H}_l(E,r_>)
+r B_{\bfR{l}\mu}(r) r' B_{\bfR{l}\nu}(r') dr dr' \nonumber \\
+&&=\frac{4\pi}{2l+1}
+\int_0^{R}\int_0^{R} {\tt rkpr(r_<) \ rkmr(r_>) \ rprodx(n1,r) \ rprodx(n2, r')} 
+\ dr dr'.
+\end{eqnarray}
+%This is from the one-center expansion \req{eq:oneorr2}.
+
+With the integrals \verb#rojb# and \verb#sgbb#, we can calculate
+$\langle B|v|B \rangle$ in \verb!vcoulq_4! as follows
+(\verb!nbloch! means the total number of PB);
+\begin{quote}
+{\baselineskip=3mm
+\begin{verbatim}
+      do ibl1= 1, nbloch
+        ibas1= ibasbl(ibl1)
+        n1   = nbl (ibl1)
+        l1   = lbl (ibl1)
+        m1   = mbl (ibl1)
+        lm1  = lmbl(ibl1)
+        do ibl2= 1, ibl1
+          ibas2= ibasbl(ibl2)
+          n2   = nbl (ibl2)
+          l2   = lbl (ibl2)
+          m2   = mbl (ibl2)
+          lm2  = lmbl(ibl2)
+          vcoul(ibl1,ibl2) =
+     &     rojb(n1, l1, ibas1) *strx(lm1,ibas1,lm2,ibas2)
+     &    *rojb(n2, l2, ibas2)
+          if(ibas1==ibas2 .and. lm1==lm2) then
+            vcoul(ibl1,ibl2) = vcoul(ibl1,ibl2) + sgbb(n1,n2,l1, ibas1)
+            ! sigma-type contribution. onsite coulomb
+          endif
+        enddo
+      enddo
+\end{verbatim}}
+\end{quote}
+
+\subsection{$RL$ expansion of $|P^\bfk_{\bfG'} \rangle$}
+To evaluate 
+$\langle P^\bfk_\bfG |v| P^\bfk_{\bfG'} \rangle$, 
+we can use 
+\begin{eqnarray}
+\bar{P}^{\bf k}_{{\bf G}} \equiv 
+\left( 1- \sum_{\bfR{L}}^{l\le l_{\rm Pmax}} {P}_{\bfR{L}} \right) 
+e^{i ({\bf k+ G}){\bf r}}, \label{eq:baripw}
+\end{eqnarray}
+in the place of ${P}^{\bf k}_{{\bf G}}$
+as long as we use large enough $l_{\rm Pmax}$.
+Here ${P}_{\bfR{L}}$ denotes the projection operator 
+to extract the component of ${\bfR{L}}$ contribution.
+%Thus $\bar{P}^{\bf k}_{{\bf G}}$ can contain high-$L$ %component even within MTs.
+%When $l_{\rm Pmax} \to \infty$, we have 
+%$\bar{P}^{\bf k}_{{\bf G}}={P}^{\bf k}_{{\bf G}}$.
+In fact, we use large enough $l_{\rm Pmax}$;
+$l_{\rm Pmax} = 2 \times l_{\rm max}$\verb!=2*LMXA!,
+where $l_{\rm max}$ denotes the maximum angular momentum 
+for the expansion of eigenfunctions within MT (maximum
+$l$ cutoff for $\alpha^{{\bfk}n}_{\bfR u}$ in \req{eqeigen}). 
+In the defalut setting, we use $l_{\rm Pmax}=8$ 
+since we use $l_{\rm max}=4$. 
+
+%Thus we can use $\bar{P}^{\bf k}_{{\bf G}}$ 
+%in \req{eq:baripw} in the place of 
+%$P^{\bf k}_{{\bf G}}$ when we evaluate the
+%Coulomb matrix.
+
+%To evaluate 
+%$\langle P^\bfk_\bfG |v| P^\bfk_{\bfG'} \rangle$ %accurately, 
+
+The matrix elements $\langle P_1 |v| P_2 \rangle$ 
+can be calculated as
+\begin{eqnarray}
+\langle P_1(phiphi) |v| P_2(phiphi) \rangle=
+\sum_{\bf G_{1'} G_{1''} G_{2'} G_{2''}} 
+\langle P_1(phiphi) | {P_{1'}} \rangle  
+\langle {P}_{1'}| {P}_{1''} \rangle^{-1} 
+\langle {P}_{1''} |v| {P_{2''}} \rangle  
+\langle {P}_{2''}| {P}_{2'} \rangle^{-1} 
+\langle {P_{2'}} | P_2(phiphi) \rangle,  
+\label{eq:pvp}
+\end{eqnarray}
+where $1\equiv ({\bf k},{\bf G_1})$ and so on.
+Here $P_1(phiphi)$ indidates 
+that an IPW made from a product
+of IPWs.The matrix elements
+$\langle {P}_{2''}| {P}_{2'} \rangle^{-1}$ 
+(stored into \io{PPOVLG,PPOVLI})
+and $\langle {P_{2'}} | P_2(phiphi) \rangle$ 
+(stored into \io{PPOVLGG})
+are given at {\tt rdata4gw}.
+
+
+\subsection{Overlap matrix of PPOVL* files}
+\io{PPOVL*} files contains the 
+overlap matrix of IPWs 
+$\langle {P}^{\bf k}_{{\bf G}}|{P}^{\bf k}_{{\bf G'}}\rangle$
+.
+We have two types of $\langle {P}^{\bf k}_{{\bf G}}|{P}^{\bf k}_{{\bf G'}}\rangle$.
+One is for the Coulomb matrix (PPOVLG,PPOVLI).
+The other is for generating 
+$\langle G({\rm eigenfun.}) G({\rm eigenfun.})| G({\rm cou}) \rangle$.  
+(a product of IPWs of eigenfunctions can be
+expanded by IPWs for Coulomb matrix).
+
+The overlap matrix elements 
+$\langle {P}^{\bf k}_{{\bf G}}|{P}^{\bf k}_{{\bf G'}}\rangle$ 
+are generated in \verb!rdata4gw!.
+These are read and allocated in the module 
+\verb!m_read_ppovl (rppovl.F)! when we call 
+\verb!getppx2!. We have "call getppx2" in the
+subroutine melpln2t in ppbafp.fal.F.
+The melpln2t is for generating the matrix element of
+\verb!<IPW psi |psi>!.
+
+\begin{verbatim}
+(1)PPOVLG + PPOVLI:
+   For q in qibze(1:3,1:nqnumt) (=IBZ + Q0P points), 
+   number of IPWcou =ngc can be dependent of q.
+   We have <k+G|k+G'>= ppovl(ngc,ngc) 
+   PPOVLG: G vectors as ngvecc(1:ngc).
+   PPOVLI: ppovl^-1(ngc,ngc). Inverse of PPOVL0
+   (PPOVL0 is unused now. It is divided into PPOVLG and PPOVLI).
+
+   In principle the matrix element itself is k-independent,
+   (just the difference of G vectors due to periodicity).
+   But, for convenience, we generate them separately for each k.
+
+(2)PPOVLGG: 
+  This is used for <Gphi Gphi|Gc>.
+  ppovl(nggg,ngcgp) for nvggg,nvgcgp
+  Range of G for nvggg is |Gc+Gp+Gp|< |Gcou|+ |Gphi|+ |Gphi| 
+  (triangle inequality.)
+  This is only for k=0 (Thus we remove k-dependece).
+  ngcgp 
+    QpGcutggg = (2d0+1d-2)*QpGcut_psi+QpGcut_cou+ 2d0*pi/alat*dQpG 
+    QpGcutgcgp= (1d0+1d-2)*QpGcut_psi+QpGcut_cou+ 2d0* 2d0*pi/alat*dQQ
+  dQpG, dQQ is to enlarge range related to Q0P points.
+
+\end{verbatim}
+
+
+\subsection{$\langle {P}^\bfk_\bfG |v| {P}^\bfk_{\bfG'} \rangle$}
+To evaluate \req{eq:pvp}, we need to know 
+its main part $\langle {P}^\bfk_\bfG |v| {P}^\bfk_{\bfG'} \rangle$. It is written as
+\begin{eqnarray}
+\langle {P}^\bfk_\bfG |v| {P}^\bfk_{\bfG'} \rangle
+\approx
+\langle \bar{P}^\bfk_\bfG |v| \bar{P}^\bfk_{\bfG'} \rangle
+&=&\langle \exp(i(\bfk+\bfG)\bfr) |v| \exp(i(\bfk+\bfG')\bfr) \rangle
+-\sum_{\bfR{L}} 
+\langle P^{\bfk+\bfG}_{\bfR{L}}|v| \exp(i(\bfk+\bfG')\bfr) \rangle \nonumber \\
+&-&\sum_{\bfR'{L'}} 
+\langle \exp(i(\bfk+\bfG')\bfr) |v| P^{\bfk+\bfG'}_{\bfR'{L'}}\rangle
++\sum_{\bfR{L}} \sum_{\bfR'{L'}} 
+\langle P^{\bfk+\bfG}_{\bfR{L}}|v|P^{\bfk+\bfG'}_{\bfR'{L'}} \rangle,
+\label{eq:barpvbarp}
+\end{eqnarray}
+where $P^{\bfk+\bfG}_{\bfR{L}}$ denotes 
+the projection of PW to ${\bfR{L}}$,
+That is, 
+$P^{\bfk+\bfG}_{\bfR{L}} \equiv 
+{P}_{\bfR{L}} e^{i ({\bf k+ G}){\bf r}}$.
+
+\paragraph{The first term}  
+The first term in the right-hand side of \req{eq:barpvbarp} is
+\begin{eqnarray}
+\langle \exp(i(\bfk+\bfG)\bfr) |v| \exp(i(\bfk+\bfG')\bfr) \rangle
+=\frac{4 \pi \Omega}{|\bfk+\bfG|^2+|E|} \delta_{\bfG\bfG'},
+\label{eq:barpvbarp1st}
+\end{eqnarray}
+because we simply use $\exp(i(\bfk+\bfG)\bfr)$ 
+(no prefactor for normalization) for IPW. 
+Here $E$\verb!=eee! is negative (or (almost) zero). 
+This is coded by a line 
+\begin{verbatim}
+  if(ig1==ig2) vcoul(ipl1,ipl2) = fpivol/(absqg2(ig1) -eee)
+@subr:vroulq_4@L281:mkjp.F.
+\end{verbatim}
+
+\paragraph{The second and third term}
+In the second  term,
+we can replace $v$ with $\frac{4 \pi \Omega}{|\bfk+\bfG'|^2+|E|}$
+since $v$ is diagonal for $|\exp(i(\bfk+\bfG')\bfr) \rangle$, the third term as well. 
+Without $v$, we have
+\begin{eqnarray}
+&&\langle \exp(i(\bfk+\bfG)\bfr)| P^{\bfk+\bfG'}_{\bfR'{L'}}\rangle
+=\sum_{\bfR{L}} \langle 
+P^{\bfk+\bfG}_{\bfR{L}}|
+P^{\bfk+\bfG'}_{\bfR'{L'}}\rangle \nonumber \\
+&&=\sum_{\bfR{L}} 
+({\tt pjyl\_}(\bfk+\bfG,L) \exp(i(\bfk+\bfG)\bfR))^* 
+\times R^{JJ}(|\bfk+\bfG|,|\bfk+\bfG'|,l) \nonumber \\
+&&\times {\tt pjyl\_}(\bfk+\bfG',L) \exp(i(\bfk+\bfG')\bfR), \label{eq:fourvp0}
+\end{eqnarray}
+where we use 
+\begin{eqnarray}
+&&P^{\bfk+\bfG}_{\bfR{L}}(\bfr)=4 \pi i^l j_l(|{\bfk+\bfG}|r) 
+Y_L(\widehat{\bfk+\bfG}) Y_L(\hat{\bfr})\exp(i(\bfk+\bfG)\bfR)\nonumber \\
+&&= {\tt pjyl\_}(\bfk+\bfG,L) \bar{J}_l(|{\bfk+\bfG}|r) Y_L(\hat{\bfr})
+\exp(i(\bfk+\bfG)\bfR), 
+\end{eqnarray}
+where $\bfr$ is measured from the center $\bfR$.
+Here we use {\tt pjyl\_} defined as
+\begin{eqnarray}
+{\tt pjyl\_}(\bfk+\bfG,L) 
+=4 \pi i^l |\bfk+\bfG|^l Y_L(\widehat{\bfk+\bfG}) \end{eqnarray}
+(recall the definition of $\bar{J}_l$.
+In codes, {\tt cy(lm)*yl(lm)}
+$=Y_L(\widehat{\bfk+\bfG})$.)
+Search {\tt pjyl\_} in {\tt mkjp.F}.
+The Bessel functions appear here in the expansion of PW; see \req{eq:expandpw}.
+$R^{JJ}(|\bfk+\bfG|,|\bfk+\bfG'|,l)$
+is given as
+\begin{eqnarray}
+R^{JJ}(|\bfk+\bfG|,|\bfk+\bfG'|,l)
+= \int_0^R  r^2 \bar{J}_l(|{\bfk+\bfG}|r)
+\bar{J}_l(|{\bfk+\bfG'}|r) dr ,
+\end{eqnarray}
+which can be calculated by the wronskian ({\tt wronskj}) by the formula
+\begin{eqnarray}
+R^{JJ}(\kappa_{\rm A},\kappa_{\rm B},l)=
+\int_0^R \!\!r^2 \bar{J}_l(\kappa_{\rm A} r)
+\bar{J}_l(\kappa_{\rm B} r) dr
+=R^2\frac{
+\bar{J}_l(\kappa_{\rm A} r) \frac{d \bar{J}_l(\kappa_{\rm B} r)}{dr}
+-\frac{d \bar{J}_l(\kappa_{\rm A} r)}{dr}\bar{J}_l(\kappa_{\rm B} r)
+}{\kappa_{\rm A}^2-\kappa_{\rm B}^2}\Big|_{r=R}= {\tt -fjj}
+\end{eqnarray}
+({\tt -fjj} is used in {\tt mkjp.F}.
+In codes, the contributions to the second and third terms of \req{eq:barpvbarp} due to $\bfR{L}$ components are given as (simplified for illustration) 
+\begin{verbatim}
+  fouvp_ig1_ig2 = fpi/(absqg2(ig1)-eee)                  &
+         * dconjg(pjyl_(lm2,ig1)*phase(ig1,ibas2))      &  
+         * (-fjj(l)) * pjyl_(lm2,ig2)*phase(ig2,ibas2)
+  fouvp_ig2_ig1 = fpi/(absqg2(ig2)-eee)                  & 
+         * dconjg(pjyl_(lm2,ig2)*phase(ig2,ibas2))      &
+         * (-fjj(l)) * pjyl_(lm2,ig1)*phase(ig1,ibas2)
+\end{verbatim}
+Look for the keyword \verb!fourvp! in \verb!mkjp.F!.
+Correspondences are
+\begin{verbatim}
+fpi --> 4 pi
+absqg2(ig1) --> |q+G1|**2
+-eee        --> |E|
+lm2         --> L
+ibas2       --> R
+\end{verbatim}
+
+\paragraph{The forth term}
+The last term of \req{eq:barpvbarp} can be calculated essentially
+the same manner with $\langle B| v| B\rangle$, where we use the
+Bessel function instead of $B_{\bfR{l}\mu}(r)$ appeared in Sec.\ref{sec:bvbpart}.
+Then we define integrals 
+{\tt rojp} and {\tt sgpp} defined as (in {\tt fpgw/gwsrc/mkjp.F});
+\begin{eqnarray}
+{\tt rojp}(\bfR L)&=&{\tt pjyl\_} \ 
+\exp(i (\bfq+\bfG) \bfR)  \rho^l(\bar{J}_l) \\
+{\tt sgpp}(\bfR L,\bfG,\bfG')&=&{\tt pjyl\_^*(ig1)} \exp(-i (\bfq+\bfG) \bfR)
+{\tt pjyl\_(ig2)} \exp(i (\bfq+\bfG') \bfR) 
+\nonumber \\
+&&  \times {\tt  radsig}, \nonumber \\
+&& \ {\rm where\ }
+{\tt radsig}=\sigma^l(\bar{J}_l(|\bfq+\bfG|r),\bar{J}_l(|\bfq+\bfG'|r)).
+\end{eqnarray} 
+Thus, {\tt rojp} and {\tt sgpp} made of coefficients for explansion
+and radial integral.
+Search {\tt sgpp\_ig1\_ig2} in {\tt mkjp.F}. 
+
+\subsection{$\langle P|B \rangle$ part}
+\begin{eqnarray}
+&&\langle {P}^\bfk_{\bfG} |v| B^\bfk_{\bfR{L}\mu}(\bfr) \rangle
+=\langle  \exp(i(\bfk+\bfG)\bfr) 
+|v|B^\bfk_{\bfR{L}\mu}(\bfr) \rangle
+-\sum_{\bfR'{L'}} 
+\langle P^{\bfk+\bfG}_{\bfR{L}}|v|
+B^\bfk_{\bfR{L}\mu}(\bfr)  \rangle \nonumber \\
+&&={\tt fouvb}(\bfG,\bfR L \mu)
+-\sum_{\bfR'L'} {\tt rojp * strx * rojb}
+\label{eq:pvb}
+\end{eqnarray}
+The first term is stored in {\tt fouvb(ngc,nxx,nlxx,nbas)} allocated at 
+{\tt L824:hvccfp0.m.F}.
+Search {\tt fouvb} in {\tt mkjp.F}. 
+Since $v$ is diagonal to PWs,
+we can evaluate this in the similar manner of \req{eq:fourvp0}.
+The second term can be evaluated from 
+{\tt rojb} and {\tt sgpb} in the same manner of last section.
+
+\underconstruction(we will detail a little more...)
+
+\section{Offset-$\Gamma$ method; W(k=0) averaged in the $\Gamma$ cell.}
+\label{sec:kint}
+The offset-$\Gamma$ method, originally 
+invented for Ref.\cite{kotani_all-electron_2002} by Kotani 
+(it is described in Ref.\cite{kotani_quasiparticle_2007}), 
+was a key to perform accurate $GW$ 
+calculation in our papers.
+It is for the integration of $\bfk$ 
+in Eqs.(\ref{eq:sigx}) and (\ref{sigmann}), where
+we have the integrands that diverge at $\bfk \to 0$.
+The original offset $\Gamma$ method works well 
+for highly symmetric systems; however,
+it may be problematic to apply to less symmetric systems, 
+because the anisotropic divergence of the integrands 
+%in \req{eq:sigx} and \req{sigmann} around $\bfk=0$ 
+may not be treated accurately.
+
+Here we show an improved offset-$\Gamma$ method, which treats
+the anisotropy of $W(\bfk,\omega)$ accurately.
+In the followings, we use expression $W(\bfk)$
+for simplicity (omit subscripts and $\omega$)
+instead of $W_{\mu \nu}(\bfk,\omega)$, 
+since we are concerned with the $\bfk$ integral here.
+
+% In the improved offset-$\Gamma$ method presented here,
+% the integrals for the integrand $f(\bfk)=G(\bfq-\bfk) \times W(\bfk)$ 
+% with respect to $\bfk$ in the BZ, 
+% is evaluated by the usual discrete sum on the regular $\bfk$ mesh points, 
+% except a point that we replace 
+% $W(\bfk=0)$ (this is divergent) with $\overline{W}(\bfk=0)$ which is
+% not divergent at $\bfk=0$.
+% %$effective $W(\bfk=0)$.
+% Roughly speaking, 
+% $\overline{W}(\bfk=0)$ is evaluated as an average of $W(\bfk)$ 
+% in the microcell named as the $\Gamma$ cell
+% (the microcell including the $\Gamma$ point)\cite{freysoldt_dielectric_2007}.
+
+Let us give a formula for calculating
+$\int_{\rm BZ} f(\bfk) d^3k$ using a discrete sum on $\bfk$-mesh,
+where $f(\bfk)=G(\bfq-\bfk) \times W(\bfk)$.
+For the $\bfk$-mesh, we use
+\begin{eqnarray}
+{\bf k}(i_1,i_2,i_3) &=& 2 \pi (\frac{i_1}{N_1} {\bf b}_1 
++ \frac{i_2}{N_2} {\bf b}_2 + \frac{i_3}{N_3} {\bf b}_3),
+\label{kmesh}
+%\\
+%\sum_{\bf k}^{\rm BZ} &\approx& \frac{1}{N_1N_2N_3} \sum_{i_1,i_2,i_3},
+\nonumber
+\end{eqnarray}
+where ${\bf b}_1, {\bf b}_2$, and ${\bf b}_3$ are the primitive reciprocal
+vectors (the same as the Eq.(47) in Ref.\cite{kotani_quasiparticle_2007}). 
+The 1st BZ is divided into $N=N_1 \times N_2 \times N_3$
+microcells ($i_1=0,1,... N_1-1$, and also the same for $i_2$ and $i_3$.).
+The microcell including the $\Gamma$ point is called the
+$\Gamma$ cell \cite{freysoldt_dielectric_2007}.
+The main problem is how to evaluate the contribution of the $\Gamma$ cell.
+%where we have divergent behavior $f(\bfk \to 0)$.
+The divergent part of $f(\bfk)$ behaves $\approx$ (analytic function of $\bfk$) 
+$/(\bfk^{\rm T}{\bf L}\bfk)$, 
+where $\bfk^{\rm T}$ denotes the transpose of $\bfk$; ${\bf L}$
+is a $3\times3$ Hermitian matrix \cite{friedrich_efficient_2010}. 
+%{\sum_{ij} k_i L_{ij}(\omega)k_j}$ at $\bfk \to 0$;
+%$L_{ij}$ means a three-by-three hermitian matrix; $k_i$ means the
+%component of $\bfk$. 
+We neglect an odd part of $\bfk$ in the above (analytic function of $\bfk$)
+because it has no contribution to the integral around $\bfk=0$.
+Thus it is sufficient to consider the integral for $f(\bfk)$ whose divergent parts behave
+as $f(\bfk)=\sum_L \frac{f_L Y_L(\widehat{\bfk})}{|\bfk|^2}$ at $\bfk \to 0$, 
+where $l$ of $L\equiv(l,m)$ is restricted to be even numbers.
+We evaluate the integral using the formula
+\begin{eqnarray}
+\int_{\rm BZ} f(\bfk) d^3k \approx \frac{1}{N}\sum^{\bfk \ne 0} f(\bfk)
+ + \sum_L f_L w_L + \frac{1}{N} \tilde{f},
+\label{eq:bzint0}
+\end{eqnarray}
+which is introduced in Ref.\cite{freysoldt_dielectric_2007}. 
+Here the weight $w_L$ is determined in a manner as follows,
+so as to take into account the contributions of 
+the divergent part of $f(\bfk)$ at $\bfk \to 0$ in the $\Gamma$ cell.
+$\tilde{f}$ is the constant part of $f(\bfk)$ at $\bfk \to 0$.
+
+To determine $w_L$, we can use the following procedure instead of that given 
+in Ref.\cite{freysoldt_dielectric_2007}.
+We first introduce the auxiliary function  
+\begin{eqnarray}
+F_L(\bfk) =\sum_{\bfG} \frac{\exp(- \alpha
+ |\bfk-\bfG|^2)Y_L(\widehat{\bfk-\bfG})}{|\bfk-\bfG|^2}.
+\end{eqnarray}
+This is a generalization of an auxiliary function used in the 
+offset-$\Gamma$ method (then we only used $F_{00}$ \cite{kotani_quasiparticle_2007}).
+We usually take the $\alpha \to 0$ limit, or a sufficiently small $\alpha$ instead.
+Let us apply \req{eq:bzint0} to $F_L(\bfk)$.
+Then we can evaluate the left-hand side of \req{eq:bzint0}
+exactly (the exact values are zero except for $L=(0,0)$). 
+On the other hand, the first and 
+third terms on the right-hand side of \req{eq:bzint0}
+can be evaluated numerically.
+In addition, we know that $f_{L'}$ for $F_L(\bfk)$ is unity for $L'=L$,
+and zero otherwise.
+Thus we can determine $w_L$ in \req{eq:bzint0}
+so that \req{eq:bzint0} is exactly satisfied for $F_L(\bfk)$ for any $L$.
+
+% With a definition $\bar{f}(0) \equiv N \sum_L f_L w_L
+% +\tilde{f}$, we can rewrite \req{eq:bzint0} as
+% \begin{eqnarray}
+% \int_{\rm BZ} f(\bfk) d^3k \approx \frac{1}{N}\sum_{\bfk \ne 0} f(\bfk)
+%  + \frac{1}{N} \bar{f}(0).
+% \label{eq:bzint}
+% \end{eqnarray}
+% That is, we can use the usual formula of discrete sum but with
+% $\bar{f}(0)$, which means the effective value of $f(\bfk)$ at $\bfk \to 0$
+% for integration. 
+
+Let us apply \req{eq:bzint0} to $f(\bfk)=G(\bfq-\bfk) \times W(\bfk)$.
+Then we perform an approximation taking only the most divergent term 
+in $W(\bfk)$ in addition to its analytic part. That is, we use
+\begin{eqnarray}
+W_{\mu \nu}(\bfk) \sim \widetilde{W}_{\mu \nu}(\bfzero) +
+ \frac{4 \pi}{\bfk^{\rm T} {\bf L} \bfk}
+ \delta_{1\mu}\delta_{1\nu}
+\label{eq:wnear0}
+\end{eqnarray}
+at $\bfk \to 0$. 
+$\widetilde{W}_{\mu \nu}(\bfzero)=0$ for $\mu=1$ or $\nu=1$. 
+See Eq.(36) in Ref.\cite{friedrich_efficient_2010} to know what is
+neglected in the approximation of \req{eq:wnear0}.
+%Compare \req{eq:wnear0} with \req{eq:}.
+
+%We use \req{eq:wnear0} for $W$ in $f(\bfk)$ in \req{eq:bzint}. 
+%Furthermore,
+%we neglect the contributions 
+%terms of 0th-order of $\bfk$, yielded as the divergent term
+%in \req{eq:wnear0} multipled by the 2nd-order terms of $\bfk$ in $G(\bfq-\bfk)$.
+Then we finally obtain
+\begin{eqnarray}
+\int_{\rm BZ} d^3k G(\bfq-\bfk) W(\bfk) 
+\approx \overline{\sum G(\bfq-\bfk) W(\bfk)},\label{eq:bzintbar}
+\end{eqnarray}
+where its right-hand side is defined as
+\begin{eqnarray}
+&&\overline{\sum G(\bfq-\bfk) W(\bfk)} \nonumber \\
+&&\equiv 
+\frac{1}{N} \sum_{\bfk \ne 0} G(\bfq-\bfk) W(\bfk) + \frac{1}{N} G(\bfq)\overline{W}(\bfzero),\\
+&&\overline{W}(\bfzero)\equiv N\sum w_L W_L + \widetilde{W}(\bfzero).
+\end{eqnarray}
+Here $\overline{W}(\bfzero)$ is an %a type of 
+average of $W$ in the $\Gamma$ cell.
+With this $\overline{W}(\bfzero)$, we can 
+evaluate integrals just as the sum on the discrete $\bfk$-mesh.
+When the matrix ${\bf L}$ is given 
+(a method of calculating ${\bf L}$ is given in the next paragraph),
+the non-analytic (but non-divergent) function 
+${\bfk^{\rm T}{\bf L}\bfk}/|\bfk^2|$ 
+is expanded in the spherical harmonics. Then
+$W_L$ is calculated for a given ${\bf L}$ in the manner shown in Ref.\cite{friedrich_efficient_2010}. 
+We can evaluate the accuracy of integrals with a discrete $\bfk$-mesh
+in combination with the approximation of \req{eq:wnear0} 
+by calculations while changing the size of the $\bfk$-mesh.\\
+
+\begin{quote}
+{\noindent \bf [NOTE 2016-03-18:]}
+We now use only $w_L$ for $L=(0,0)$.
+T.Kotani found strange behavior for $W(\omega)$ for the Wannier
+functions (for La2CuO4) when we use all $w_L$.
+Then I observed non-monotonic behavior of its real part; recall that
+ we should see monotonic behavior as long as causality is satisfied.
+I found it is originated from non zero $w_L$ for $L\ne(0,0)$. 
+Thus we now use the formula "$w_L=0$ for $L\ne(0,0)$" in
+ \req{eq:bzint0}.In the case of metal at $\omega=0$, we have very large
+${\bf L}$ (virtually infinite); thus no $1/|{\bf k}|^2$ behavior.\\
+\end{quote}
+
+%Here we make an approximation
+%to use $G(\bfq) \overline{W}(\bfzero)$ instead of
+%$\overline{G(\bfq) W(\bfzero)}$ for simplicy.
+
+%Neglected terms are terms related to the wing elements of 
+%$W(\bfk \to \bfzero)$, and the quadratic term $W(\bfk \to \bfzero)$.
+%This cause some errors due to some origins
+%(from linear and quadratic order of $\bfk$ for $G(\bfq-\bfk)$)
+%by higher order terms of $G(\bfq-\bfk)$ times divergent terms. 
+%It is not so easy to evaluate the size of error
+
+%\subsection{evalulation of the effective $\overline{W}$ with the offset $\Gamma$ method}
+%Thus we have to calculate 
+%in addition to $W(\bfk)$ for $\bfk \ne \bfzero$.
+
+The remaining problem is how to calculate
+the matrix ${\bf L}$ in \req{eq:wnear0}; there are two possible ways.
+One is the $\bfk \cdot \bfp$ method (perturbation) used in Ref.\cite{friedrich_efficient_2010}; 
+the other is the numerical method to calculate ${\bf L}$ at some
+$\bfk$ points near $\bfk=0$. Here we use the latter method.
+Because of the point-group symmetry of the system, ${\bf L}$ can be expressed by the
+linear combination of invariant tensors $\mu_{ij}^g$ for the symmetry of the unit cell,
+\begin{eqnarray}
+L_{ij}(\omega)=  \sum_{g=1}^{N_g} a_g(\omega) \mu_{ij}^g,
+\end{eqnarray}
+where $g$ is the index of the invariant tensor. 
+The number of $g$'s $N_g$, can be
+from one (cubic symmetry) through six (no symmetry).
+It is possible to determine the coefficient $a_g(\omega)$
+from the dielectric functions ${\hat{\bfk}_{0i}}^{\rm T}{\bf L}\hat{\bfk}_{0i}$
+calculated at $\{\bfk_{0i}\}$ points around
+$\bfk=0$, where $\{\bfk_{0i}; i=1,N_g\}$ is a set of the offset-$\Gamma$ points.
+The offset-$\Gamma$ points are chosen so that the conversion matrix
+from $\hat{\bfk}_{0i}^{\rm T}{\bf L}(\omega)\hat{\bfk^{0i}}$ to $a_g(\omega)$
+is not numerically degenerated. The length $|\bfk^{0i}|$
+can be chosen to be sufficiently enough, but avoiding numerical error
+%(in practice, we now take the length is ten times smaller than $\bfq$ points
+%of the regular mesh points for the BZ integration).
+%
+% (Q0choice=1); one another choice is to be about 
+%the middle of the $\Gamma$ cell (Q0choice=2)
+as the average of $W(\bfk)$ in the $\Gamma$ cell.
+%The latter choice can be meaningful when
+%$\overline{W}(0)$ changes rapidly at $\bfq \to 0$, 
+The improved offset-$\Gamma$ method shown here can be applicable even to metal cases, as long as
+$\hat{\bfk}_{0i}^{\rm T}{\bf L}(\omega)\hat{\bfk_{0i}}$ contains the contribution
+of intraband transition.
+
+
+\begin{quote}
+{\noindent \bf [NOTE 2016-Nov:]}
+T.Kotani think evaluation of $L_ij(\omega)$ can be more effectively
+performed as for the convergence on number of $\bfk$ points.
+At least, without local field correction, we only need to calculate head part.
+For the head part, we may use large number of $\bfk$ points.
+\end{quote}
+
+
+\section{hx0fp0.sc.m.F. $W(\bfk,\omega)$ calculation}.
+\underconstruction
+
+
+\section{self-energy}.
+\underconstruction
+
+\section{Fourier transformation of MTO-Hamiltonian}
+It is better for you to run \verb#job_band# first. 
+Then you have QPLIST (after 17jan2018), which contains q point list for
+syml.*. In addition, numbers for x-axis is shown (convenient for plotting).
+
+When you use only MTOs, we can have the tight-binding type (real
+space) Hamiltonian. \verb#job_ham# shows the procedure.
+Its main part is
+\begin{verbatim}
+mpirun -np 4 ~/ecalj/lm7K/lmf-MPIK fe --quit=band -vpwmode=0 > lmf_efermi
+ ! we get efermi.lmf
+mpirun -np 4 ~/ecalj/lm7K/lmf-MPIK fe --writeham --mkprocar --fullmesh -vpwmode=0
+ ! we get HamiltonianMTO.(rankid) and HamitonianMTOInfo files.
+cat HamiltonianMTO.* >HamiltonianMTO
+ ! Merge files into a file 
+~/ecalj/lm7K/lmfham
+\end{verbatim}
+Here, \verb#efermi.lmf# contains the Fermi energy (determine it from the
+calculated energy bands for the given basis. Potential is rst.* and sigm.*).
+In addtion, number of electrons and magnetic moments are shown in it.
+
+Main procedure is
+\verb#~/ecalj/lm7K/lmf-MPIK fe --writeham --mkprocar --fullmesh -vpwmode=0#.
+Here, all the requied informations are  HamiltonianMTO.* and
+HamiltonianMTOInfo. These files contains Hamiltonians $H_{ij}(\bfk)$ and
+overlap matrix $O_{ij}(\bfk)$. In addition, it contains info for the set
+of $\bfk$ points and the set of cell translational vectors $\bfT$.
+(And some additional info. See \verb#lm7K/lmham.F#). 
+Then we run \verb#lmfham# (small program). This reads these file, and
+convert them to the real space representation as 
+$H_{ij}(\bfT)$ and $O_{ij}(\bfT)$. 
+
+\begin{eqnarray}
+H_{ij}(\bfT)= \frac{1}{N} \sum_\bfk H_{ij}(\bfk) \exp(i \bfk \bfT) \label{eqfft1} \\
+H_{ij}(\bfk)= \sum_{\bfT \in \bfT(i,j)} \frac{1}{n_{\rm T}} H_{ij}(\bfk)
+ \exp(-i \bfk \bfT)  \label{eqfft2}
+\end{eqnarray}
+Here, $N$ is the number of $\bfk$ points. $n_{\rm T}$ is the
+degeneracy for $\bfT$. $\bfT(i,j)$ means a set of $\bfT$ for given $ij$
+(exactly speaking, a pair of atomic sites are specified from  orbital index $i$ and $j$.
+The pair of atomic sites determines the set $\bfT(i,j)$).
+
+Sum check is
+\begin{eqnarray}
+\sum_{\bfT \in \bfT(i,j)} \frac{1}{n_{\rm T}} = 1, \ \ \
+\frac{1}{N} \sum_\bfk 1 = 1.
+\end{eqnarray}
+Completeness relation for the Fourier transformation (combine
+Eqs.(\ref{eqfft1}) and (\ref{eqfft2}) ) is
+\begin{eqnarray}
+\delta_{\bfk\bfk'}=  \frac{1}{N} \sum_{\bfT \in \bfT(i,j)}
+ \frac{1}{n_{\rm T}} \exp(i (\bfk-\bfk')\bfT).
+\end{eqnarray}
+
+
+\section{Fourier transformation of non-local quantity}
+We have "{\tt call bloch}" in {\tt lm7K/fp/bndfp.F}.
+This is for the three dimensional FFT.
+The usual FT is by
+\begin{eqnarray}
+f(\bfT)=\sum_\bfk f(\bfk) \exp(i \bfk \bfT),
+\end{eqnarray}
+where $\{\bfk\}$ is are on the regular mesh points.
+The total number of its members is $N_1 \times N_2 \times N_3$.
+(the number is the same as that of $\{\bfT\}$).
+Note that we have periodicity both in $\bfk$ points
+and in $\bfT$ points. Because of the periodicity, the range of $\{\bfk\}$
+is not unique, the range of $\{\bfT\}$ as well.
+
+Let us think about non-local quantity which is dependent on $\bfT-\bfT'$. Then we have
+\begin{eqnarray}
+f(\bfR\bfT,\bfR'\bfT')=\sum_\bfk 
+f_{\bfR\bfR'}(\bfk) \exp(i \bfk (\bfT-\bfT')),
+\label{eq:nonlocalft}
+\end{eqnarray}
+In practical calculations (static version of self-energy treated by
+{\tt bloch} called in {\tt fp/bndfp.F}), 
+we first calculate $f_{\bfR\bfR'}(\bfk)$ on $\bfk$ of regular mesh points. Then we
+need to obtain its real-space representation
+$f(\bfR\bfT,\bfR'\bfT')$. Because of the periodicity,
+we have ambiguity for the choice of possible 
+$|\bfT-\bfT'|$. If we introduce $\bar{\bf T}=\bfT-\bfT'$,
+\req{eq:nonlocalft} is written as
+$f(\bfR\bar{\bfT},\bfR'0)=\sum_\bfk 
+f_{\bfR\bfR'}(\bfk) \exp(i \bfk \bar{\bfT})$ because of translational symmetry.
+
+A reasonable choice is that we allow $\bar{\bfT}$
+which satisfy $|\bfR-\bfR'+\bar{\bfT}|\le\eta_{\rm FTmax}$.
+Here we should choose $\eta_{\rm FTmax}$ so that
+the number of alllowed $\{\bar{\bf T}\}$ is $N_1 \times N_2 \times N_3$.
+Howerever, it can be not possible, because of
+deneneracy; for the largest value of $|\bfR-\bfR'+\bar{\bfT}|$ in the
+alllowed $\{\bar{\bf T}\}$, we may 
+have some of $\bar{\bfT}$ (we say degenerated). 
+Then we need to give fractional weight for such $\bar{\bfT}$.
+
+To get a list of $\bar{\bfT}$,
+we need to collect them satisfying 
+$|\bfR-\bfR'+\bar{\bf T}|<\eta_{\rm FTmax}$.
+$\eta_{\rm FTmax}$ should be automatically chosen.
+However, in the "{\tt bloch}" subroutine, this it too primitive yet(aug2015);
+we need to specify possible upper limit of 
+"range of allowed pairs" $(\bfR\bar{\bfT},\bfR'0)$ by hand.
+({\tt RSRNGE} in {\tt ctrl} file). This should be fixed in future.
+In the current version {\tt iaxs (=\verb#sham%iv_a_oiaxs#)} contains such pair table.
+It is generated by {\tt call hft2rs} in {\tt call seneinterp} in {\tt bndfp.F}, I think.
+We will have to replace "{\tt bloch}" with better version. Pair table must be generated 
+in a simple manner( with the technique of 
+{\tt getgv2} ({\tt getgv2} is given in {\tt fpgw/gwsrc/getgv2.F} and {\tt lm7K/subs/pairs.F}. 
+
+
+\section{Interpolation of the self-energy in the Brillouin zone}
+\label{sec:siginterp}
+Here we show 
+an interpolation procedure for giving
+$\vxc_{\bfk}$ at any $\bfk$,
+from $\vxc_{\bfk}$ calculated only at the regular mesh points $\bfk(i_1,i_2,i_3)$.
+This interpolation is used for the offset-$\Gamma$ method that
+requires $W(\omega)$ at $\{\bfk_{0i}\}$;
+to calculate this $W(\omega)$, we need 
+eigenfunctions and eigenvalues not only 
+at the regular mesh points $\bfk(i_1,i_2,i_3)$
+but also at $\bfk(i_1,i_2,i_3)+\bfk_{0i}$. 
+This interpolation is also useful for plotting
+energy bands. %, thus to obtain effective mass and so on. 
+%(not so many $GW$ codes can make this interpolation).
+A key point of the interpolation is that $\vxc$ 
+is expanded in real space in highly localized MTOs as follows.
+
+At the end of step (IV) in Sec.\ref{sec:qsgwth}, we obtain the matrix elements
+$\langle \Psikn | \Dvxc_\bfk | \Psikm \rangle$ on the regular mesh
+points of $\bfk$, where
+$\Dvxc_\bfk=\vxc_\bfk-V^{\rm xc,LDA}_\bfk$.
+Then it is converted to the representation in the APW and MTO bases as
+\begin{eqnarray}
+\langle \chi^{\bfk}_a| \Dvxc_\bfk | \chi^{\bfk}_b \rangle
+= \sum_{n,m} \left(z^{-1}\right)^*_{an}\langle \Psikn |\Dvxc_\bfk |
+\Psikm \rangle z_{bm}^{-1}, \nonumber \\
+\label{eqvxcchi}
+\end{eqnarray}
+where we use the simplified basis index $a$, which is the index for specifying a basis 
+($\brl{j}$ for MTO or ${\bfG}$ for APW).
+Thus $\chi^{\bfk}_a$ denotes the APWs or MTOs in \req{eqeigen};
+$z_{na}$ ($\bfk$ is omitted for simplicity)
+denotes the coefficients of the eigenfunctions at $\bfk$, that is,
+$z^{{\bfk}n}_{\brl{j}}$ and $z^{\bfk n}_{\bfG}$ in \req{eqeigen} together.
+This $z_{an}$ is identified as a conversion matrix that connects
+eigenfunctions (band index $n$) and the APW and MTO bases (basis index $a$).
+
+To obtain real-space representation of $\Dvxc$, we need a representation
+expanded in the basis that consist of the Bloch-summed localized orbitals, 
+which are periodic for $\bfk$ in the BZ. However, this is not the case for the APWs in
+\req{eqvxcchi}. To overcome this problem, we use an approximation 
+in which we only take the matrix elements 
+related to MTOs, that is, the elements 
+$\langle \chi^{\bfk}_a| \Dvxc_\bfk | \chi^{\bfk}_b \rangle$
+where $a$ and $b$ specify MTOs.
+%This means that $\Dvxc$ is expanded in the basis of MTOs. 
+This means that the part of $\Dvxc$ related to APWs is projected onto the basis of MTOs.
+This approximation can be reasonable as long as the main part of $\Dvxc$ can be
+well expanded in MTOs,
+although we need numerical tests to confirm the accuracy as shown in Sec.\ref{sec:numtest}.
+Then we obtain a real-space representation of 
+$\Dvxc$ expanded in MTOs from the MTO part of 
+$\langle \chi^{\bfk}_a| \Dvxc_\bfk | \chi^{\bfk}_b \rangle$ by Fourier transformation.
+%kino1 one=Dvxc? it=Dvxc? ---> naoshimasu.
+Then we can have interpolated $\Dvxc$ at any $\bfk$ by inverse Fourier transformation.
+%kino1 Since we now usually use very localized MTOs, 
+%kotani1
+Since we use highly localized MTOs, 
+this interpolation is more stable 
+than the previous one in FP-LMTO-QSGW \cite{kotani_quasiparticle_2007}.
+The complicated interpolation procedure 
+given in Sec.II-G in Ref.\cite{kotani_quasiparticle_2007} is no
+longer necessary.
+
+%In the plane wave based implementation, 
+%Hamann and Vanderbilt used the maximally localized Wannier functions 
+%for the latter role \cite{hamann09}.
+%Considering the fact that MTOs themselves are good basis to represent eigenfunctions,
+%we can expect this procedure works well. In principle, it is possible to test
+%numerical errors in this method by changing the number of MTOs.
+%Numerical tests are shown in Sec.\cite{}.
+To reduce the computational time,
+we calculate the matrix elements $\langle \Psikn |\Dvxc_\bfk | \Psikm \rangle$ only up to the states whose
+eigenvalues are less than $\EMAXS$. 
+Then the high energy parts of the matrix elements are assumed 
+to be diagonal, where their values are given by a simple average 
+of calculated diagonal elements.
+
+
+
+
+\section{Overview of gwsc and other scripts}
+The fpgw/exec/gwsc is the main script to run QSGW.
+After we finish one-body self-consistent calculation, 
+we run \exe{echo 0$|$lmfgw}, resulting small files.
+See Sec.\ref{gwsc}. Then we run qg4gw to generate q+G vectors
+stored in \io{QGpsi,QGcou,Q0P} files, in addition to EPSwklm, which is for offset-Gamma method \ref{xxx}.
+Then we run lmfgw-MPI which is to calculate eigenfunctions
+and eigenvalues (and some quantities) required for successive
+main part of QSGW calculation.
+We recommend you to examine this first.
+
+For the one-shot GW, we have another script \exe{gw\_lmfh}.
+For dielectric functions (and for $\chi_{+-}^0$, we have \exe{eps*}.
+These are slightly different from gwsc, calling
+slightly different version of fortran programs.
+Wannier function calculations can be done by \exe{genMLWF},
+which not only generates Wannier functions (tight-binding parameters), 
+but also W and U between Wannier functions (RPA and cRPA) together. 
+It is in \io{fpgw/Wannier} directory.
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+In Sec.~\ref{sec:kint}, we show a new improvement in the offset-$\Gamma$ method, which is
+made in order to treat the $\bfk \to 0$ divergence of the integrand for the self-energy calculation.
+This improvement can correctly capture the anisotropy of the screened Coulomb interaction,
+although the previous offset-$\Gamma$ method in FP-LMTO-QSGW \cite{kotani_quasiparticle_2007}
+can be problematic for treating anisotropic systems.
+
+In Sec.~\ref{sec:siginterp}, we explain the interpolation procedure of 
+$\vxc_\bfk(\bfr,\bfr')$. The procedure is simplified in comparison with that used in FP-LMTO-QSGW.
+
+
+
+
+%xxxxx this document until here is the same as pmtqsgw8.tex xxxxx
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\subsection{xxxxxxxxxxxxxxxxx, bz setting, q+G for phi and for vcoul}
+qg4gw-mkqg routines.
+QIBZ,QBZ 
+
+qibz nqbz,qibz wibz, 
+nqibze Q0P
+
+iq0pin mode:
+generate q0p: algorism
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\newpage
+\section{Used files} 
+\subsection{@MNLA\_CPHI}
+\label{sec:atmnla}
+\begin{verbatim}
+    m    n    l ibas
+     0     1     0     1     1     1
+     0     2     0     1     2     2
+    -1     1     1     1     3     3
+     0     1     1     1     4     3
+     1     1     1     1     5     3
+    -1     2     1     1     6     4
+     0     2     1     1     7     4
+     1     2     1     1     8     4
+    -2     1     2     1     9     5
+    -1     1     2     1    10     5
+     0     1     2     1    11     5
+\end{verbatim}
+m is a magnetic quantum number, n is the degree of freedom which means 1 : $\phi$, 2 : $\dot{\phi}$, and 3 : local orbital. l is the orbital angular quantum number. The match of orbitals and m number is shown by {\bf job\_pdos} command.The following number is the number of atom. And the next is the numerating number. It corresponds to the number in GWinput which is the most left one in the initial conditions.
+
+
+
+
+\section{General cautions for developers}
+\exe{gwsc} is the main script to perform QSGW.
+Sec.\ref{gwsc} gives an overview.
+Sec.\ref{mainoutputgw} explain main output files.
+Sec. \ref{gwscscript} explains all i/o files.
+
+At first, note that one-body part \io{lmv7} and \io{fpgw}
+are divided, mainly because of historical reasons.
+Make procedure is complicated, but automatic
+by \io{ecalj/InstallAll.*} (See. \raw{ecalj/README.md}).
+
+Main make system of ecalj is in ecalj/InstallAll.*.
+As you see in it, makefile for fpgw (GW part) is 
+located at \io{fpgw/gwsrc/exec/makefile}. 
+(memo:
+apr2015. A little too much complicated because of duplicated definition
+of subroutines... We need to simplify variables...).
+
+Cautions are;
+\begin{itemize}
+\item 
+Integrated Make system; \io{ecalj/InstallAll.*}\\
+For development, see ecalj/InstallAll.ifort (.gfortran)
+This let you know how to invoke make.
+The ecalj consists of three make procedure.
+lmv7, fpgw/exec/, fpgw/Wannier.
+\item Install test\\
+At the end of \io{InstallAll.*}, we have \verb#make mpi_size=4 all# at
+ecalj/TestInstall. This is an unique way to run 
+a series of installation tests.
+\item
+Machine dependence\\
+For fpgw/exec/, Machine-dependent part is given by
+a file such as make.inc.gfortran, which is included
+in the makefile by the variable PLATFORM.
+For \io{lmv7}, we have \io{lmv7/MAKEINC/},
+where we have files which describes machine-dependences. 
+
+\item CPU time and Memory measurements\\
+At the bottom of makefile, we have a mechanism
+to insert clock routines in source code.
+For example, hsfp0.sc.m.F is converted to
+\verb#time_hsfp0.sc.m.F#, and then compiled.
+Time measurement is specified directive lines 
+\begin{verbatim}
+!TIME0\_number  memo
+...
+!TIME1_number 'LABEL'
+\end{verbatim}
+Here memo is just comment line, LABEL is a label to identify the block.
+For example, see \verb#sxcf_fal2.sc.F#. 
+The computational time for codes sandwitched by these \verb#!TIME0_number# and
+\verb#TIME1_number# are measure, and shown
+at the bottom of console output file \io{lx0} (see \exe{gwsc} script).
+
+\end{itemize}
+See \io{fpgw/exec/makefile} to understand how to make binaries for gw part.
+We can make binaries by \verb#make PLATFORM=ifort LIBMATH=-mkl# at the directory.\\
+
+Other cautions for computer codes;
+\begin{itemize}
+\item 
+We often use modules. A typical example is \verb#use m_genallcf_v3,only: ... #. For example, see \raw{hsfp0.sc.m.F}, which is for the calculation of $W-v$.
+For \verb#call genallcf_v3# in it, all data for the 
+\verb#use m_genallcf_v3,only:# are allocated. Thus we can use these data
+after \verb#call genallcf_v3# in the code \raw{hsfp0.sc.m.F}.
+
+\item
+Methods(functions) in modules are keys to learn fpgw/ codes.
+For example, we have geteval(eigenvalues), 
+readcphi(coefficient of eigenfunction for MTO part),
+readgeig(coefficient of APW part), get\_zmel (\verb#<phi|phi MPB>#).
+In cases, we have initialization routines such as
+\raw{readqgcou()} defined in \io{readeigen.F}.
+After it is called, we can access to all date in module \verb#m_readqgcou#.
+In principle, this kind of initialization routines must be called
+at the top of main programs... But not organized yet.
+In addition, it may be better to allocate even scalar in fortran2003.
+But such new features in fortran2003 is still buggy
+(at least in ifort15) as long as I tested.
+\item
+A possible mechanism to make things safer 
+is given by a variabl \verb#done_genallcf_v3# defined in \verb#genallcf_mod.F#.
+Observe how it work in this routine.
+This ensures that \verb#genallcf_v3# is called only once in a program.
+Thus variables in \verb#m_genallcf_v3# has uniqueness
+(But we have no simple way to make write protections for them. 
+You know a way?)
+In my opinion, fortran is not suitable to write long computer codes.
+It is better to use glue languages such as python or bash, as I did in gwsc...
+\item
+\verb#nbas# is the number of MT sites in the primitive cell.
+We use \verb#ibas# for a loop of \verb#do ibas=1,nbas#.
+This is a general rule; another example is \verb#iqbz=1,nqibz#
+where \verb#nqibz# is the number of irreducible q points.
+\item
+\verb#getkeyvalue# defined in \verb#fpgw/gwsrc/keyvalue.F#
+is an universal i/o routine for \io{GWinput}.
+Its arguments can be one of types among 
+"logical, int, real, int array, real array".
+Do grep 'call getkeyvalue' for fpgw/*/*.F 
+to find out how to use it.
+
+\item
+Recently the definition of POSCAR of VASP changes.
+Now its CARTESIAN case is essentially the same as the standard
+input of ctrl file. We changed structuretools on Feb.12. 2016, following
+the new definition.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Coding rule and Developer's memo}
+Here is my current rule for coding.
+But ecalj codes alreay have long history, thus not unified in a manner.
+Here is my recommendations. We don't like dirty code, but
+simultaneously, not spend too much time for cleaning up
+computer code, but not too dirty logic. 
+
+\begin{itemize}
+
+\item fpgw/ directory:
+\begin{verbatim}
+ main routines are in main/*.m.F
+ subroutines are in gwsrc/
+ makefile, shell scripts are in exec/
+
+Wannier routines (main and sub) are in Wannier/
+
+We use fixed format f90 (or more in future).
+\end{verbatim}
+
+\item How to add new fortran file ? (dependency checker)
+\begin{verbatim}
+(for the case fo fpgw/ code. Essentially similar for lm7K/ part).
+Because of modules of f90, we need moduledependes.inc
+which describe dependency of source files given in makefile. 
+We have a system automatically making it by 'make init'. 
+Steps are:
+1.Make a *.F file in gwsrc/ or main/ or Wannier/
+2.Add *.o in fpgw/exec/makefile
+3.Run 'make init' at fpgw/exec (or at fpgw/Wannier/ or )
+  This check dependecny and moduledependes.inc,
+  which is included when you run make.
+  You may need to removed ../*/*.mod and/or ../*/*.o files if some erroroccurs.
+4. make
+\end{verbatim}
+moduledepends.inc is automatically generated by \verb#TOOLS/checkmodule# (python code; I sometimes need to do make init).
+But \verb#TOOLS/checkmodule# is not well written.
+
+
+\item TIME directive and makefile 
+\begin{verbatim}
+We have 
+!TIME_00010 Q0P
+!TIME_00010 'Q0P'
+in some files such as ../main/hx0fp0.sc.m.F.
+How many times and how many clock time used
+is reported at the end of console output.
+This reports computational time at the end of output from each node.
+(see STDOUT/stdout.{rankID=0000}.* files) when you run gwsc.
+
+At the bottom of makefile, we have conversion from 
+*.F to time*.F. 
+For exmple, hx0fp0.sc.F is converted
+to time_hx0fp0.sc.F and compiled. 
+Here we replace directions "!TIME0" and "!TIME1..."
+by a timing-measurement routine by awk.
+
+Thus, be careful. 
+When you compile hx0fp0.sc.F with -g
+option, it shows the error stop (such as segmentation error)
+in the line number of time_hx0fp0.sc.F
+
+If you have make error such as
+> ERROR: inconsistent key, key= __x0kf_sym                                      
+, it means error when the conversion find syntax error.
+
+You can see 
+>make
+gawk -f script/addtime.awk  -vSTART=1 ../main/hx0fp0.sc.m.F | gawk -f script/then_separate.awk | gawk -f script/add_alloclist.awk > ../main/time_hx0fp0.sc.m.F
+...
+This shows fpgw/exec/script/addtime.awk is used for the conversion.
+\end{verbatim}
+
+
+\item MPI is not so efficient yet.
+\begin{verbatim}
+We like to make simple MPI procedure, not nested.
+For this purpose, it may be better to divide matrix elements generator
+and core of GW part.
+
+When you run gwsc or so, 
+ STDOUT/stdout.0000.hx0fp0_sc
+contains output of hx0fp0_sc due to rank=0000.
+\end{verbatim}
+
+\item double path formalism in lmf (a problem to be cleaned up)
+\begin{verbatim}
+ For eigenvalues, we show twice a iteration.
+ This is historical reason. 
+ We will improve it.
+\end{verbatim}
+
+\item emacs(vm) skills
+\begin{verbatim}
+multi window mode, compare files,
+emacs git mode
+emacs ediff mode
+emacs etags
+git rebase -i ==> See http://liginc.co.jp/web/tool/79390
+gitk --all
+python
+\end{verbatim}
+
+
+\item Doxygen:
+At ecalj/fpgw, run doxygen. Because we have Doxyfile there,
+we can have doxygen html and pdfs.
+Doxygen is not so good but not so bad for fortran.
+We will use doxygen for a while. But not believe doxygen too much.
+\begin{verbatim} 
+module at the beginning of x0kf_v4h.F.
+1. Not allow comment line in declearation of subrouitne.
+2."double precision" is not allowed.
+3. comments lines outside of subroutine.
+4. To overliad doxygen bug, dummy declear needed.
+   integer:: dummy4doxygen at the begining.
+\end{verbatim}
+
+\item callcaller tree generator
+\begin{verbatim}
+We can make a table callcaller.dat by
+>make dep 
+at fpgw/exec/ and lm7K/ (may take one minute).
+Not believe it so much...
+Need to check it in other manner.
+\end{verbatim}
+
+\item Test system is at \verb#ecalj/TestInstall/#.
+We can say test system is very important. We usually include new bug
+when you add new functionarity in a code. Test system is very critical
+to develop ocmputer programs quickly.  Current test system is a little
+      complicated; but we will use it for a while.
+\begin{verbatim}
+At ecalj/TestInstall/
+We have
+---------------------------------------
+./Makefile
+./Makefile.inc (this is called from test directories as si_gwsc).
+./si_gwsc/Makefile and data for test
+./crn/Makefile and data for test.
+---------------------------------------
+To add a test,
+we keep input and output files in xxx/ directory,
+and make Makefile as in the case of si_gwsc/.
+In addition, you have to add the name of test in Makefile.
+
+\item
+\begin{verbatim}
+Line length for fortran; Add .emacs the following three lines.
+(add-hook 'fortran-mode-hook
+	  '(lambda ()
+	     (setq fortran-line-length 132)))
+\end{verbatim}
+
+       
+ \item Use fixed format of fortran. Use -132 line option. Give a line number for long do
+       loop (not do end do)). And respect the do loop number (not delete
+       line numbers without a reason.)
+
+ \item We use
+\begin{verbatim}
+ integer::
+ real(8)::
+ complex(8)::
+\end{verbatim}
+
+\item Supplemental documents embedded in codes should be very minimum.
+We have to prepare a document separately. The document(this document)
+explains the formulation and algorithm. 
+Ideal code should have no comment lines; program itself should be a document
+corresponding to the document of formalism.
+(we may explain data structures in this document, but it should be very minimum).
+
+\end{itemize}
+
+\subsection{module coding}
+(this section is by S.H.Ryee, a little modified).
+We will develop a big code with full use of modules.
+It is convenient to manage the code. Advantages are;
+\begin{itemize}
+ \item We can easily understand, handle and modify the code without making
+ complicated problems.
+ \item We don't have to be careful about the order of data.
+ \item We can easily divide a job for cooperation.
+\end{itemize} 
+Therefore, developers are strongly recommended to make codes with modules. 
+However, we have to be careful about how to use the modules.
+
+A small example is contained in  \verb#ecalj/TOOLS/ModuleCodingSample/#. One can see a file named \verb#m_test.F#. To execute the \verb#m_test.F#, type in \begin{verbatim} gfortran m_test.F -I. -J. -g -ffixed-line-length-132 \end{verbatim} in your command line. This code is designed to read and print the file named \verb#sample.dat# contained in the same directory. \verb#sample.dat# is written as follows:
+\begin{verbatim}
+1 Ndup 3 4 8
+2 Nddn 5 6 7 8
+3 Cu 2 3 4 123 556 45
+\end{verbatim}
+
+We would like to emphasize several points contained in the \verb#m_test.F# as an example. Developers are urged to follow these points.
+\begin{itemize}
+ \item Use \verb#protected# and \verb#private# option when delcaring variables in a module to avoid the same variable names being used outside of the module. :
+ \begin{verbatim}
+   module m_readline
+      integer,protected:: nclass,nbasclassMax     
+      integer,protected,allocatable:: cbas(:,:),nbasclass(:)
+      character(20),protected,allocatable:: classname(:)
+      integer,parameter,private::maxdat=1024
+      
+      contains
+      subroutine s_readclass()
+      ...  
+ \end{verbatim}
+
+ \item Use {\it labels} for loops to avoid confusion (for long loop). : 
+ \begin{verbatim}
+ ...
+      do 
+        read(ifix,"(a)",end=999) aaa
+        iline=iline+1
+      end do
+ 999  continue
+      nclass=iline
+      allocate(iclassin(nclass),cbastemp(maxdat,nclass),nbasclass(nclass),classname(nclass))
+
+      rewind(ifix)
+      cbastemp=-999
+      
+      do 1001, iclass=1,nclass
+        read(ifix,"(a)") aaa 
+        read(aaa,*,end=1201) iclassin(iclass),a,(cbastemp(i,iclass),i=1,maxdat)
+ 1201 continue
+        if(iclassin(iclass)/=iclass) call rx('iclass is not i')
+        classname(iclass)=trim(a)      
+        do i=1,maxdat
+          if(cbastemp(i,iclass)==-999) then
+            nbasclass(iclass)=i-1
+            exit
+          endif
+       enddo  
+ 1001 continue
+ ...
+ \end{verbatim}
+\end{itemize} 
+
+The module can be used in the main program by using {\it use} command:
+\begin{verbatim}
+...
+program test
+      use m_readline,only: s_readclass,  nbasclass, nclass, cbas, classname, nbasclassmax
+      integer:: i,ix,iclass
+      call s_readclass()
+
+      write(*,*) '=== Read lines nclass=',nclass
+      do iclass=1,nclass
+        write(*,*)'output:',iclass,trim(classname(iclass)),cbas(1:nbasclass(iclass),iclass)
+      enddo
+end
+\end{verbatim}
+
+\begin{itemize}
+\item Memo for usagee of modules. \\
+In the PMT part (one-body part)) \verb#ecalj/lm7K/#, we use strucrue. But no
+       structures in the GW part \verb#ecalj/fpgw# part. I recommned to
+       use modules.
+
+       Module names are \verb#m_foobar#. Use 'only' option when you use
+       a module. Use 'protected' for all variables in module; then these
+        can be written only by the subroutine in the moudle.
+
+\begin{verbatim}
+An example is 
+      module m_get_bzdata1 in getbzdata1.F
+This is related to reading BZDATA file.
+All public data defined at the head part of this module are output.
+These are set by a call as
+  "call getbzdata(... arguments list ...)",
+where arguments list are all inputs.
+
+Thus we can have all the public data, suddenly appear
+right after "call getbzdata". 
+
+To make the data flow clear as possible, we have to declear 
+"only" option when we use a module.
+Here is an example of hx0fp0.sc.m.F, which uses a modle m_genallcf_v3.
+      use m_genallcf_v3,only: genallcf_v3,
+     &     nclass,natom,nspin,nl,nn,ngrp,
+     &     nlmto,nlnmx, nctot,niw,nw_input=>nw,
+     &     alat,ef, diw,dw,delta,deltaw,esmr,symgrp,clabl,iclass,
+     &     invg, il, in, im, nlnm, 
+     &     plat, pos, ecore, symgg 
+---------
+In the main routine, we call genallcf_v3.
+Then all following variables are set.
+\end{verbatim}
+
+ \item Module example.
+\begin{verbatim}
+To get the matrix element: zmel = <E_nu phi|phi>,
+which is the parts of numerator of equations in the steps of GW calculaitons,
+we use "readeigen mehanism". Let me explain this.
+
+At first, we call
+      call init_readeigen(ginv,nspin,nband,mrece)!EVU EVD are read in 
+      call init_readeigen2(mrecb,nlmto,mrecg)
+. These are needed for initialization. 
+Then we do
+      call get_zmelt2(exchange, ... (matrix elements generator)
+in a subroutine x0kf_v4hz (which is called from main routine hx0fp0.m.F).
+Then we have the matrix elements zmeltt after this call.
+Because of historical reason exchange=T,F gives different names of
+      zmel,  zmelt or zmeltt, which are suitable exchange calculation or
+      correlaiton calculaiton.
+
+NOTE:
+get_zmelt2 internally call function readeigen (to get eigenfunctions).
+\end{verbatim}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Phonon project}
+
+Key papers of phonon theories are
+\cite{pick_microscopic_1970}
+\cite{vogl_microscopic_1976}
+\cite{giannozzi_ab_1991}
+\cite{sjakste_wannier_2015}.
+Pratical implementations are in 
+\cite{friedrich_efficient_2010}
+\cite{kotani_formulation_2015}.
+
+\begin{enumerate}
+ \item 
+ The polarization function 
+ \begin{eqnarray}
+  \bar{\Pi}=  \Pi \sqrt{v} \frac{1}{1-\sqrt{v}\Pi\sqrt{v}} \sqrt{v} \Pi
+  \label{eq:barpi}
+ \end{eqnarray}
+  are calculated on the regular $\bfk$ mesh points (expect $\bfk=0$),
+       and on the offset-Gamma points (=Q0P points instead of $\bfk=0$). 
+       Expanded in the 
+       Coulomb-diagonalized MPB set $\{|E^\bfk_\nu \rangle\}$ as
+       $\langle E^\bfk_\mu|\bar{\Pi}^\bfk |E^\bfk_\nu \rangle$.
+  For phonon calculation, we only need to know quantities at $\omega=0$.
+ \item
+   We reorganize the results of
+   $\langle E^\bfk_\mu|\bar{\Pi}^\bfk |E^\bfk_\nu \rangle$ at Q0P.
+   In is represented in the expansion of $\bfk$ near $\bfk=0$.
+   In other words, Q0P-points method (=offset-Gamma method) is just
+   in order to get the numerical derivative as the kdotp method.
+
+  See Eq.36 in \cite{friedrich_efficient_2010},
+  in which we have ${\bf L}(\omega)$ matrix. 
+  It is given in Eq.34 in \cite{kotani_formulation_2015}.
+   
+ \item 
+     Bare Coulomb between ions. 
+     Calculate 
+     $Z_{R} Z_{R'} \frac{\partial^2 v^\bfk(R_\alpha-R'_\beta)}{\partial {R_\alpha} \partial {R'_\beta}}$.
+ \item 
+  Calculate $\langle \frac{\partial v^\bfk(\bfr-\bfR)}
+  {\partial{R_\alpha}} 
+  |E^\bfk_\nu(\bfr) \rangle \equiv \int d^3r \frac{\partial v^\bfk(\bfr-\bfR)}{\partial {R_\alpha}} E^\bfk_\nu(\bfr)$. Note that $E_{\nu=1}^\bfk(\bfr)$ corresponds
+  to $\exp(i \bfk \bfr)$.
+
+  \item
+  We have dynamical matrix
+\begin{eqnarray}
+   C^\bfk_{\alpha\beta}= \frac{\partial^2 W^\bfk(R_\alpha-R'_\beta)}
+   {\partial {R_\alpha} \partial{R'_\beta}}
+\end{eqnarray}   
+on regular mesh points. At $\bfk=0$, we have an expansion.
+In stead of $C$, we treat $\bar{C}$ which satisfy translational symmetry.
+
+ \item
+ We calculate dynamical matrix in the form
+ $\bar{C}=\bar{C}^{\rm N} +\bar{C}^{\rm NA}$,
+ where $\bar{C}^{\rm N}$ and $\bar{C}^{\rm NA}$ are analytic and non-analytic parts,
+ respectively.
+ \item
+  Non-analytic part $\bar{C}^{\rm NA}$ are specified by the Born-effective charge
+  and the static dielectic tensor (it is in the denominator).
+  $\bar{C}^{\rm NA}$ is given in the Bloch sum (the BZ periodicity).
+
+ \item
+   We have analytic part 
+   $\bar{C}^{\rm N}$
+     Sum rule correction (sum of born effective charge, translational
+       symmetry) may be needed.
+  \item
+     Interpolarion in the whole BZ (non-analytic part and analytic part).
+  \item
+     Then we can calculate phonos.
+  \item
+     Calculate electron phonon coupling in the same manner.
+  \item
+     Mobility calculation and so on.
+\end{enumerate}
+
+\newpage
+\section{Magnon project}
+\label{sec:mag}
+Generalized Lindhard polarization function (or Kernel) is defined as
+(c.f.\req{eq:polf0});
+\begin{eqnarray}
+&&-K^{\alpha \beta}=({\bf r}_1,{\bf r}_2;{\bf r}_3,{\bf r}_4;\omega) =
+-iG_\alpha(1,3)G_\beta(4,2)= \nonumber \\
+&&=
+\sum^{\rm BZ}_{\bfk}  \sum^{\rm occ}_{n } 
+\sum^{\rm BZ}_{\bfk'} \sum^{\rm unocc}_{n'}
+\frac{
+\Psi_{\bfk n \beta}^*(\bfr_2) \Psi_{{\bf k}n \beta}({\bfr}_4) 
+\Psi_{{\bf k}'n' \alpha}(\bfr_1) \Psi^*_{{\bf k'}n'\alpha}(\bfr_3)
+}{\omega-(\varepsilon_{{\bf k}' n'\alpha}-\varepsilon_{\bfk n \beta})+i \delta} \nonumber\\
+&&
++ \sum^{\rm BZ}_{\bfk} \sum^{\rm  unocc}_{n } 
+  \sum^{\rm BZ}_{\bfk'} \sum^{\rm occ}_{n'}
+\frac{
+\Psi^*_{\bfk n \beta}(\bfr_2)\Psi_{\bfk n \beta}(\bfr_4) 
+\Psi_{\bfk'n' \alpha}(\bfr_1) \Psi^*_{\bfk' n' \alpha}(\bfr_3)
+}
+{-\omega-(\varepsilon_{\bfk n \beta}-\varepsilon_{{\bfk'} n' \alpha})+i \delta}.
+\label{eq:genpol}
+\end{eqnarray}
+{\bf(--- NEED diagram FIGURE HERE for $K_{\alpha\beta}$ ---)}\\
+Here $t=t_1=t_2$ and $t'=t_3=t_4$.
+To understand this, note
+the correspondence between real-time and $\omega$ space;
+\begin{eqnarray}
+\frac{1}{\omega-\varepsilon +i \delta} &\leftrightarrow &
+i\theta(t-t') \exp (-i \varepsilon (t-t')) \\
+\frac{1}{-\omega-\varepsilon +i \delta} &\leftrightarrow &
+i\theta(t'-t) \exp (-i \varepsilon (t'-t)).
+\end{eqnarray}
+It is easy to make the product $G_\alpha(1,3)G_\beta(4,2)$ in real space
+and real time represantaiton.
+This \req{eq:genpol} is a general time-ordered linear response function for a non-interacting system. Note that this is reduced to be \req{eq:polf0} for $\bfr_1=\bfr_2$
+and $\bfr_3=\bfr_4$.
+This is the same as $K^{\alpha \beta}$
+in Eq.(15) in Ref.\cite{sasioglu_wannier-function_2010} by Sasioglu.
+By the Fourier transformation of \req{eq:genpol},
+we have
+\begin{eqnarray}
+-K^{\alpha \beta}(\bfq,\omega)&=& 
+\sum^{\rm BZ}_{\bfk}  \sum^{\rm occ}_{n}\sum^{\rm unocc}_{n'}  
+\frac{
+\Psi_{\bfk n \beta}^*(\bfr_2) \Psi_{{\bf k}n \beta}({\bfr}_4) 
+\Psi_{{\bfk+\bfq}n' \alpha}(\bfr_1) \Psi^*_{{\bfk+\bfq}n'\alpha}(\bfr_3)
+}{\omega-(\varepsilon_{\bfk+\bfq n'\alpha}-\varepsilon_{\bfk n \beta})+i \delta} \nonumber\\
+&+& \sum^{\rm BZ}_{\bfk} \sum^{\rm  unocc}_{n} \sum^{\rm occ}_{n'}
+\frac{
+\Psi^*_{\bfk n \beta}(\bfr_2)\Psi_{\bfk n \beta}(\bfr_4) 
+\Psi_{\bfk+\bfq n' \alpha}(\bfr_1) \Psi^*_{\bfk+\bfq n' \alpha}(\bfr_3)
+}
+{-\omega-(\varepsilon_{\bfk n \beta}-\varepsilon_{{\bfk+\bfq} n' \alpha})+i \delta}.
+\label{eq:genpol}
+\end{eqnarray}
+When we expand eigenfunctions by atom-centered localized functions as
+\begin{eqnarray}
+\Psi_{\bfk n}^\bfk(\bfr) = \sum_{\bfR i} a^\alpha_{\bfR i} w_{\bfR i \alpha}^\bfk(\bfr),
+{\rm \bf (correct? \ Notation \ check)}
+\end{eqnarray}
+in the restricted Model Hilbert space, 
+$K^{\alpha \beta}$ is represented as $K^{\alpha
+\beta}_{\bfR ij,\bfR'kl}(\bfq,\omega)$, where $\bfR i,\bfR j,\bfR'
+k,\bfR 'l$ are orbital indexes in the unit cell.
+As we have $W=\langle \bfR i \bfR j|W|\bfR' k \bfR' l\rangle $ in the mRPA method
+(or cRPA), we can calculate $\chi_{+-}={K}/(1-WK)$ in the model space.
+{\bf (need detailed equation with indexes!)}\\
+
+
+\noindent \underline{\bf Spectrum funciton and Hilbert transformation}\\
+Imaginary part of $K^{\alpha \beta}(\bfq,\omega)$ is obtained just by
+replacement $1/(\omega- \epsilon+i\delta) \rightarrow \pi \delta(\omega -\epsilon)$.
+That is, it is given as
+\begin{eqnarray}
+{\rm Im}[K]= \sum_\bfk \sum_n \sum_{n'} M(\bfk,n,\beta;\bfk+\bfq,n',\alpha)
+\delta(\omega-(\varepsilon_{\bfk+\bfq n'\alpha}-\varepsilon_{\bfk n \beta})),
+\label{eq:imk}
+\end{eqnarray}
+where we define the matrix element 
+$M=\Psi_{\bfk n \beta}^*(\bfr_2) \Psi_{{\bf k}n \beta}({\bfr}_4) 
+\Psi_{{\bfk+\bfq}n' \alpha}(\bfr_1) \Psi^*_{{\bfk+\bfq}n'\alpha}(\bfr_3)$.
+By the replacement $\delta(\omega-\varepsilon) \rightarrow 1/(\omega-\varepsilon
++i \delta)$ by the Hilbert transformation, we can recover real part from the Im[$K$].
+$\omega$ can be positive or negative; positive is for spin excitation $\beta
+\to \alpha$, negative is for $\alpha \to \beta$.
+
+In the tetrahedron method of ecalj, we can calculate \req{eq:imk} as follows;
+\begin{eqnarray}
+{\rm Im}[K]([\omega_i,\omega_{i+1}])= 
+\overline{\sum_\bfk} \sum_n \sum_{n'} M(\bfk,n,\beta;\bfk+\bfq,n',\alpha)
+W_{\rm tet}(i,\bfk,n,\bfk+\bfq,n'),
+\label{eq:imk2}
+\end{eqnarray}
+where $\overline{\sum_\bfk}$ is for discritized $\bfk$ points set by ecalj.
+%(not the sum for Born-Kaufman's $\bfk$ points).
+${\rm Im}[K]([\omega_i,\omega_{i+1}])$ means the imaginary part (weight)
+in the interval $[\omega_i,\omega_{i+1}]$.\\
+
+
+I think the t2g-eg separated motion is one of the interesting theme.
+(need to write a little more...)\\
+
+
+
+\noindent \textbf{Test of magnon calculation (transversal spin fluctuation)}\\
+Look into \verb|ecalj/MATERIALS/Fe_magnon| and \verb|Ni_magnon|. Run a script.
+We have results of spin fluctuations.
+
+\subsection{How to develop your code? $\rightarrow$ Hacking hx0fp0.m.F}
+For code development of magnon spin susceptibility, 
+it will be easy to hack hx0fp0.m.F (See cleaned up version after
+Nov28,2019).
+To invoke hx0fp0, we supply an integer swith \verb#ixc#.
+In principle, it has some modes, (type hx0fp0 without supplying
+integer). It shows three normal modes (screened Coulomb interaction 
+on real and imag axis for all k point), and three eps modes
+on real axis for k point given in Q0P 
+(supplied in GWinput as \verb#<QforEPS>,<QforEPSL>#).
+
+Please examine epsmode ixc=222, this is for \verb#eps_lmfh_chipm#,
+which is for spin suceptibility 
+$\langle{\exp{i \bfq \bfr}}\chi^0_{+-}|\exp(i \bf \bfr) \rangle$.
+(For dielectric constant see ixc=202 mode).
+
+\begin{itemize}
+ \item 
+Main idea of hacking is 
+``Replace eigenvalues and eigenfuncitons'' for your purpose.
+(For examples, we use the Wannier-function-based eigenfunctions).
+You can read $\bfq$ points and crystal strucrure settings in hx0fp0.
+
+\item 
+Fermi energy. You may have to supply it via your own \verb#readefermi#.
+
+\item 
+\verb#readeval# in \verb#hx0fp0.m.F# should be replaced your own 
+eigenvalue generators. \verb#nband# (read from hbe.d) need to be modified.
+
+\item 
+ No core setting is needed (but this is standard in usual GWinput).
+
+\item 
+ Matrix elements must be replaced. It is in \verb#zmel# in
+ \verb#x0kf_v4h#. It is generated at \verb#call get_zmelt2#, and used in 
+ the main loop \verb#do 25# in \verb#x0kf_v4h.F#. Note \verb#nmbas# is
+ properly supplied.
+\item
+ To hack it, skip eibz mode since it is confusing (use
+ \verb#eibzmode=F#), you may or may not recover symmetry afterwards.
+
+\end{itemize}
+
+\subsection{Data structure of the tetrahedron method in ecalj}
+\label{sec:mag1}
+At first, you can consider only the \verb+mtet=F+ case.
+To make it safer, check \verb+mtet=F+ (if it is True, error exit by 'call rx').
+In \verb+m_tetw.F+ we have \verb#gettetwt# called from \verb#hx0fp0.m.F# as
+\begin{verbatim}
+          call gettetwt(q,iq,is,isf,nwgt(:,iq),frhis,nwhis,npm,
+     i     qbas,ginv, ef, nqibz, nband,ekxx1,ekxx2, nctot,ecore,
+     i     nqbz,qbz,nqbzw,qbzw,  ntetf,idtetf,ib1bz,
+     i     nbmx,ebmx,mtet,eibzmode) !nov2016
+\end{verbatim}
+. All arguments are input. 
+This returns tetrahedron weight $W_{\rm tet}(i,\bfk,n,\bfk+\bfq,n')$
+in the common data area of \verb+m_tetw+.\\
+\noindent {\bf input parameters}
+\begin{itemize}
+\item
+\verb+q+: $\bfq$ vector and index of $\bfq$ vector
+\item
+\verb+iq+: unused for \verb+mtet=F+. It may be safer to set -9999 for safe.
+\item
+\verb+is,isf+: $\alpha$ and $\beta$
+\item
+Eigenvalues are supplied by
+\begin{verbatim}
+      do kx = 1, nqbz
+        call readeval(qbz(:,kx),   is,  ekxx1(1:nband, kx) ) 
+        call readeval(q+qbz(:,kx), isf, ekxx2(1:nband, kx) )
+      enddo
+\end{verbatim}
+at \verb#hx0fp0.m.F#
+\item
+\verb+nwgt+: This is for EIBZ mode. 
+We skip microtetrahedrons when all of \verb+nwgt(kx0:kx3)+
+are zero (here \verb@kx0,kx1,kx2,kx3@ are four corners of $\bfk$ vectors).
+Thus we calculate tetrahedron weigh only for $\bfk$ points for \verb+nwgw(k)=1+.
+In EIBZ mode, we will symmetrize finally obtained correct $K^{\alpha\beta}$.
+(takao: I like to check this code again...)\\
+\noindent {\bf Anyway, you can skip EIBZ, by \bf{eibzmode=F}. Then \verb#nwgt=1#.}
+\item
+\verb#frhis(1:1+nwhis),nwhis#: Histogram bins $[\omega_i,\omega_{i+1}]$
+are \verb@[frhis(i),frhis(i+1)]@. We set \verb+frhis(1)=0d0+.
+See \verb+m_freq.F+. We calculate values on $K^{\alpha,\beta}(\omega)$ where
+$\omega$ is specified by \verb+freq_r+ (this is center of the bins. 
+See \verb+freq_r+ file.)
+\item
+If \verb@npm=2@, we calculate negative frequency part. For negative $\omega$, 
+Histogram bins $[\omega_i,\omega_{i+1}]$
+are \verb@[-frhis(i),-frhis(i+1)]@.
+(Opposite spin flip excitation to positive energy.)
+\item
+We can set \verb+ncore=0+ (\verb@use genallcf_v3@).
+\item
+For BZ data (\verb@use m_read_bzdata@), you can set them
+by \verb@call read_bzdata@.
+\item
+\verb@symops(3,3,1:ngrp)@ is the rotation part of space group operation.
+SYMOPS file is created by \verb#echo 0|lmfgw#, and read by qg4gw.
+Then symops information is written into HAMindex file.
+\end{itemize}
+Output data sets are
+      real(8),allocatable :: whw(:)
+\begin{verbatim}
+      integer,allocatable:: ihw(:,:,:),nhw(:,:,:),jhw(:,:,:),ibjb(:,:,:,:)
+      integer:: nbnbx,nhwtot
+      integer,allocatable :: n1b(:,:,:),n2b(:,:,:),nbnb(:,:)
+\end{verbatim}
+These are used as in \verb+x0kf_v4h.F+. Look into it. Here is a simplified version for showing how to use these data set.
+\begin{verbatim}
+        do 25 jpm  = 1, npm !
+        do 25 ibib = 1, nbnb(k,jpm)
+          n1b(ibib,k,jpm) !band index for k
+          n2b(ibib,k,jpm) !band index for q+k
+          it  =  n1b(ibib,k,jpm)                ! index for n  for q
+          itp =  1+  n2b(ibib,k,jpm)-n2bminimum ! index for n' for q+k
+          ... M(:,:) is calculated here ...  
+            	call get_zmelt2 --> Get zmel=<MPB psi_k|psi_{k+q}>
+             zmel=dconjg(zmel)  ! -->  zmel= <psi_{k+q}| psi_k MPB_q>
+             M(igb1,igb2) = dconjg(zmel(igb1,it,itp))* zmel(igb2, it,itp)
+             Here M = <M_igb1 psi_it | psi_itp> < psi_itp | psi_it M_ibg2 >
+          do iw = ihw(ibib,k,jpm),ihw(ibib,k,jpm)+nhw(ibib,k,jpm)-1 
+             imagweight = whw(jhw(ibib,k,jpm)+iw-ihw(ibib,k,jpm))
+             Kmatrix(:,:,iw,jpm) = Kmatrix(:,:,iw,jpm) + M(:,:)*imagweight 
+          enddo          
+   25  continue
+\end{verbatim}
+We do $\sum_n \sum_{n'}$ in \req{eq:imk} as follows;
+before this \verb#do 25#, we set $\bfk,\bfk+\bfq$. 
+$k$ is index for $\bfk$ vector.
+\verb+n2bminimum+ is introduced (this is for unoccupied states for \verb+npm=1+.
+$W_{\rm tet}$ is given as \verb@imagweight@, \verb#iw# is 
+the index for the histogram bin.
+
+
+\subsection{Requirement of the spin symmetic Hamiltonian}
+(this idea is moved to another text modelSX.pdf.)
+
+I think we can set up a model spin-symmetric screened exchange energy, 
+which is consistent with the linear response theory.
+Thus we have two ways, one is calculate Heisenberg's $J$ by the
+difference of total energy.
+The other is by the linear response theory as in the magnon project.
+
+
+\section{Usual tetrahedron method}
+The standard tetrahedron method is used for determining the Fermi energy
+and so on in \verb#ecalj/lm7K/*#.
+Probably, easiest way to know its usage is in the PDOS mode (try
+\verb#job_pdos#), which is calculated in \verb#lmf-MPIK#, mainly in \verb#ecalj/lm7K/fp/bndfp.F#.\\
+In \verb#bndfp.F#, search \verb# --- Loop over tetrahedra ---#,
+There the \verb#itet# loop is for the tetrahedron sum. See 
+\begin{verbatim}
+	call slinz(wt,eigen,eminp+ef0,emaxp+ef0,pdosalla(1,isp,ichan,ibas),ndos)
+\end{verbatim}
+in the loop. This is to accumelate \verb#pdosalla(1:ndos,....)#.
+where energy window \verb#[eminpu+ef0:emaxp+ef0]# is divided by
+\verb#ndos#. \verb#wt# is the matrix element times weight for the
+tetrahedron (usually no dependence for tetrahedron).
+\verb#eigen(1:4)# is the four corner of eigenvalues given as 
+\verb#eigen(1:4) = evlall(ib,isp,idtete(1:4,itet))#
+You can see the tetrahedron is originally generated by the
+\verb#subroutine tetirr#.
+
+
+\section{Wannier project}
+One of my idea is in newwannier.pdf (request to me).
+
+\begin{enumerate}
+\item
+   Non orthgonalized basis
+\item
+   Acurately remove double counting.
+\item
+   Limitation of FLEX, TPSC
+\end{enumerate}
+
+\section{Paralellization project}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\noindent {\Huge Appendix} 
+(touched at 2022jan)  
+\section{Harris-Foulkner energy and Kohn-Sham energy}
+In LDA/GGA, on the way to self-consistency, input density and output
+density are not the same (not self-consitent). 
+Thus  we define two total energy for given input density $\nin$,
+the Harris-Foulkner energy $\ehf$ and the Hohenberg-Kohn energy $\ehk$ 
+\begin{eqnarray}
+\ehf &=& E_{\rm k}^{\rm core} + E_{\rm B} 
+- V_{\rm es}[\nzc+\nin,\bfR_a] \cdot \nin 
+- V_{\rm xc}[\nc+\nin] \cdot \nin \nonumber \\
+&&+ E_{\rm es}[\nzc+\nin,\bfR_a] + E_{\rm xc}[\nc+\nin],\label{eq:ehf} \\
+\ehk &=& E_{\rm k}^{\rm core} + E_{\rm B} 
+- V_{\rm es}[\nzc+\nin,\bfR_a] \cdot \nout 
+- V_{\rm xc}[\nc+\nin] \cdot \nout \nonumber \\
+&&+ E_{\rm es}[\nzc+\nout,\bfR_a] + E_{\rm xc}[\nc+\nout], \label{eq:ehf} \\
+E_{\rm B} &=& \sum_p^{\rm occupied}
+\alpha_{p}^{i*} 
+\langle F_i|H^{\rm in}|F_j \rangle 
+\alpha_p^j,
+\label{eq:ebhf}
+\end{eqnarray}
+See Eqs.(B.1),(B.2)in Ref.\cite{kotani_formulation_2015}.
+These are slightly wrong because Eq.(31) for $E_{\rm xc}$ is wrong; it is 
+not the functional of total charges (inlcuding nucleus) $\nzc+\nin$, 
+but the total electron density $\nc+\nin$.
+Based on the 3-component formalism in Ref.\cite{kotani_formulation_2015},
+$E_{\rm es}$ have explicit dependendence on atomic positions $\bfR_a$, but $E_{\rm xc}$ does not. 
+The dependence is via the mutipole transformation in Eq.(14).
+Search \verb#ham_ehf,ham_ehk# in ecalj/lm7K/fp/bndfp.F.
+The $\ehf$ is given at \verb#call m_mkehkf_etot1(sev, eharris)#, while
+$\ehk$ is given by\\ \verb#call m_mkehkf_etot2(sev,sumtv, eksham)#.
+$\ehf$ and $\ehk$ are shown in {\tt save.*} file.
+
+The band energy $E_{\rm B}$ is stored in the module variable in bndfp.F;
+this is shown as \verb#sev# in {\tt save.*}. The kinetic energy  
+$E_{\rm k}^{\rm core}+E_{\rm B} 
+- V_{\rm es}[\nzc+\nin,\bfR_a] \cdot \nout 
+- V_{\rm xc}[\nc+\nin] \cdot \nout$ contained in
+the $\ehk$ is calculated as \verb#sumtv# in bndfp.F-mkekin.F 
+
+In LDA/GGA calculations by lmf-MPIK, {\tt save.*} file contains a line per iteration.
+\begin{verbatim}
+c ehf(eV)=-15730.0982239 ehk(eV)=-15730.0982222 sev(eV)=-15.7737393
+\end{verbatim}
+shows $\ehf=$-15730.0982239 eV and $\ehk=$-15730.0982222 eV, as well as the valence 
+band energy $=-15.7737393$ eV. 
+In principle, $\ehf$ and $\ehk$ should be exactly the same when converged;
+ the difference is the numerical error. {\tt c} at the begining of line means ``converged''. 
+${\tt h}$ means the 1st iteration from {\tt atm.*} file (superposition of atomic density).
+
+\section{Block inversion used for dielectric functions and downfolding}
+See Christph's and Pick's paper
+\begin{eqnarray}
+\left(\begin{array}{cc} P & Q \\ R & S \\ \end{array} \right) 
+\left(\begin{array}{cc} W & -WQS^{-1} \\ -S^{-1}RW & S^{-1}+S^{-1}RWQS^{-1} \\ \end{array} \right) 
+=\left(\begin{array}{cc} 1 & 0 \\ 0 & 1 \\ \end{array} \right), 
+\label{eq:blockinv}
+\end{eqnarray}
+where $P$ and $S$ are square matrices, and
+\begin{eqnarray}
+W=(P-QS^{-1}R)^{-1}. \label{eq:blockinvw}
+\end{eqnarray}
+%This is often used as the perturbation theory as
+%$G^{-1}={G_0}^{-1}-H_{\rm int} {G_0}^{-1} H_{\rm int}$.
+
+We refer $X=-WQS^{-1}$ and $Y=-S^{-1}RW$.
+
+Proof:
+\begin{eqnarray}
+&&{\rm (1,1) \ component}= PW-QS^{-1}RW=(P-QS^{-1}R)W = 1,\\
+&&{\rm (1,2) \ component}= -PWQS^{-1}+QS^{-1}+QS^{-1}RWQS^{-1}\nonumber\\ 
+&&=(-PW+1+QS^{-1}RW)QS^{-1}=(-(P-QS^{-1}R)W+1)QS^{-1}=0\\
+&&{\rm (2,1) \ component}= RW-SS^{-1}RW=0,\\
+&&{\rm (2,2) \ component}= -RWQS^{-1}+SS^{-1}+SS^{-1}RWQS^{-1}=1
+\end{eqnarray}
+(I think this proof is a little too complicated).
+
+\section{Downfolding}
+Downfolding is a general concept which often appears in physics of varieties of contexts. It is based on the Block inversion \req{eq:blockinv}.
+This appears for the inversion of one-body problem, or divide the Fock space
+for many-body theory.
+(divide the Fock space into two Hilbert spaces; one-particle excited states and
+states with more than one-particles). 
+
+For exaple, the Green function is the inversion of the matrix $\omega-H$,
+where $H$ is divided into to
+\begin{eqnarray}
+\left(\begin{array}{cc} H_{11} & H_{12} \\ H_{21}& H_{22} \\ \end{array} \right).
+\label{eq:hdiv}
+\end{eqnarray}
+
+If we have $H_{12}=H_{21}=0$, we have $G^0_{11}=1/(\omega -H_{11})$ 
+as the main part of Green function. This is completely separated from
+from the residual part $G_{22}^0=1/(\omega -H_{22})$.
+
+When $H_{12}$ and $H_{21}$ are non-zero,
+we have to take into their effect by perturbation, or by the block inversion
+of \req{eq:blockinv}. Then we have
+\begin{eqnarray}
+\left(\begin{array}{cc} G_{11} & G_{12} \\ G_{21} & G_{22} \\ \end{array} \right)
+=
+\left(\begin{array}{cc} G_{11} & -G_{11}H_{12}G^0_{22} 
+                    \\ -G^0_{22}H_{21}G_{11} & G^0_{22}+G^0_{22}H_{21}G_{11}H_{12}G^0_{22} \\ \end{array} \right),
+\end{eqnarray}
+where $W$ in \req{eq:blockinv} is $G_{11}$. Note that the $\omega$ dependence is
+in $G^0_{11}$ and $G^0_{22}$. Here $G_{11}$ given as (See \req{eq:blockinvw}).
+\begin{eqnarray}
+G_{11}=\frac{1}{\omega - H_{11} - H_{12}G^0_{22}H_{21}}.
+\label{eq:g11}
+\end{eqnarray}
+Then $ H_{12}G^0_{22}H_{21}$ is identified as the self-energy.
+
+There are possible cases about how to choose Hilbert space $\Omega_1$ and
+$\Omega_2$ corresponding to the division \req{eq:hdiv}. 
+\begin{itemize}
+\item
+In the one-body problem, for example, we take $\Omega_1$ as low energy part
+and $\Omega_2$ as high energy part. or 3d parts and others. 
+\item
+In a case of many-body theory, 
+$\Omega_1$ is the one-particle Fock space. 
+Then $G_{11}$ is the one-body propagetor, and $G_{22}$ is many-body (two-
+and more particles-) propagetor.
+\item
+We may take $\Omega_1$ as the model space, $\Omega_2$ as the residual space.
+Then we make like to identify $H_{11}$ as the Hubbard Hamiltonian.
+However, it is not so simple since $H_{11}$ contains screening effect
+due to the degree of freedom of $\Omega_2$. We have to consider a little more
+complicated downfolding procedure.
+\end{itemize}
+Warn: not be confused with the division of many-body Hamiltonian $H$ into
+$H_0 + (H-H_0)$ for perturbation.
+
+\subsection{Causality and analytic property}
+The equation $(\omega-H) G(\omega)=1$ is not well defined.
+We need to consider original equation of motion in real time as
+$(i \frac{\partial }{\partial t}-H) G(t-t')=\delta(t-t')$ where
+we have to take into account the bondary condition of retarded response
+responding to the source term of impulse at the right-hand side.
+
+Causality means "cause gives result".
+This is represented by the step function, for example, as
+$\theta(t-t') \exp(i \omega_0 (t-t'))$,
+whose FT gives $1/(\omega-\omega_0-i \delta)$. Thus the position of pole 
+(upper or lower plane) is important to determine the direction of time (real time representation).
+
+Sum rule is related to the causality but a little different.
+For example, sum rule for Imaginary part of $G_{11}$ is controlled 
+only by the beheavior $G_{11}(\omega)$ at $|\omega| \to \infty$. Thus, as long as
+$H_{12}G^0_{22}H_{21} \to 0$ for  $|\omega| \to \infty$,
+the sum rule is satisfied.
+
+
+\section{Spherical Harmonics and Real harmonics in ecalj}
+In ecalj, fortran codes are mainly based on the real harmonics $y_{lm}(\hat{\bf r})$,
+instead of the usual sperical (complex) harmonics $Y_{lm}(\hat{\bf r})$.
+The coefficients of eigenfunctions and so on are ordered as, e.g.
+$(m=-2, m=-1, m=0, m=1,m=2)$ for $l=2$.
+For example, \verb#LMXA=4#, we have \verb#(4+1)**2=25# harmonics,
+ordered as
+$y_{00},y_{-11},y_{01},y_{11},y_{-22},y_{-12},... ,y_{22},y_{-33},...y_{33},
+y_{-44},...y_{44}$.
+
+$y_{lm}(\hat{\bf r})$ is defined from $Y_{lm}(\hat{\bf r})$. 
+Here $\hat{\bf r}=(\theta, \phi)$. 
+
+\begin{eqnarray}
+ y_{l0}(\hat{\bf r}) 
+  &\equiv& Y_{l0}(\hat{\bf r}). \\
+ y_{lm}(\hat{\bf r}) 
+  &\equiv& \frac{1}{\sqrt{2}}
+           [ (-1)^m Y_{lm}(\hat{\bf r}) + Y_{l-m}(\hat{\bf r}) ]. \\
+ y_{l-m}(\hat{\bf r})
+  &\equiv& \frac{1}{\sqrt{2}i}
+           [ (-1)^m Y_{lm}(\hat{\bf r}) - Y_{l-m}(\hat{\bf r}) ].
+\label{eq:defylm}
+\end{eqnarray}
+, where $m>0$. Equivalently,
+\begin{eqnarray}
+ Y_{l0}(\hat{\bf r}) 
+  &\equiv& y_{l0}(\hat{\bf r}). \\
+ Y_{lm}(\hat{\bf r}) 
+  &\equiv& \frac{(-1)^m}{\sqrt{2}}
+           [ y_{lm}(\hat{\bf r}) + iy_{l-m}(\hat{\bf r}) ]. \\
+ Y_{l-m}(\hat{\bf r})
+  &\equiv& \frac{1}{\sqrt{2}}
+           [ y_{lm}(\hat{\bf r}) - iy_{l-m}(\hat{\bf r}) ].
+\end{eqnarray}.
+
+----------------------------------------------------\\
+The definition of $Y_{lm}(\hat{\bf r})$ are
+\begin{eqnarray}
+&&Y_{lm}(\theta, \phi)
+=(-1)^m \left[ \frac{(2l+1)(l-m)!}{4 \pi (l+m)!} \right]^{\frac{1}{2}} P^m_l(\cos(\theta)) e^{i m \phi}, \\
+&&P^m_l(x) = \frac{(1-x^2)^{m/2}}{2^l l!}\frac{d^{l+m} \ \ }{dx^{l+m}} (x^2-1)^l
+\end{eqnarray}.
+
+\noindent We take these definitions from\\
+(1)A.R.Edmonds, Angular Momentum in quantum Mechanics, 
+Princeton University Press, 1960,\\
+(2)M.E.Rose, Elementary Theory of angular Momentum,
+John Wiley \& Sons, INC. 1957,\\
+if necessary. The definition of spherical hermonics are the same in these books.
+
+%%%%%%%%%%%%%%%%%%%%%%%%5
+\section{Wannier function and SOC}
+At 2022-5-25, we add the SOC matrix calculation for the Wannier function.
+
+\subsection{Generate the Wannier functions by projection}
+It might be better to generate Wannier functions by projection.
+This means no optimization steps in the maximally localized Wannier procedure.
+To do the projection, we set \verb#wan_maxit_1st 0#, \verb#wan_maxit_2nd 0# in \verb#GWinput#.
+One of the big advantage without optimization is that
+the obtained Wannier functions can keep the crystal symmetry.
+
+We select orbitals at the section \verb#<worb># in \verb$GWinput$.
+Corresponding to chosen numbers 
+(if $4f$ is chosen, we have 10 11 ... 16.), 
+we have initial functions $G_{l \sigma}(r) y_{lm}(\hat{\bfr})$.
+Here we use real spherical functions $y_{lm}(\hat{\bfr})$ given in \req{eq:defylm}.
+Outside of MuffinTin(MT), $G_{l \sigma}(r)$ is given by the Gaussian as
+$G_{l \sigma}(r) =\frac{1}{N} \exp( -(r/r_0)^2)$ where $r_0$ is fixed to be 2.0 a.u.
+Search \verb#r0g = 2d0# in \verb#hpsig_MPI.F#. Here we omit atom index for simplicity. 
+Within MT, $G_{l \sigma}(r)$ is given by the linear combination of $\phi$ and $\phidot$ as $c_1 \phi(r)+c_2 \dot{\phi}(r)$.
+Note that $\phi(r)$ and $\dot{\phi}(r)$
+are the solutions of the radial Schr\"odinger equation.
+Coefficients $c_1$ and $c_2$ 
+are determined so as to match with the Gaussian 
+for value and slope at the MT boundary, see \verb$subroutine getc1c2$ 
+in \verb|hpsig_MPI.F|. 
+Note this can be spin-dependent (if \verb|--phispinsym| is used, we can use spin-independent $G_l$).
+
+Then we can calculate the projection matrix 
+$\langle \psi_{\bfk n \sigma}|G_{l \sigma} (r)y_{lm}(\hat{\bfr})\rangle$.
+Here bands $\psi_{\bfk n \sigma}$ are in the outer window specified by \verb#wan_out_emax# and \verb#wan_out_emin#. 
+(we assume the case that eigenfunctions are spin diagonal here).
+The projection is calculated in \verb#hpsig_MPI.F#.
+(minor point: $\langle \psi_{\bfk n}({\rm tail \ part \ in \ MT})
+|G_{l \sigma} (r)y_{lm}(\hat{\bfr})\rangle$ is neglected.)
+
+With the projection, we can make projected Wannier functions as
+\begin{eqnarray}
+W_{lm\sigma}(\bfr)= \sum_{\bfk n}|\psi_{\bfk n\sigma}(\bfr) \rangle \langle \psi_{\bfk n\sigma}|G_{l \sigma} (r)y_{lm}(\hat{\bfr})\rangle
+\end{eqnarray}
+Pay attention to the width of the energy window (outer window). If it is very wide,
+$\sum_{\bfk n}|\psi_{\bfk n}(\bfr) \rangle \langle \psi_{\bfk n}|$ becomes identical matrix;
+thus no character of eigenfunctions remains.
+If narrow enough (e.g. only seven bands for $4f$), the Wannier completely include the
+character of the eigenfunctions; but with the penalty of longer range.
+The Wannier functions are not uniquely determined. So it might be useless 
+to say something too much. "Maximally localized" is not necessarily so meaningful (or has limited meanings).
+
+FYI:
+Recall two step optimization procedure of Maximally localized Wannier functions (MLWF).
+The 1st step is picking up seven degree of freedom for all $\bfq$ points
+(4f case). The 2nd step is the unitary transformation 
+within the degree of freedom. Its principle is the minimization of Wannier spread. Cons are (1)Crystal symmetry might be broken,
+(2) Tail of Wannier can be oscillating. In addition, we have some ambiguity; if outer window become wider and wider, 
+MLWF can be more and more localized. 
+
+
+
+\subsection{SOC matrix for the Wannier functions}
+We calculate SOC matrix \verb#hammsoc# 
+$\langle F_{\bfk i \sigma} |H_{\rm SOC}|F_{\bfk j \sigma} \rangle$ in \verb#sugw.F#\\
+(\verb#lmf-MPIK --jobgw --job --socmatrix# mode around the end of \verb#genMLFhso#)
+for all $\bfk$ points in the Brillowin zone. Here 
+$F_{\bfk i \sigma}$ means the basis functions in the PMT method.
+Eigenfunction is given as 
+\begin{eqnarray}
+\Psi_{\bfk n \sigma}=\sum_i F_{\bfk i \sigma} \alpha^\bfk(i,n,\sigma) .
+\end{eqnarray}
+
+Thus the required SOC matrix
+ $\langle W_{lm\sigma}(\bfr) | H_{\rm SOC} |W_{lm'\sigma'}(\bfr) \rangle$
+(\verb$hammso$ in \verb#hsocmat.F#) is calcualted in \verb#hsocmat# from
+\begin{enumerate}
+\item 
+$\alpha^\bfk(i,n,\sigma)$ (\verb#evec(1:nz,iband,iqbz,isp)# in \verb#hsocmat.F#)
+\item 
+$\langle F_{\bfk i\sigma} |H_{\rm SOC}|F_{\bfk j\sigma'} \rangle$
+(\verb#hso(1:nz,1:nz,iqbz,ispc)# in \verb#hsocmat.F#. \verb$ispc=3$ means spin off-diagonal)
+\item 
+$\langle \psi_{\bfk n\sigma}|G_{l\sigma}(r)y_{lm}(\hat{\bfr})\rangle$
+(\verb#dnk(iband,iwf,iqbz,isp)# in \verb#hsocmat.F#)
+\end{enumerate}
+See \verb#hsocmat.F#. We have \verb$evecw=matmul(evec,dnk)$. 
+From \verb$hammso$, we calculate the trace of the 
+square of $H_{\rm SOC}$ as $\tr(H_{\rm SOC}^2)$ in the space spanned by the Wannier functions.
+By construction the trace is not dependent on $y_{lm}$ or on $Y_{lm}$ because projected fourteen Wannier functions (when $4f$) spans the same Hilbert space. The trace is equilannt to the sum of square of eigenvalues
+of $H_{\rm SOC}$.
+
+$\tr(H_{\rm SOC}^2)$, as well as
+$\langle W_{lm \sigma}| H_{\rm SOC} |W_{lm'\sigma'} \rangle$,
+can be Wannier dependent because the Wannier is not unique.
+But we expect the dependence is not so large.
+
+Important check point to evaluate the size of SOC is whether we can reproduce the SOC splitting in the original bands
+ (not the bands of the 14-space model but the bands of full QSGW).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%5
+\section{Crystal symmetry for GW calculation}
+\noindent \underline{space group operation (space group rotation):}\\
+
+In the preparation state of GW calculation, we have
+3x3 matrices \verb#symops(3,3,ig),ig=1,ngrp#
+for point group part of the space group operations.
+It is written in \verb#call m_hamindex_init,m_hamindex.F:L128#) at \verb#lmv7.F# (lmfgw-MPIK job=0 mode).
+For example, in the case of GaAs, it shows 24 matrices in it.
+
+In GW main routines such as \verb#hsfp0.sc.m.F#,
+we do \verb#call genallcf_v3#. This set \verb#symgg (=symops)# in
+the module \verb#m_genallcf_v3# as well as \verb#invg# pointing the .
+In the module \verb#m_zmel.F#, we do \verb#call mptauof#.
+This set all required symmetry operations (find accompanied translation vector 
+and atom-site mapping information)
+from point group operations. It gives informations of space group symmetry 
+(which atom is mapped to which atom, and so on).
+See document at the begining of \verb#subroutine mptauof#.
+
+In \verb#lmv7.F#(main routine), we have \verb#m_hamindex# called for lmfgw mode=0.
+This gives a file Hamindex, containing Hamindex.
+
+
+The space group symmetry operation can be checked by 
+``lmchk'' in advance. But be careful. It also includes inversion symmetry,
+which means $|\psi_{-\bfk}(\bfr)|^2=|\psi_\bfk(\bfr)|^2$
+(this is because of time-reversal symmetry as for real local $V(\bfr)$ (DFT case)).
+Need attention as for LDA+U case of orbital moments appears (no time-reversal case).
+
+The given crystal symmetry can be controlled by \verb#SYMGRP# category
+in \verb#GWinput#. You can supply generators of space group (see
+explanation in GWinput), or set \verb#find#. If it is \verb#find#,
+we assume electronic structure has the symmetry of crystal structure.
+Note that symmetry of electronic structure can be lower than the crystal symmetry.
+For example, NiO is deformed along (111) direction in realitiy,
+but we may like to use structure without such deformation for calcualtions.
+In such a case, we may need to supply generators for lower symmetry.\\
+
+\noindent \underline{AF symmetry}:\\
+Recently, we add a new option \verb#SYMGRP_AF#.
+We have to set 
+\begin{verbatim}
+/home/usr2/h70252a/ecaljAFtest/NdTEST
+~/SWJ/Nd2CuO4
+...
+    ATOM=Ndup  POS=  0.0000  {a}/2   {c}/2-{znd}*{c}  AF=1
+    ATOM=Nddn  POS=  {a}/2   0.0000  {znd}*{c}       AF=-1
+SYMGRPAF r2x
+SYMGRP r4z::(-1/2,1/2,0) 
+...
+\end{verbatim}
+Here, AF=1,AF=-1 give AF pairs. 
+SYMGRP is to keep z axis. SYMGRPAF is an antiferro magnetic symmetry operation 
+(we add r2x+spin inversion), then the ATOM AF=1 is mapped to AF=-1.
+Ask to T.Kotani as for AF symmetry setting, because it is relatively new.
+
+
+\section{IBZ and EIBZ scheme}
+We include EIBZ procedure given in III.G. in Ref.\cite{friedrich_efficient_2010}.
+It is for the polarization function \verb@hx0fp0,hx0fp0_sc@ and
+for self-energy \verb@hsfp0_sc@.\\
+
+\noindent \underline{IBZ}\\
+Recall IBZ first. We have a set of space-group operation
+$S_A=\{A_i |i=1,... N_A\}$  (except translation by reciprocal vectors). 
+$A_i$ is represented by space rotation and translation.
+This $S_A$ can include time-reversal operation. $\bfq'=A_i(\bfq)$ belongs to BZ.
+(Simple multiplication of rotation matrix to $\bfq$ may (or may not) need pulling back to (1st) BZ).
+For a set of mesh points ``$\{\bfq\}$ in the BZ'', $A_i$ gives an one-to-one mapping between them.
+``$\{\bfq\}$ in IBZ'' is a sub set of 1stBZ.
+
+Consider a set of functions dependent of $\bfq$ as $\{g_{\bfq}(\bfr, n)\}$.
+We can calculate $X$ defined as a sum of $F[g_\bfq]$ as
+\begin{eqnarray}
+X=\sum_{\bfq\in {\rm BZ}} F[g_\bfq]
+= \sum_{A_i \in S_A } 
+\sum_{\bfq \in {\rm IBZ}} \frac{N_\bfq}{N_A} F[g_{A_i(\bfq)}] \label{eq:ibz0}
+\end{eqnarray}
+Here {\rm IBZ} is a set of $\bfq$ from which we can generate all the mesh points in the BZ. 
+$N_\bfq$ is the number of mesh points generated from $\bfq$ by $S_A$ (the number of the set $\bfq^*$).
+For $\bfq=0$, $N_\bfq=1$. For general $\bfq$ (lowest symmetric points), $N_\bfq=N_A$.
+
+If $A_i[g_\bfq]= g_{A_i(\bfq)}(\bfr,n)$ is satisfied, we have 
+\begin{eqnarray}
+X=\sum_{\bfq\in {\rm BZ}} F[g_\bfq]
+= \sum_{A_i \in S_A } \sum_{\bfq \in {\rm IBZ}} \frac{N_\bfq}{N_A} F[g_{A_i(\bfq)}] 
+= \sum_{A_i \in S_A } \sum_{\bfq \in {\rm IBZ}} \frac{N_\bfq}{N_A} F[A_i[g_\bfq]] \label{eq:ibz}.
+\end{eqnarray}
+This shows how we evaluate $X$ only from $\{g_{\bfq}(\bfr, n)|\bfq \in {\rm IBZ}\}$.
+ 
+\noindent (NOTE: eigenfunctions calculated by diagonalization satisfy
+$A_i[g_\bfq]= g_{A_i(\bfq)}(\bfr,n)$ except phase factor. We consider cases that the phase factor is irrelevant.)
+
+\ \\
+\noindent \underline{EIBZ}\\
+We consider sub group of $S_A$ with keeping given $\bfk$.
+This sub group is written as $S^\bfk_A=\{A^\bfk_i |i=1,2,...,N_A^\bfk\}$.
+For this sub group, we apply the same logic of IBZ, resulting
+\begin{eqnarray}
+X=\sum_{\bfq\in {\rm BZ}} F[g_\bfq] = 
+\sum_{A^\bfk_i \in S_A^\bfk} \sum_{\bfq \in {\rm EIBZ(\bfk)}}
+\frac{N_\bfq^\bfk}{N_A^\bfk} F[A^\bfk_i[g_\bfq]] \label{eq:eibz1}
+\end{eqnarray}
+Here {\rm EIBZ}$(\bfk)$ is a set of $\bfq$ from which we can generate all the mesh points in the BZ. 
+$N^\bfk_\bfq$ is the number of mesh points
+generated from $N_\bfq$ by $S^\bfk_A$. Note that $\bfk$ is fixed in \req{eq:eibz1}.
+Since $S_A^\bfk \subset S_A$, IBZ $\subset$ EIBZ($\bfk$). That is, equivalent $q$ poinst in IBZ 
+might be diffrenciated in EIBZ($\bfk$).
+
+See Eq.(50) in Ref.\cite{friedrich_efficient_2010}.
+\verb#call Seteibz -->call eibzgen# returns $S_A^\bfk$ stored in the modele \verb#m_eibz#.
+
+Note normazization is
+\begin{eqnarray}
+N=\sum_\bfq 1 = 
+\frac{1}{N_A^\bfk} \sum_{A^\bfk_i \in S_A^\bfk } 
+\sum_{\bfq \in {\rm EIBZ}(\bfk)}N_\bfq^\bfk =
+\sum_{\bfq \in {\rm EIBZ}(\bfk)}N_\bfq^\bfk  \label{eq:eibz2}
+\end{eqnarray}
+
+
+\noindent \underline{For poralization}\\
+We apply \req{eq:eibz1} to $F^\bfk[g_\bfq]$, resulting
+\begin{eqnarray}
+X(\bfk)
+=\frac{1}{N_A^\bfk} \sum_{A^\bfk_i \in S_A^\bfk } \left( 
+\sum_{\bfq \in {\rm EIBZ}(\bfk)}N_\bfq^\bfk F^\bfk[A^\bfk_i[g_\bfq]] \right).
+\label{eq:eibz3} 
+\end{eqnarray} 
+This means that we have to calculate weighted average only for 
+$g_\bfq \in {\rm EIBZ}(\bfk)$, and then finally symmetrized (symmetrization is in 
+\verb#call x0kf_v4hz_symmetrize# 
+in \verb#hx0fp0.sc.m.F,hx0fp0.m.F# or newly developing \verb#hrcxq#.
+
+We apply \req{eq:eibz3} to Eq.(22) in Ref.\cite{friedrich_efficient_2010}
+resulting Eq.(51) in Ref.\cite{friedrich_efficient_2010}.
+Then we need to rotate MPB for given space group rotation $A^\bfk_i$. 
+Note that $A^\bfk_i$ keeps $\bfk$ of MPB. This is in the next section. 
+
+Note that \verb#call eibzgen# stores not only $S_A^\bfq$(\verb#eibzsym#), 
+but also the weight $N_\bfq^\bfk$ (\verb#nwgt#) in the module \verb#m_eibz#.
+(role of $\bfq$ and $\bfk$ may be turn around in \verb#m_eibz#)
+
+% An output for GaAs shows (usually \verb#std0000.hx0fp0_sc#),shows
+% \begin{verbatim}
+% === Goto eibzgen === TimeRevesal switch =T
+% eibzgen: TimeReversalSwitch ngrp= T 24
+% iq=       1 # of EIBZ: Full=      48 Used(TimeR 1 or -1)= 24=24+ 0 neibz=      10
+% iq=       2 # of EIBZ: Full=       6 Used(TimeR 1 or -1)=  6= 6+ 0 neibz=      20
+% iq=       3 # of EIBZ: Full=      12 Used(TimeR 1 or -1)=  6= 6+ 0 neibz=      20
+% iq=       4 # of EIBZ: Full=       6 Used(TimeR 1 or -1)=  6= 6+ 0 neibz=      20
+% iq=       5 # of EIBZ: Full=       8 Used(TimeR 1 or -1)=  4= 4+ 0 neibz=      26
+% iq=       6 # of EIBZ: Full=       2 Used(TimeR 1 or -1)=  2= 2+ 0 neibz=      40
+% iq=       7 # of EIBZ: Full=       4 Used(TimeR 1 or -1)=  2= 2+ 0 neibz=      40
+% iq=       8 # of EIBZ: Full=      16 Used(TimeR 1 or -1)=  8= 8+ 0 neibz=      16
+% iq=       9 # of EIBZ: Full=       2 Used(TimeR 1 or -1)=  2= 2+ 0 neibz=      40
+% iq=      10 # of EIBZ: Full=       8 Used(TimeR 1 or -1)=  4= 4+ 0 neibz=      20
+% iq=      11 # of EIBZ: Full=       6 Used(TimeR 1 or -1)=  6= 6+ 0 neibz=      20
+%  nqbz,  sum(neibz(iq)), sum(ngwt)=sum(nqbz)=      64    272    704    704
+% Used timeRevesal for EIBZ = F
+% \end{verbatim}
+% Let me explain this. For example, for $\bfq$ point of iq=9, we have 8
+% operations of $S_A^\bfq$. We first allow time-reversal symmetry (then 16
+% operations total), but finally eibzgen judged that time-reversal is not
+% necessary to fill all $\bfk$ points. Number of $\bfk \in {\rm EIBZ}(\bfq)$ is 40.
+% The total computaitonal time for sum is originally $11 \times 64=704$,
+% which is reduced to be 272. However, we find symmetrization is
+% time-consuming because no good parallerization yet.
+% (I think current version try to avoid time-reversal
+% symmetry (to do safer calculation without bug).
+% We may reduce computational time by full use of time-reversal. 
+% Need careful debugging; I don't know whether worth to do or not.)\\
+
+\ \\
+\noindent \underline{For self-energy}\\
+In \verb#hsfp0.sc.m.F#(not in \verb#hsfp0.m.F#), we have symmetrization
+as Eq.(52) in Ref.\cite{friedrich_efficient_2010}. 
+But used formula is a little different. 
+
+We use \req{eq:eibz2} as it is.
+As in the same manner of poralization function, we call \verb#eibzgen#
+at first. To obtain weighted sum of self-energy at $\bfq$,
+we calculate weigted sum for $\bfk \in {\rm EIBZ(\bfq)}$.
+(note the sum is controlled by \verb#nrkip# which is the weights copied
+from \verb#nwgt# (MPI parallelization is used). When \verb#nrkip=0#, we
+skip corresponding do loop.)
+
+Symmetrizer is \verb#call zsecsym#, called from the main program of \verb#hsfp0.sc.m.F#.
+Its core part is
+\begin{verbatim}
+       zsect(ii1:ie1,ii2:ie2)= zsect(ii1:ie1,ii2:ie2) 
+     &   + matmul( dconjg(transpose(rmatjj(1:ne1,1:ne1,iblk1))), 
+     &     matmul(zsec(ii1:ie1,ii2:ie2,iqxx),
+     &     rmatjj(1:ne2,1:ne2,iblk2)) )
+\end{verbatim}
+. This is the self-energy rotated by the rotation matrix \verb#rmatjj#,
+which is generated by \verb#call rotwvigg# in it.
+(NOTE: we carefully treat degenerated bands to keep symmetry well.
+It makes block decomposition(due to degeneracy) of self-energy matrix.
+A block is \verb#zsect(ii1:ie1,ii2:ie2)#, where band indeces
+\verb#ii1:ie1# are degenerated bands).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rotation of eigenfuncitons and MPB by the space-group operations}
+\label{sec:spacegroupmapping}
+\subsection{space-group rotation of PMT eigenfunction}
+
+We sometimes have to map eigenfuncions by space group operations.
+
+An space-group operation is specified by $(g,\iDelta)$, which contains
+a $3 \times 3$ space-rotaiton matrix $g$ together with a translation vector
+$\iDelta$. Recall that $\iDelta= 0$ for the symmorphic cases.
+This $(g,\iDelta)$ makes a rotation $\bfr \to \bfr'$ as
+\begin{eqnarray}
+&&\bfr'=g(\bfr)+ \iDelta,
+\end{eqnarray}
+which is equilalent to
+\begin{eqnarray}
+&&\bfr=g^{-1}(\bfr')+ \iDelta^{-1},\\
+&&\iDelta^{-1}=-g^{-1}(\iDelta)
+\end{eqnarray}
+Further, we calculate which atomic site is mapped to which
+atomic site for give $(g,\iDelta)$. It is given as
+\begin{eqnarray}
+&&g(\bfR)+\iDelta=\bfR'+\iDelta \bfT_\bfR.
+\end{eqnarray}
+In {\tt ecalj}, the array {\tt miat(ipos=1,npos)} gives ${\bf R}'$ in
+the primitve cell. 
+{\tt tiat(3,ipos)} gives the translation of multiples of primitive cell vectors 
+$\iDelta \bfT_\bfR$. Here $\bfR$ is the atom in the unit cell. 
+
+The rotation of an function $F \to F'$ by $(g,\iDelta)$
+is defined so that $F'(\bfr')=F(\bfr)$. Here $F'(\bfr')$ is written as $g[F](\bfr')$.
+Thus we have
+\begin{eqnarray}
+g[F](\bfr)=F(g^{-1}(\bfr)+\iDelta^{-1})
+\end{eqnarray}
+
+Let us apply this to the bloch sum function
+$A^{\bf k}_{\bfR u L}({\bf r}) \equiv \sum_{\bf T} 
+A_{\bfR u L}({\bf r-R-T}) \exp(i {\bf kT})$ in \req{eq:blochmto}.
+(Here we get the angular momentum index $L$. $u$ is for radial part of index.)
+Then we have
+\begin{eqnarray}
+&&g[A^{\bf k}_{\bfR u L}](\bfr)=A^{\bf k}_{\bfR u L}(g^{-1}(\bfr)+\iDelta^{-1})
+=\sum_\bfT A_{\bfR u L}(g^{-1}(\bfr)+\iDelta^{-1} -\bfR-\bfT) \exp(i {\bf kT}) \nonumber \\
+&&=\sum_\bfT A_{\bfR u L}(g^{-1}(\bfr+g(\iDelta^{-1}) -g(\bfR)-g(\bfT)))
+ \exp(i {\bf kT}) \nonumber \\
+&&=\sum_\bfT \sum_{L'}  A_{\bfR u L'} (\bfr+g(\iDelta^{-1}) -g(\bfR)-g(\bfT))D_{L'L}(g) \exp(i {\bf kT}) \nonumber \\
+&&=\sum_\bfT \sum_{L'}  A_{\bfR' u L'}(\bfr-\bfR'-\iDelta  \bfT_\bfR -g(\bfT)) D_{L'L}(g)\exp(i {\bf kT}) \nonumber \\
+&&=\sum_{\bfT''} \sum_{L'}  A_{\bfR' u L'}(\bfr-\bfR'-\bfT'') D_{L'L}(g)
+ \exp(i g(\bfk){\bfT}'') \exp(-i g(\bfk)\iDelta \bfT_\bfR) \nonumber \\
+&&= \sum_{L'}  A^{g(\bfk)}_{\bfR' u L'}(\bfr) D_{L'L}(g) \exp(-i g(\bfk)\iDelta \bfT_\bfR),
+\label{eq:eigenrot}
+\end{eqnarray}
+where we use $A_{\bfR' u L}(\bfr)=A_{\bfR u L}(\bfr)$ since $R$ and $R'$
+sites should be equilalent sites. We use cancellation $\iDelta=-g(\iDelta^{-1})$.
+$D_{L'L}(g)$ is the rotaion matrix of the real spherical harmonics for $g$.
+
+\subsection{space-group rotation of PMT eigenfunction}
+We have eigenfunction rotation routine \verb#subroutine rotwvigg# called from \verb#zsecsym.F#.
+
+\noindent \underbar{MTO part:}\\
+With this \req{eq:eigenrot}, coeffecients of eigenfunctions for the MTO part of 
+eigenfunctions are rotated (mapped) by the space group operation $g$.
+It is coded in {\tt subroutine rotwvigg}(eigenfunction rotation routine) as
+\begin{verbatim}
+...
+ phase = [(exp(-img2pi*sum(qtarget*tiat(:,ibas,igg))),ibas=1,nbas)]
+ do iorb=1,norbmto !orbital-blocks are specified by ibas, l, and k.
+   ibas = ibastab(iorb)
+   l   = ltab(iorb)
+   k   = ktab(iorb)
+   init1 = offl(iorb)+1
+   iend1 = offl(iorb)+2*l+1
+   init2 = offlrev(miat(ibas,igg),l,k)+1
+   iend2 = offlrev(miat(ibas,igg),l,k)+2*l+1
+   evecout(init2:iend2,:)= matmul(dlmm(-l:l,-l:l,l,igg),evec(init1:iend1,:))*phase(ibas)
+ enddo
+...
+\end{verbatim}
+Here 
+\begin{quote}
+\verb#ndimh = nlmto + napw#: the size of PMT Hamiltonian\\
+\verb#evec(1:nlmto,1:nband)# : the coeffecients of eigenfunctions on MTO\\
+\verb#igg#:  index specifying the space-group operation $g$\\
+\verb#qtarget#: qtarget=$g(\bfk)$\\
+\verb#ibas#: site index within the primitive cell.\\
+\verb#iorb# is the index of MTO part of block ($2l+1$ elements for $m=-l,-l+1,... ,l$).\\
+\verb#l# is the angularmomentum index. l of L.\\
+\verb#k# is the radial index.\\
+\verb#miat#: site index ibas is mapped to \verb#miat(ibas,igg)#\\
+\verb#tiat#: $\iDelta \bfT_\bfR$\\
+\verb#offl#: offset for the \verb#iorb# block\\
+\verb#offlrev#: offset for the (ibas,l,k) block\\ 
+The Block \verb#init1:iend1# is mapped to the block \verb#init2:iend2#.
+\end{quote}
+\noindent In order to call rotwvigg, we have to call \verb#readhamindex()# so as to set up variables 
+\verb#ltab,ktab,offl,oflrev,...# in \verb#m_hamindex# module in advance.
+
+Orbital index tables ({\tt *\_tbl} is read from a file {\tt @MNLA\_CPHI} 
+(See Sec.\ref{sec:atmnla}) by \verb#readmnla_cphi#.
+The last column in {\tt @MNLA\_CPHI} contains the orbital-block index.
+The orbital-blocks are specified by $l$ and $k$, its size is $2l+1$.
+The number of $i$ is exactly the number of lines of {\tt @MNLA\_CPHI}.\\
+
+\noindent \underbar{APW part:}\\
+In {\tt subroutine rotwvigg}(eigenfunction rotation routine) we also have part for the APW.
+Formula is
+\begin{eqnarray}
+&&g[\exp(i (\bfk+\bfG)\bfr)]  
+=\exp(i (\bfk+\bfG) (g^{-1}(\bfr)+\iDelta^{-1})) 
+=\exp(i (g(\bfk)+g(\bfG)) (\bfr+g(\iDelta^{-1})) \nonumber \\
+&&=\exp(i (g(\bfk+\bfG) \bfr) \exp(i (\bfk+\bfG) \iDelta^{-1}) \nonumber \\
+&&= \exp({i (\bar{g}(\bfk) + g(\bfG)+ (g(\bfk)-\bar{g}(\bfk))) \bfr}) \exp({-i (\bfk+ \bfG)\iDelta}).
+\end{eqnarray}
+(Our definition of PW (IPW) has 'no nomalization factor'.)
+Here $g(\bfk)$ is pulled back to be $\bar{g}(\bfk)$ in the 1stBZ. 
+Their difference is $g(\bfk)-\bar{g}(\bfk)$. 
+We define \verb#barG# as $\bar{G}=g(\bfG)+ (g(\bfk)-\bar{g}(\bfk))$.
+Thus it is coded as \\
+(here we use $\bfq$ instead of $\bfk$, sorry for confusion). 
+\begin{verbatim}
+...
+  igg: index for space group operation.
+nlmto: the size of MTO part.
+
+  ikt  = getikt(q)       !index for q 
+  ikt2 = getikt(qtarget) !index for bargq = \bar{g}(q) 
+  do ig = 1,napw_in !number of APW 
+    qpg  = q + matmul( qlat(:,:),igv2(:,ig,ikt))  ! q+G
+    qpgr = matmul(symops(:,:,igg),qpg)            !g(q+G)
+    nnn= nint(matmul(platt,qpgr-qtarget)) !integer sets for barG= g(G)+ g(q)-bargq
+    ig2 = ngvecprev(nnn(1),nnn(2),nnn(3))   ! index for barG
+    evecout(nlmto+ig2,:)= evec(nlmto+ig,:) * exp( -img2pi*sum(qpgr*shtvg(:,igg)) )
+  enddo
+...
+\end{verbatim}
+ 
+% Note that $g(\bfk)$ can be not in the $\bfk$-point list.
+% Then you have to pull it back to the point in the list. 
+% It means the $g(\bfk)=\bfk'+\bfK$, where $\bfK$ is a recprocal vector,
+% $\bfk'$ is in the list.
+% For the case of the Bloch sum orbital, we have no problem
+% because the Bloch sum is not affected by $\bfK$. The Bloch sum is
+% completely periodic as for $\bfk$ in the reciprocal space.
+
+% After the sepearetion $g(\bfk+\bfG)$ as 
+% $\bfk'+\bfG' = g(\bfk+\bfG)$, where $\bfk'$ is in our BZ list,
+% we hare to find the integer index of $\bfG'$.
+% To find it, we have to prepare some reverse rotation table in advance.
+
+%(This code is a simplified version for presentation, removing the
+%Wannier-orbital-section extraction is removed.)
+
+
+\subsection{space-group rotation of MTIPW expansion of eigenfunction}
+In ecalj, we re-expand eigenfuncitons in the manner of MTIPW form, that is,
+MTpart+IPWpart as in \req{def:psiexp} in the GW calculations.
+In the form of MTIPW, we have to map eigenfunctions by space-group operations.
+As in the manner of \verb#rotwvigg#, we have \verb#rotmto# and \verb#rotipw#.
+These are for rotation MTpart and IPW parts.
+
+
+\subsection{space-group rotation of Mixed Product Basis}
+We need all the matrix elements $\langle \Psi_{{\bf q+k}n'}| \Psi_{{\bf k}n} E^{\bf q}_\nu \rangle$.
+for given inputs of $\bfq,\bfk,n,n'$. Here $E^{\bf q}_\nu$ is the Coulomb-diagonalized mixed product basis
+\cite{friedrich_efficient_2010}.
+
+In the procedure of EIBZ (See \req{eq:eibz3} around), we have to rotate MPB.\\
+Module \verb#module m_rotMPB2 (in m_rotMPB.F)# is for generating the rotation matrix \verb#zrotm#.
+With \verb#zrotm#, we rotate MPB in \verb#call X0kf_v4hz_symmetrize#, where
+we multiple conversion matrix \verb#\zcousq# for conversion from MPB to $\{\}E^{\bf q}_\nu\}$ as\\
+\verb#  rcxq(:,:,iw,jpm) = matmul(zcousqc,matmul(rcxq_core,zcousq))# (see code in \verb#x0kf_v4hz_symmetrize#).
+
+{\tt zrotm} is generated by calling \verb#rotmto2,rotipw2#. 
+These are essentially similar with \verb#rotmto,rotipw#, but the basis set in the MT region,
+and the basis set for the interstitial region are different from the case of eigenfunctions.
+Thus we supply  \verb#ibas_tbl# and so on as
+\begin{verbatim}
+      use m_pbindex,only: norbt, ibas_tbl,l_tbl,k_tbl,offset_tbl,offset_rev_tbl,
+     &     max_ibas_tbl,max_l_tbl,max_k_tbl,max_offset_tbl
+\end{verbatim}
+in \verb#module m_rotMPB2#.
+
+
+% Since we calculate eigenfunctions only at IBZ, we need rotations (rotation by space group operation). 
+% However, all needed are pushed into \verb#m_zmel.F#, which contains 
+% subroutines \verb#get_zmelt,get_zmelt2#. 
+% These returns these matrix elements for given $\bfq,\bfk$. We don't need
+% to care how to rotsyate eigenfuncitons.
+
+
+
+\subsection{space-group rotation of Hamiltonian (obsolate)}
+Let us consider the rotation of Hamiltonian. For $(g,\iDelta)$, we have 
+$\langle A^\bfk_i|H|A^\bfk_j \rangle=\langle g[A^\bfk_i]|H|g[A^\bfk_j] \rangle$ because 
+Hamiltonian unchanged by $(g,\iDelta)$. Thus we have
+\begin{eqnarray}
+&&\langle A^\bfk_i|H|A^\bfk_j \rangle
+= \langle g[A^\bfk_i]|H|g[A^\bfk_j] \rangle
+= \sum_{i'j'} \langle A^{g(\bfk)}_{i'}z_{i'i} |H| A^{g(\bfk)}_{j'} z_{j'j} \rangle 
+= \sum_{i'j'} z^*_{i'i} \langle A^{g(\bfk)}_{i'}|H| A^{g(\bfk)}_{j'}
+\rangle z_{j'j} \nonumber \\
+&&= z^\dagger \langle A^{g(\bfk)}_{i'}|H| A^{g(\bfk)}_{j'} \rangle z
+\end{eqnarray}
+Thus we have
+\begin{eqnarray}
+\langle A^{g(\bfk)}_{i'}|H| A^{g(\bfk)}_{j'} \rangle 
+= z \langle A^\bfk_i|H|A^\bfk_j \rangle z^\dagger
+\end{eqnarray}
+%In {\tt fpgw/Wannier/hmaxloc.F}, this is coded as 
+%\begin{verbatim}
+%        hrotknew = matmul(zrotm, matmul(hrotk(:,:,iqbzi),transpose(dconjg(zrotm))))
+%\end{verbatim}
+%. This rotation is also used for the case of self-energy.
+
+ 
+
+
+
+
+\newpage
+xxxxxxxxxx under construction xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\
+\section{xxxxxxxxxxx MPI parallelization}
+The MPI parallelizaiton is still very limited.
+MPI in the current version is controlled by ``rankdivider'' 
+in \verb#hsfp0.sc.m.F,hx0fp0.sc.m.F,hx0fp0.m.F#.
+In GW calculations, we have to take sum for some types of indexes. And
+some indexes are external ones.
+The rankdivider try to divide these indexes to groups and pass these
+regions to each cores. Each cores sum up for given regions only.
+And then we do take total sum to obtain final results before
+symmetrization.(I think symmetrization may be too time consuming, 
+it may be bette to skip EIBZ?).
+
+I think we need to extend the rank-divider idea for better MPI parallelization.
+
+
+\section{real space sphere integral}
+See \verb#module m_SphericalDesignInt#. With the spherical t-design, we can
+perform real-space integral for a sphere. It is very useful for
+debugging.
+
+
+
+\section{Expansion of non-local functions, need fixing xxxxxxxxx}
+\underconstruction 
+We expand the Coulomb interaction $v({\bf r,r'})= e^2/|{\bf r-r'}|$ as
+\begin{eqnarray}
+\begin{cases}
+  \displaystyle
+  v({\bf r},{\bf r}')= \frac{1}{N_{\rm c}} \sum_{\bf k} \sum_{IJ}
+  \tilde{M}_I^{\bf k}({\bf r})v_{IJ}({\bf k})
+  \{\tilde{M}_J^{\bf k}({\bf r}')\}^*           & \cr
+  \displaystyle
+  v_{IJ}({\bf k}) =
+  \frac{1}{N_{\rm c}} \int_V d^3 r \int_V d^3 r'
+  \{M_I^{\bf k}({\bf r})\}^* 
+  v({\bf r},{\bf r}') M_J^{\bf k}({\bf r}')
+  \label{eq. v}
+\end{cases}
+\end{eqnarray}
+This expansion is general for the two-point non-local functions.
+However, for convenience, we expand the polarization function $D$ as
+\begin{eqnarray}
+\begin{cases}
+  \displaystyle
+  D({\bf r},{\bf r}',\omega)= \frac{1}{N_{\rm c}} \sum_{\bf k} \sum_{IJ}
+  M_I^{\bf k}({\bf r})D_{IJ}({\bf k},\omega)
+  \{ M_J^{\bf k}({\bf r}') \}^*           & \cr
+  \displaystyle
+  D_{IJ}({\bf k},\omega) =
+  \frac{1}{N_{\rm c}} \int_V d^3 r \int_V d^3 r'
+  \{\tilde{M}_I^{\bf k}({\bf r})\}^* 
+  D({\bf r},{\bf r}',\omega) \tilde{M}_J^{\bf k}({\bf r}')
+  \label{eq. D}
+\end{cases}
+\end{eqnarray}
+and the dielectric function $\epsilon$ (and also the inverse
+dielectric function $\epsilon^{-1}$ ) as
+\begin{eqnarray}
+\begin{cases}
+  \displaystyle
+  \epsilon({\bf r},{\bf r}',\omega)= 
+  \frac{1}{N_{\rm c}} \sum_{\bf k} \sum_{IJ}
+  \tilde{M}_I^{\bf k}({\bf r})\epsilon_{IJ}({\bf k},\omega)
+  \{{M}_J^{\bf k}({\bf r}')\}^*           & \cr
+  \displaystyle
+  \epsilon_{IJ}({\bf k},\omega) =
+  \frac{1}{N_{\rm c}} \int_V d^3 r \int_V d^3 r'
+  \{M_I^{\bf k}({\bf r})\}^* 
+  \epsilon({\bf r},{\bf r}',\omega) \tilde{M}_J^{\bf k}({\bf r}') .
+  \label{eq. epsilon}
+\end{cases}
+\end{eqnarray}
+
+%\newpage
+\section{Expansion of a plane wave with the mixed basis, need fixing}
+\underconstruction
+If we substitute a plane wave
+$e^{i{\bf k \cdot r}}/\sqrt{\Omega}$ 
+for $F^{\bf k}(\bf r)$ in Eq.(\ref{expandfk}),
+we have
+\begin{eqnarray}
+\begin{cases}
+  \displaystyle 
+  \frac{1}{\sqrt{\Omega}}e^{i{\bf k \cdot r}} 
+  = \sum_J M_J^{\bf k} ({\bf r}) \tilde{C}^{{\bf k}0}_J & \cr
+  \displaystyle
+  \tilde{C}^{{\bf k}0}_J = 
+  \frac{1}{\sqrt{\Omega}}
+  \int_\Omega \{\tilde{M}_J^{\bf k}({\bf r})\}^* 
+  e^{i{\bf k \cdot r}} d^3r.
+\end{cases}
+  \label{expandeikr}
+\end{eqnarray}
+For small ${\bf k}$, the maximum eigenvalue of the
+Coulomb matrix should be $v({\bf k}) \equiv 4\pi e^2/|{\bf k}|^2$
+and the corresponding eigenvector shoud be equal to $\tilde{C}^{{\bf k}0}_J$.
+So we can get $\tilde{C}^{{\bf k}0}_J$ from the eigenvalue problem
+instead of evaluating the integral of Eq.(\ref{expandeikr}).
+
+In \verb|hvccfp0.m.f|, we get the maximum eigenvalue $\epsilon^0({\bf k})$ 
+and corresponding eigenvector $\tilde{C}^{{\bf k}0}_J$ from 
+\begin{eqnarray}
+   \sum_J[v_{IJ}({\bf k}) - \epsilon^0({\bf k})
+   O^{\bf k}_{IJ}] \tilde{C}^{{\bf k}0}_J=0.
+\end{eqnarray}
+%Then $\exp( i {\bf k r})$ is expanded as
+%\begin{eqnarray}
+%\exp(i {\bf k r}) = \sum_J \tilde{C}^{{\bf k}0}_J {M}_J^{\bf k} ({\bf r}).
+%\label{expandeikr0}
+%\end{eqnarray}
+Then we check the normalization
+\begin{eqnarray}
+  \sum_{IJ}( \tilde{C}^{{\bf k}0}_I )^* O_{IJ}^{\bf k}
+              \tilde{C}^{{\bf k}0}_J = 1
+\end{eqnarray}
+and calculate the two quantities
+\begin{eqnarray} 
+   \verb|v(exact)|
+    &=& \Omega \frac{4\pi e^2}{|{\bf k}|^2}, \\
+   \verb|v(cal)| 
+    &=& \Omega \sum_{IJ}( \tilde{C}^{{\bf k}0}_I )^*v_{IJ}({\bf k}) 
+              \tilde{C}^{{\bf k}0}_J
+     =  \Omega \epsilon^0({\bf k}),
+\end{eqnarray}
+which are shown in the end of the output of \verb|hvccfp0.m.f| 
+(\verb|lvcc| by the script \verb|gw_lmf| or \verb|eps_lmf|) such as follows.
+
+\vspace{\baselineskip}
+
+\verb| --- vcoul(exact)=  0.166657D+05 absq2=  0.5565111898526868D-01|
+
+\verb| --- vcoul(cal ) =  0.166587D+05 -0.484112D-19|
+
+\vspace{\baselineskip}
+
+You can see the agreement is good enough!
+The quantity $\tilde{C}^{{\bf k}0}_J$ is stored into \verb|Mix0vec|.
+It is read into the variable \verb|gbvec| in \verb|hx0fp0.m.f|.
+We also store the next quantity;
+\begin{eqnarray}
+  C^{{\bf k}0}_J
+  &\equiv& \frac{1}{\sqrt{\Omega}}\int_{\Omega}
+     \{ M_J^{\bf k}({\bf r}) \}^* e^{i{\bf k \cdot r}}d^3r \nonumber \\
+  &=& \sum_I \{ O_{IJ} \}^* \frac{1}{\sqrt{\Omega}}\int_{\Omega}
+     \{ \tilde{M}_I^{\bf k}({\bf r}) \}^* e^{i{\bf k \cdot r}}d^3r \nonumber \\
+  &=& \sum_I O_{JI} \tilde{C}^{{\bf k}0}_I.
+\end{eqnarray}
+It is read into the variable \verb|zzr| in \verb|hx0fp0.m.f|.
+
+%\bibliography{ecaljrefs}
+%\end{document}
+
+
+%---------
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\underconstruction (Usuda's old note from here)}
+\underconstruction
+In this note, we denote the primitive lattice vector as
+$\{{\bf a}_i| i\!=\!1,2,3\}$ (\verb#=alat*plat(1:3,i)#), 
+the volume of unit cell as
+$\Omega=|{\bf a}_1 \times {\bf a}_2 \cdot {\bf a}_3|$, and
+the reciprocal lattice vector as $\{{\bf b}_i| i\!=\!1,2,3\}$
+(\verb#=2*pi*qlat(1:3,i)/alat#).
+
+We assume the periodic boundary condition for
+quantities as $\Psi({\bf r}) = \Psi({\bf r}+ N_1 {\bf a}_1)
+= \Psi({\bf r}+ N_2 {\bf a}_2)= \Psi({\bf r}+ N_3 {\bf a}_3)$.
+Correspondingly, we use a Brillouin zone (BZ) discrete mesh, 
+which is given as
+\begin{eqnarray}
+{\bf k}(i_1,i_2,i_3)= 2 \pi \Biggr( \frac{i_1}{N_1} {\bf b}_1 
++ \frac{i_2}{N_2} {\bf b}_2 + \frac{i_3}{N_3} {\bf b}_3 \Biggr)
+\label{kmesh}
+\end{eqnarray}
+for $i_1=\!0,\!1,\!2,...N_1\!-\!1$ and so on.
+Within the volume $V\!=\!\Omega N_{\rm c}=\Omega N_1N_2N_3$, 
+we normalize eigenfunctions 
+and so on. However, it is rather convenient to use 
+the normalization within a unit cell $\Omega$ because we know
+the property
+\begin{eqnarray}
+  \int_V F^{\bf k} ({\bf r}) G^{\bf k'} ({\bf r}) d^3r = \delta_{\bf k k'} 
+  N_{\rm c} \int_\Omega F^{\bf k} ({\bf r}) G^{\bf k'} ({\bf r}) d^3r
+\end{eqnarray}
+for any functions $F^{\bf k}$ and $G^{\bf k'}$ 
+with the Bloch periodicity specified by ${\bf k}$ and ${\bf k'}$.
+In the GW code, we store the cell-normalized eigenfunction 
+$\tilde{\Psi}^{{\bf k}n}({\bf r})$ to {\sf DATA4GW};
+\begin{eqnarray}
+  \tilde{\Psi}^{{\bf k}n}({\bf r}) 
+  \equiv %\sqrt{\frac{V}{\Omega}}
+  \sqrt{N_{\rm c}}\Psi^{{\bf k}n}({\bf r}) \\
+  \int_\Omega |\tilde{\Psi}^{{\bf k}n}({\bf r})|^2 d^3r =1.
+\end{eqnarray}
+This $\tilde{\Psi}^{{\bf k}n}({\bf r})$ is expanded as
+\begin{eqnarray}
+\hspace{-3cm}\tilde{\Psi}^{{\bf k}n}({\bf r}) 
+&=& \sum_{a u} \alpha^{{\bf k} n}_{au} A^{\bf k}_{a u}({\bf r})
+ + \sum_{\bf G} \beta^{{\bf k}n}_{\bf G} P^{\bf k}_{\bf G}({\bf r}), \\
+A^{\bf k}_{a u}({\bf r}) &\equiv& 
+          \sum_{\bf T} A_{a u}({\bf r-R}_a-{\bf T})e^{i{\bf k\cdot T}}, \\
+\nonumber \\
+P^{\bf k}_{\bf G}({\bf r}) &\equiv& 0  \ \ \ {\rm \ if \ {\bf r} \in any \ MT} 
+\nonumber \\
+        &\equiv& e^{i({\bf k+G})\cdot{\bf r}} \ \ \ {\rm otherwise},
+\end{eqnarray}
+where $A^{\bf k}_{a u}({\bf r})$ is the Bloch sum of
+the atomic function $A_{au}({\bf r})$ in the $a$-site muffin-tin (MT) sphere.
+$P^{\bf k}_{\bf G}({\bf r})$ denotes the interstitial plane wave (IPW).
+Here ${\bf T}$ is the lattice translation vector;
+${\bf R}_a$ is the position of the $a$-site in the cell;
+${\bf G}$ denotes the reciprocal vector; % $a$ denotes the MT in the cell; 
+$u$ denotes the index to specvectorify the argumentaion basis. 
+$A^{\bf k}_{a u}({\bf r})$ is orthnormlized as
+\begin{eqnarray}
+\int_{|{\bf r}| < V_a} A_{a u}({\bf r})A_{a u'}({\bf r}) d^3r =\delta_{u u'},
+\end{eqnarray}
+where $V_a$ is the size of the $a$-site MT.
+The normalization is
+\begin{eqnarray}
+&&
+\frac{1}{N_{\rm c}}\int_V \{A^{\bf k}_{a u}({\bf r})\}^* 
+\!A^{\bf k'}_{a' u'}({\bf r}) d^3r = 
+\delta_{\bf k k'} \delta_{aa'}\delta_{u u'}
+\int_\Omega |A^{\bf k}_{a u}({\bf r})|^2 d^3r
+%=\delta_{\bf k k'} \delta_{aa'}\delta_{u u'}
+%\int_\Omega d^3r |A_{a u}({\bf r})|^2 
+= \delta_{\bf k k'} \delta_{aa'}\delta_{u u'} \\
+&&\frac{1}{N_{\rm c}}\!
+\int_V  \{ P^{\bf k}_{\bf G}({\bf r})\}^*\!
+P^{\bf k'}_{\bf G'}({\bf r})  d^3r
+= \delta_{\bf k k'}\!
+\int_\Omega \!\{ P^{\bf k}_{\bf G}({\bf r}) \}^*\!
+P^{\bf k'}_{\bf G'}({\bf r})  d^3r
+= \delta_{\bf k k'}\!
+\int_\Omega  P^{\bf 0}_{\bf G'-G}({\bf r}) d^3r.
+\end{eqnarray}
+
+
+%\bibliography{ecaljrefs}
+%\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\bibliography{ecaljrefs}
+%\end{document}
+
+\section{\underconstruction Dielectric function }
+
+\subsection{Dielectric function without local-field correction}
+\underconstruction
+Approximating $\epsilon^{-1}({\bf q},\omega)$ as $1/\epsilon({\bf q},\omega)$
+corresponds to neglecting the local-field correction.
+$\epsilon({\bf q},\omega)$ is given as 
+\begin{eqnarray}
+  \epsilon({\bf q},\omega) 
+ &=& \frac{1}{V}
+  \int_V d^3r \int_V d^3r' e^{-i{\bf q}\cdot{\bf r}}
+  \epsilon({\bf r},{\bf r}',\omega)e^{i{\bf q}\cdot{\bf r}'} \nonumber \\
+ &=& 1 - \frac{1}{V} \int_V d^3r \int_V d^3r' \int_V d^3r''
+  e^{-i{\bf q}\cdot{\bf r}} e^{i{\bf q}\cdot{\bf r}'} 
+  v({\bf r,r''})D({\bf r'',r'},\omega)  \nonumber \\
+ &=& 1 - v({\bf q})D({\bf q},\omega),
+           \label{eq. eps1}
+\end{eqnarray}
+where the relation
+\begin{eqnarray}
+   \int_V v({\bf r},{\bf r}'')e^{-i{\bf q}\cdot{\bf r}}d^3r 
+ % &=& \frac{1}{V}\sum_{\bf q'}v({\bf q'})e^{-i{\bf q'}\cdot{\bf r''}}
+ %  \int_V e^{-i({\bf q-q'})\cdot{\bf r}}d^3r \nonumber \\
+ % &=& \frac{1}{V}\sum_{\bf q'}v({\bf q'})e^{-i{\bf q'\cdot r''}}
+ %  V\delta_{\bf qq'} \nonumber \\
+  &=& v({\bf q})e^{-i{\bf q \cdot r''}}
+\end{eqnarray}
+is used and 
+%\begin{eqnarray}
+%   \epsilon({\bf q},\omega) = 1 - v({\bf q})D({\bf q},\omega) ,
+%\end{eqnarray}
+\begin{eqnarray}
+   v({\bf q}) &=& \sum_{IJ}( \tilde{C}^{{\bf q}0}_I )^*
+                v_{IJ}({\bf q})\tilde{C}^{{\bf q}0}_J , \\
+   D({\bf q},\omega) 
+              &=& \sum_{IJ}( C^{{\bf q}0}_I )^*
+                D_{IJ}({\bf q},\omega) C^{{\bf q}0}_J.     
+\end{eqnarray}
+In \verb|hx0fp0.m.f|, we calculate $v({\bf q})$, $D({\bf q},\omega)$ 
+and $\epsilon({\bf q},\omega)$ by
+\begin{center}
+    \verb| vcmean = sum( dconjg(gbvec) * matmul(vcoul,gbvec) )   |
+    
+    \verb| x0mean = sum( dconjg(zzr)   * matmul(zxq(:,:,iw),zzr))|
+    
+    \verb|eps(iw,iqixc2) = 1- vcmean * x0mean|
+\end{center}
+and the inverse dielectric funcion is given by
+\verb|1/eps(iw,iqixc2)| .  
+The matrix element of the polarization, $D_{IJ}({\bf q},\omega)=\verb|zxq|$,
+is obtained from the subroutine \verb|x0kf|.
+The results of ${\rm Re}(\epsilon)$, ${\rm Im}(\epsilon)$, 
+${\rm Re}(\epsilon^{-1})$
+and ${\rm Im}(\epsilon^{-1})$ are stored in \verb|EPS01.nolfc.dat| .
+
+
+\subsection{Dielectric function with local-field correction}
+\underconstruction
+The inverse dielectric function $\epsilon^{-1}({\bf q},\omega)$ 
+is calculated as follows:
+
+\begin{eqnarray}
+  \epsilon^{-1}({\bf q},\omega) 
+ &=& \frac{1}{V}
+  \int_V d^3r \int_V d^3r' e^{-i{\bf q}\cdot{\bf r}}
+  \epsilon^{-1}({\bf r},{\bf r}',\omega)e^{i{\bf q}\cdot{\bf r}'} \nonumber \\
+% &=&  \frac{1}{V}
+%  \int_V d^3r \int_V d^3r' 
+%  e^{-i{\bf q}\cdot{\bf r}}e^{i{\bf q}\cdot{\bf r}'}
+%  \frac{1}{N_{\rm c}}\sum_{\bf q'}^{\rm BZ}\sum_{IJ}
+%  \tilde{M}_I^{\bf q'}({\bf r})\epsilon_{IJ}^{-1}({\bf q'}, \omega)
+%        \{ M_J^{\bf q'}({\bf r}') \}^*   \nonumber \\
+% &=& \frac{1}{VN_{\rm c}}\sum_{IJ}\epsilon_{IJ}^{-1}({\bf q}, \omega)
+%  N_{\rm c} \int_{\Omega}  
+%  \tilde{M}_I^{\bf q}({\bf r})e^{-i{\bf q}\cdot{\bf r}}d^3r
+%  N_{\rm c} \int_{\Omega}  
+%  (M_J^{\bf q}({\bf r}') )^* e^{i{\bf q}\cdot{\bf r}'} d^3r'
+%  \nonumber \\
+ &=&
+  \sum_{IJ}
+  \Biggr\{ \frac{1}{\sqrt{\Omega}} \int_{\Omega}  
+  \tilde{M}_I^{\bf q}({\bf r})e^{-i{\bf q}\cdot{\bf r}}d^3r \Biggr\} 
+  \epsilon_{IJ}^{-1}({\bf q}, \omega) 
+  \Biggr\{ \frac{1}{\sqrt{\Omega}} \int_{\Omega}  
+  \{ M_J^{\bf q}({\bf r}') \}^* e^{i{\bf q}\cdot{\bf r}'} d^3r' \Biggr\} 
+  \nonumber \\
+ &=& 
+   \sum_{IJ} ( \tilde{C}^{{\bf q}0}_I )^* 
+   \epsilon_{IJ}^{-1}({\bf q},\omega) C^{{\bf q}0}_J.
+           \label{eq. epsi}
+\end{eqnarray}
+In \verb|hx0fp0.m.f|, we calculate $\epsilon^{-1}({\bf q},\omega)$ by
+\begin{center}
+ \verb| epsi(iw,iqixc2) = sum( dconjg(gbvec) * matmul(zw0, zzr) ) |
+\end{center}
+and the dielectric function is given by \verb|1/epsi(iw,iqixc2)| .
+The matrix element of $\epsilon^{-1}_{IJ}({\bf q},\omega)=\verb|zw0|$
+is obtained from the subroutine \verb|wcf|.
+The results of ${\rm Re}(\epsilon)$, ${\rm Im}(\epsilon)$, 
+${\rm Re}(\epsilon^{-1})$
+and ${\rm Im}(\epsilon^{-1})$ are stored in \verb|EPS01.dat| .
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{\underconstruction memo}
+\begin{verbatim}
+ESEAVR (average of sigm at high energy)
+
+Rotation of q by space group (not unique if q is on the BZ boundary).
+Discontinuity of bands at BZ boundary
+
+Mechanism of GW calculation for Metal. Drude weight.
+
+Tetrahedron method. Accumulation of imaginary part, and Hilbert transformation. No time-reversal symmetry case.
+
+Rseq,Broryden mixing,Anderson mixing (Yellow note by okuda).
+
+zmelt: unified matrix elements generator m_zmel.F
+
+structure constant:
+
+conversion between spherical harmonics and real harmonics
+
+New offset Gamma procedure. Invariant tensor expansion.
+Anisotropy problem.
+
+Wave function and MPB rotation 
+
+EIBZ symmetrization
+
+bloch: FFT of sigm.
+
+Calculate effective mass:
+
+hvccfp0: v(exact) vs. v(cal) (eigenvalue of v matrix).
+
+Spectrum function mode:
+
+lmfa:
+
+alagr3z: efficient? We may need improvement.
+
+PFLOAT:
+
+(not now?) ropbes.f ropyln.f had a problem due to compilar option.
+
+FTMESH: denser gives better? ehk=ehf?
+
+
+Atomic position relaxiation:
+
+epsPP mode:
+   Need to check it.
+   q=0 limit.
+
+With FSMOM, Efermi is not uniquely given in job_band_nspin2*.
+It is given by a bndfp-bzwtsf-bzwsf L300 block
+   if ((.not. lfill) .or. (metal .and. (nkp .eq. 1))) then
+   (bisection method to determine a middle of LUMO and HOMO).
+It can give some energy between LUMO and HOMO. 
+Small changes of computational condition can give large change. 
+But no problem.
+
+======
+PDOS: sigm_fbz is required.
+(when cp sigm,rst,GWinput ->LDA-like result.
+ Then cp sigm_fbz ->it fails.
+ Need to make new directory, and copy rst,sigm_fbz.)
+And how to check it. (whether 
+
+======
+mixbeta:
+takao@TT4:~/ecalj/fpgw$ grep mixbeta */*.F
+main/hqpe.sc.m.F:      call getkeyvalue("GWinput","mixbeta",beta,default=1d0,status=ret)
+mixing parameter on sigm file.
+As the default beta is unitiy, mixsigm and mixsigma files are 
+
+=======
+Check convergecne on QSGW.
+grep rms lqpe*
+
+\end{verbatim}
+
+
+
+
+%\newpage
+%\lstinputlisting[language=fortran]{../../fpgw/main/hx0fp0.sc.m.F}
+
+\newpage
+\printindex
+\bibliography{ecaljrefs_detail}
+\end{document}
