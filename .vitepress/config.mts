@@ -22,11 +22,10 @@ export default withMermaid({
 
     sidebar: [
       {
-        text: 'Guide',
+        text: 'Install',
         items: [
-          { text: 'Install', link: '/guide/install' },
-          { text: 'Homework', link: '/guide/homeworkecalj' },
-          { text: 'Server', link: '/guide/server_config'},
+          { text: 'Install', link: '/install/install' },
+          { text: 'InstallISSP', link: '/install/installISSP' }
         ]
       },
       {

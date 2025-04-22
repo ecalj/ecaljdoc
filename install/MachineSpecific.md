@@ -1,6 +1,6 @@
 # Server specific setting
 
-## Running on ISSP System B: Ohtaka
+## Use ISSP System B: Ohtaka
 
  - Module settings
 OneAPI(Intel) + OpenMPI is recommended
@@ -11,39 +11,10 @@ module load openmpi/4.1.5-oneapi-2023.0.0-classic
 > [!TIP]
 > OneAPI_MPI is slightly faster but less stable.
 
- - Script modification
-The ecalj MPI execution command assumes `mpirun`. (It is specified in the script)
-Before installation, change `mpirun -np` to `srun -n` in the following files to match the ISSP specifications. (It will work with `mpirun` but may give warnings)
-Replace the `ecalj` directory path with your own.
-```
-~/ecalj/SRC/exec/gwutil.py
-~/ecalj/SRC/exec/run_arg.py
-~/ecalj/SRC/exec/job_tdos
-```
-```python Around line 24 in gwutil.py
-def run_program(commandline, ncore=0,x0=0):
-    import subprocess,datetime
-    xdate=datetime.datetime.now() #today().isoformat()
-    mpirun='mpirun -np %d '%ncore if ncore!=0 else ''
-```
-```python Around line 7 in run_arg.py
-def run_arg(argin, mpi_size, nfpgw, command, output, *target):
-    echo_run = True  # standard
-    mpi_run = f"mpirun -np {mpi_size}"  # standard
-```
-```python Around line 9 in job_tdos
-def run_arg(argin, mpi_size, nfpgw, command, output, *target):
-    echo_run = ""  # standard
-    serial_run = ""  # standard
-    mpi_run = f"mpirun -np {mpi_size}"  # standard
-```
-> [!TIP]
-> You can also modify the files in `~/bin/` after installation, but they will be overwritten if you reinstall.
-
- - About InstallAll
+ <!-- - About InstallAll
 InstallAll includes compilation and test calculations. On Ohtaka, running MPI processes on the frontend is prohibited, so the test calculation part cannot be executed.
 To run the test calculations, execute InstallAll as a job. It should take about 5-10 minutes including compilation.
-By default, 8 cores are used, so ensure you have at least 8 cores available.
+By default, 8 cores are used, so ensure you have at least 8 cores available. -->
 ```bash job.sh
 #!/bin/sh
 #SBATCH -p i8cpu
@@ -77,7 +48,37 @@ However, if you run out of memory, reduce the number of cores per node to ensure
 > [!TIP]
 > If you encounter MKL (Intel Math Kernel Library) errors during execution, set `-c 1`.
 
-## Running on ISSP System C: Kugui
+### special modification of ecalj code for kugui (just for developer)
+The ecalj MPI execution command assumes `mpirun`. (It is specified in the script)
+Before installation, change `mpirun -np` to `srun -n` in the following files to match the ISSP specifications. (It will work with `mpirun` but may give warnings)
+Replace the `ecalj` directory path with your own.
+```
+~/ecalj/SRC/exec/gwutil.py
+~/ecalj/SRC/exec/run_arg.py
+~/ecalj/SRC/exec/job_tdos
+```
+```python Around line 24 in gwutil.py
+def run_program(commandline, ncore=0,x0=0):
+    import subprocess,datetime
+    xdate=datetime.datetime.now() #today().isoformat()
+    mpirun='mpirun -np %d '%ncore if ncore!=0 else ''
+```
+```python Around line 7 in run_arg.py
+def run_arg(argin, mpi_size, nfpgw, command, output, *target):
+    echo_run = True  # standard
+    mpi_run = f"mpirun -np {mpi_size}"  # standard
+```
+```python Around line 9 in job_tdos
+def run_arg(argin, mpi_size, nfpgw, command, output, *target):
+    echo_run = ""  # standard
+    serial_run = ""  # standard
+    mpi_run = f"mpirun -np {mpi_size}"  # standard
+```
+> [!TIP]
+> You can also modify the files in `~/bin/` after installation, but they will be overwritten if you reinstall.
+
+
+## Use ISSP System C: Kugui
 
 - Assuming the use of GPU
  - Module settings
@@ -98,30 +99,12 @@ if which nvidia-cuda-mps-control > /dev/null 2>&1 ; then
 fi
 ```
 
- - Script modification: Optional
-When using OpenMP parallelism for CPU calculations, change `mpirun -np` to `mpiexec --bind-to none --map-by node -np`.
-`--map-by node` is nessesary to to specify the different number of MPI processes in the single jobs.
-::: warning
-`--bind-to none` and `--map-by node` are the options in OpenMPI. It may not work in other MPI library.
-:::
-Replace the `ecalj` directory path with your own.
-```
-~/ecalj/SRC/exec/gwutil.py
-```
-```python Around line 24 in gwutil.py
-def run_program(commandline, ncore=0,x0=0):
-    import subprocess,datetime
-    xdate=datetime.datetime.now() #today().isoformat()
-    mpirun='mpiexec --bind-to none --map-by node -np %d '%ncore if ncore!=0 else ''
-```
-Also, change `mpirun` in other scripts as needed.
-
-- Install
+<!-- - Install
 ```bash
 FC=nvfortran ./InstallAll --gpu --clean
 ```
 * Test calculations are executed on the CPU.
-
+ -->
 
 - Job script
 ```bash job.sh
@@ -140,3 +123,23 @@ gwsc -np 64 -np2 4 --gpu 5 $id > lgwsc
 ::: tip
 The GPU version may not speed up small systems, but it can handle up to about 40 atoms with 4 GPUs (depending on the calculation conditions. Note that the calculation cost increases with the square of the number of k-points).
 :::
+
+
+### Script modification: Optional (only for developer)
+When using OpenMP parallelism for CPU calculations, change `mpirun -np` to `mpiexec --bind-to none --map-by node -np`.
+`--map-by node` is nessesary to to specify the different number of MPI processes in the single jobs.
+::: warning
+`--bind-to none` and `--map-by node` are the options in OpenMPI. It may not work in other MPI library.
+:::
+Replace the `ecalj` directory path with your own.
+```
+~/ecalj/SRC/exec/gwutil.py
+```
+```python Around line 24 in gwutil.py
+def run_program(commandline, ncore=0,x0=0):
+    import subprocess,datetime
+    xdate=datetime.datetime.now() #today().isoformat()
+    mpirun='mpiexec --bind-to none --map-by node -np %d '%ncore if ncore!=0 else ''
+```
+Also, change `mpirun` in other scripts as needed.
+

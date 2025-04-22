@@ -4,15 +4,15 @@ layout: home
 
 hero:
   name: "ecaljdoc"
-  text: "In development: document of ecalj"
-  tagline:
+  text: 
+  tagline: "This is a documents for ecalj package at github/tkotani/ecalj : xxx under construction xxx"
   actions:
     - theme: brand
       text: Install
-      link: /guide/install
+      link: /install/install
     - theme: alt
-      text: Getteing started
-      link: /guide/install
+      text: Get started
+      link: /manual/lmf
     - theme: alt
       text: Theory
       link: /theory/gw
@@ -21,10 +21,10 @@ hero:
       link: /manual/lmf
 
 features:
-  - title: quasi-particle self-constent 𝘎𝘞 calculations
-    details: Completly parameter-free first-principles electronic structure calculations
-  - title: All-electorns calculations with th PMT method
-    details: High accuracy and effciency
-  - title: Suuport the wide range of materials with default settings
-    details: Easy integration with VASP, Quantum ESPRESSO, etc.
+  - title: Quasi-particle self-consistent 𝘎𝘞 methods
+    details: First-principles electronic structure calculations to determine the best independent particle picture for describing electronic excitations
+  - title: Material properties
+    details: Linear responses. Wannier and MLO modelling. Spectrum functions, life time due to e-e scattering.
+  - title: Easy to use 
+    details: ecalj is based on the th PMT method, which is a all electron method with LMTO + LAPW, where we use only < 3Ry cutoff for APW. Automatically applicable to wide range of materials. Read in POSCAR for VASP (converter). Automatic band path. Plot GW band without the Wannier interpolation.
 ---
