@@ -36,7 +36,7 @@ gwsc -np 64 -np2 4 --gpu 1 $id > lgwsc
 
 2. When handling large systems, add the following to `GWinput` to prevent memory exhaustion:
    ```
-   KeepEigen .false.
+   keepEigen .false.
    ```
 
 ## Notes
