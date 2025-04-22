@@ -3,30 +3,44 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 import fs from 'fs';
 import path from 'path';
 
-function getUncheckedFiles() {
-  const uncheckedDir = path.resolve(__dirname, '../unchecked');
-  if (!fs.existsSync(uncheckedDir)) {
-    return [];
-  }
-  function getFilesRecursively(dir) {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    const files = entries.flatMap(entry => {
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        return getFilesRecursively(fullPath); // 再帰的に検索
-      } else if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.pdf'))) {
-        return fullPath;
-      }
-      return [];
-    });
-    return files;
-  }
-  const files = getFilesRecursively(uncheckedDir);
-  return files.map(file => ({
-    text: path.basename(file, path.extname(file)), // 拡張子を除いたファイル名をタイトルとして使用
-    link: `/unchecked/${path.relative(uncheckedDir, file).replace(/\\/g, '/')}` // 相対パスをリンクに変換
-  }));
-}
+
+   export function getUncheckedFiles() {
+     const uncheckedDir = path.resolve(__dirname, '../unchecked');
+     if (!fs.existsSync(uncheckedDir)) {
+       return [];
+     }
+     return fs
+       .readdirSync(uncheckedDir)
+       .filter(file => file.endsWith('.md') || file.endsWith('.pdf'))
+       .map(file => ({
+         link: `/unchecked/${file}`,
+         text: file,
+       }));
+   }
+// export function getUncheckedFiles() {
+//   const uncheckedDir = path.resolve(__dirname, '../unchecked');
+//   if (!fs.existsSync(uncheckedDir)) {
+//     return [];
+//   }
+//   function getFilesRecursively(dir) {
+//     const entries = fs.readdirSync(dir, { withFileTypes: true });
+//     const files = entries.flatMap(entry => {
+//       const fullPath = path.join(dir, entry.name);
+//       if (entry.isDirectory()) {
+//         return getFilesRecursively(fullPath); // 再帰的に検索
+//       } else if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.pdf'))) {
+//         return fullPath;
+//       }
+//       return [];
+//     });
+//     return files;
+//   }
+//   const files = getFilesRecursively(uncheckedDir);
+//   return files.map(file => ({
+//     text: path.basename(file, path.extname(file)), // 拡張子を除いたファイル名をタイトルとして使用
+//     link: `/unchecked/${path.relative(uncheckedDir, file).replace(/\\/g, '/')}` // 相対パスをリンクに変換
+//   }));
+// }
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
@@ -110,7 +124,10 @@ export default withMermaid({
       },
       {
         text: 'Unchecked',
-        items: getUncheckedFiles()
+        items: [
+          { text: 'Unchecked Files', link: '/list' },
+        ]
+        // items: getUncheckedFiles()
       },
     ],
 
