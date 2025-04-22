@@ -1,0 +1,47 @@
+This is pBibTeX, Version 0.99d-j0.33 (utf8.euc) (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: ecaljdetails.aux
+The style file: unsrt.bst
+Database file #1: ecaljrefs_detail.bib
+You've used 21 entries,
+            1791 wiz_defined-function locations,
+            567 strings with 7216 characters,
+and the built_in function-call counts, 4591 in all, are:
+= -- 384
+> -- 220
+< -- 0
++ -- 81
+- -- 60
+* -- 382
+:= -- 776
+add.period$ -- 67
+call.type$ -- 21
+change.case$ -- 21
+chr.to.int$ -- 0
+cite$ -- 21
+duplicate$ -- 184
+empty$ -- 441
+format.name$ -- 60
+if$ -- 981
+int.to.chr$ -- 0
+int.to.str$ -- 21
+missing$ -- 21
+newline$ -- 112
+num.names$ -- 21
+pop$ -- 17
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 76
+stack$ -- 0
+substring$ -- 299
+swap$ -- 21
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 39
+width$ -- 23
+write$ -- 241
+is.kanji.str$ -- 0
