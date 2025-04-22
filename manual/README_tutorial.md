@@ -82,6 +82,8 @@ lmf起動時に-vnspin=2などでconst foobar=1 などと書かれている変�
  pwemax
  gmax
  so
+ socaxis
+ctrlに書き込める[インプットの表](./lmf_input.md).
 
 #### 3. LDA計算
 lmfa,lmfの順で行う。lmfaは瞬時に終わる。初期条件のための球対称原子の計算。lmfaの出力をgrep confすると、原子の電子配置が見て取れる。lmfaは繰り返しても副作用なし。PlatQlat.chk, SiteInfo, estatpot.dat,ECOREなどのファイルができる。grep gap llmfでバンドギャップ確認。
@@ -94,7 +96,7 @@ gives spherical atom calculation for initialization. No side effects to repeat.
 show atomic configuration (not necessary).
 
 Files:
-save.*  : computational history. DFT total energy is shown at each iteration (See lmf next).
+>save.*  : computational history. DFT total energy is shown at each iteration (See lmf next).
 atmpnu* : ratial derivative file. Used at lmf
 atm.*   : atom potential    Used at lmf (only init)
 ves* : obsolate
