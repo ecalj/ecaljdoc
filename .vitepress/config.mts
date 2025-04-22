@@ -45,9 +45,15 @@ export default withMermaid({
         ]
       },
       {
+        text: 'Get Started',
+        items: [
+          { text: 'tutorial', link: '/manual/README_tutorial' },
+        ]
+      },
+      {
         text: 'Input files',
         items: [
-          { text: 'ctrl file', link: '/manual/ctrlfile' },
+          { text: 'ctrl file', link: '/manual/lmf_input' },
           { text: 'syml file', link: '/manual/syml' },
           { text: 'GWinput', link: '/manual/gwinput' },
         ]

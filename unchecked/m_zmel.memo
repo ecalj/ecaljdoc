@@ -1,0 +1,33 @@
+!! ----------------------------------------
+cold  ntqxx--->nqmax
+cold  nbmax -->nmmax
+!!note: For usual correlation mode, I think nctot=0
+!!note: For self-energy mode;   we calculate <iq1|\Sigma |iq2> , where iq1 and iq2 are in nqmax.
+!!       nstate = nctot+nmmax
+!!       allocate(zmelt(MPB,  intermediate phi nstate,  external state phi ntqxx))
+!!       zmelt= < MPB     phi   | phi   > 
+!!               <rkvec q-rkvec  |  q    >
+ !                      cphim    | cphiq 
+!                       ispm     | ispq
+!            nctot+  nmini:nmmax | ncc + nqini:ntqxx
+!                    middle state| end state
+!
+!!--- For dielectric funciton, we use irot=1 kvec=rkvec=q. We calulate \chi(q).
+!!              q      rkvec     | q + rkvec  
+!                    nkmin:nkmax | nkqmin:nkqmax
+!                   (we fix nkmin=1)
+!           or
+!              nt0=nkmax-nkmin+1 | ntp0=nkqmax-nkqmin+1
+!                      1:nt0     | 1:ntp0 
+!                         occ    | unocc     
+!                      (cphi_k   | cphi_kq !in x0kf)
+!                    middle state| end state
+!
+!! NOTE: dimension
+!!   nmtot = nctot+ nmmax-mnini+1
+!!   nqtot = ncc  + ntqxx-nqini+1
+!!   <q 1:ngb,      q-rkvec, 1:nmtot | rkvec, 1:nqtot>
+!!   <end state,       middle state  |  MPB          >
+!!   rkvec =mutmul(symops(:,:,irot),kvec)
+!! ----------------------------------------
+
