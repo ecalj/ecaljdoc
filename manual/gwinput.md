@@ -26,3 +26,17 @@ cp GWinput.tmp GWinput
 - keyword  value(s) の形式であり記載順序は問わないが, 同じkeywordを複数記述しないようにする
 
 ## Parameters
+
+#### `KeepEigen`  
+波動関数をメモリに保持するかどうか
+- **type**: boolean
+- **default**: .true.
+
+#### `MEMnmbatch`
+バッチサイズ 単位GB
+- **type** : float
+- **default** : 2.0
+
+#### `n1n2n3`
+k点の数
+- **type** : integer list
