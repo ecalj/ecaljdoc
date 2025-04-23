@@ -138,7 +138,7 @@ job_band mp-2534 -np 8 [options]
 
 #### 5. QSGW計算
 
-QSGW計算を行うには、mkGWinput foobarでGWinputを作っておくこと。
+QSGW計算を行うには、mkGWinput foobarで[GWinput](./gwinput.md)を作っておくこと。
 ```
 mkGWinput ctrl.mp-2534
 ```
