@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from "vitepress-plugin-mermaid";
+import MarkdownItMathjax3 from 'markdown-it-mathjax3';
 
 export default withMermaid({
   base : '/ecaljdoc/',
@@ -9,8 +10,21 @@ export default withMermaid({
   cleanUrls: true,
   ignoreDeadLinks: true,
   lastUpdated: true,
+  // markdown: {
+  //   math: true,
+  // },
   markdown: {
-    math: true,
+    config: (md) => {
+      md.use(MarkdownItMathjax3, {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        },
+        options: {
+          useCDN: true, // MathJaxをCDNから読み込む
+        },
+      });
+    },
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
