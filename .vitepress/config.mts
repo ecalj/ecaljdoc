@@ -8,6 +8,7 @@ export default withMermaid({
   description: "document of ecalj",
   cleanUrls: true,
   ignoreDeadLinks: true,
+  lastUpdated: true,
   markdown: {
     math: true,
   },
@@ -46,9 +47,9 @@ export default withMermaid({
       {
         text: 'Manual',
         items: [
-          { text: 'DFT lmf', link: '/manual/lmf' },
+          { text: 'DFT: lmf', link: '/manual/lmf' },
+          { text: 'Quasi-particle self-consistent GW: gwsc', link: '/manual/gwsc' },
           { text: 'ecalj auto', link: '/manual/auto' },
-          // { text: 'Quasi-particle self-consistent GW', link: '/manual/gwsc' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion', link: '/manual/band' },
           // { text: 'Spin-orbit interaction', link: '/manual/soi' },
@@ -68,7 +69,7 @@ export default withMermaid({
           { text: 'Quasi-particle self-consistent GW', link: '/theory/qsgw' },
           { text: 'Basis', link: '/theory/gw_basis' },
           { text: 'Product basis', link: '/theory/gw_product_basis' },
-          { text: 'Zmel', link: '/theory/gw_zmel' },
+          { text: 'Projection of product basis', link: '/theory/gw_zmel' },
           { text: 'Optical properties', link: '/theory/optical_properties' },
           { text: 'Basic', link: '/theory/basic' },
         ]

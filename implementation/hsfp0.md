@@ -1,18 +1,14 @@
-# Implementation of $W$ with RPA response function
-テストページ
-## MPI
+# 自己エネルギー計算の実装について
 
-```mermaid
-sequenceDiagram
-    participant p1
-    participant p2
-    participant p3
-    participant p4
-note over p1,p2:AA
-note over p3,p4:AA
-p2-->>p1:send
-p3-->>p1:send
-p4-->>p1:send
-```
+## 実行プログラム
+- `hsfp0_sc` : QSGW計算で使用。$W$はエルミート化される。off-diagonal を含めた自己エネルギーを計算する。
+- `hsfp0` : スペクトル関数, 準粒子寿命計算で使用。$W$はエルミート化されず、自己エネルギーの対角成分(複素数)のみを計算。
 
-## $Z$:zmel
+## 並列化
+以下のMPI並列化が実装されている。
+ - $q$点: 第一還元ゾーン中のk点数。
+ - $k$点: 第一ゾーン中のk点数 `GWinput` の `n1n2n3` で指定した量
+ - $ω'$並列: hsfp0_scのみ, $G$と$W$の振動数での畳み込み積分における並列化
+
+> [!TIP]
+> $ω'$並列は$q,k$並列に比べ効率が悪いためデフォルトでは使用されない。使用する場合は`--nbpara=XX`を実行時引数に指定する。
