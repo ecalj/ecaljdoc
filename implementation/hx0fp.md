@@ -1,46 +1,16 @@
 # Implementation of $W$ with RPA response function
-テストページ
+
 ## MPI
 
-```mermaid
-graph TB
-    direction TB
-    world
-    subgraph world
-        comm_q1
-        comm_q2
-        comm_q3
-        comm_q4
-    end
+## $𝛱(ω)$の平滑化
 
-    comm_q1 --> _comm_q1
-    subgraph _comm_q1 [comm_q1]
-        comm_q1_k1
-        comm_q1_k2
-        comm_q1_k3
-    end
+$\Im 𝛱(ω)$ を計算した後に, 平滑化を行い、その後クラマースクロニッヒ変換により実部を得る。
+平滑化にはガウシアンフィルターを使用する．
+$$
+\begin{align}
+\Im \overline{𝛱}(ω_i) &= \sum_j G(𝜔_i, 𝜔_j){\Im 𝛱}(ω_j) \\
+G(𝜔_i, 𝜔_j) &= \frac{e^{-\frac{(𝜔_i - 𝜔_j)^2}{2𝜎^2}}}{\sum_{k} e^{-\frac{(𝜔_i - 𝜔_k)^2}{2𝜎^2}}}
+\end{align}
+$$
 
-    comm_q1_k1 --> _comm_q1_k1
-    subgraph _comm_q1_k1
-        mpi_q1_k1_b1
-        mpi_q1_k1_b2
-        mpi_q1_k1_b3
-        mpi_q1_k1_b4
-    end
-    comm_q1_k2 --> _comm_q1_k2
-    subgraph _comm_q1_k2
-        mpi_q1_k2_b1
-        mpi_q1_k2_b2
-        mpi_q1_k2_b3
-        mpi_q1_k2_b4
-    end
-    comm_q1_k3 --> _comm_q1_k3
-    subgraph _comm_q1_k3
-        mpi_q1_k3_b1
-        mpi_q1_k3_b2
-        mpi_q1_k3_b3
-        mpi_q1_k3_b4
-    end
-```
-
-The number of parallel processes is divided by q-points, k-points, and MPB basis.
+<!-- \frac{\displaystyle\int_{-\infty}^\infty d𝜔 𝛱(ω)e^{-\frac{(𝜔 - 𝜔_j)^2}{2𝜎^2}}}{\displaystyle\int_{-\infty}^\infty d𝜔 e^{-\frac{(𝜔 - 𝜔_j)^2}{2𝜎^2}}} -->

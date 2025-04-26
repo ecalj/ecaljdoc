@@ -1,8 +1,8 @@
-   const fs = require('fs');
-   const path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-   const sourceDir = path.resolve(__dirname, 'unchecked');
-   const destDir = path.resolve(__dirname, '.vitepress/dist/unchecked');
+const sourceDir = path.resolve(__dirname, 'unchecked');
+const destDir = path.resolve(__dirname, '.vitepress/dist/unchecked');
 
 function copyPDFsRecursively(srcDir, destDir) {
   if (!fs.existsSync(destDir)) {

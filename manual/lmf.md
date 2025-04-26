@@ -25,10 +25,11 @@ mpirun -np 4 lmf si > llmf
 
 ## Output
 ### rst.`target`
-- restart file
+- restart file : 主に電荷密度が保持されている
 
 ### save.`target`
-- ???
+- 実行したコマンド(lmf, lmfa)および, SCFステップごとのエネルギーが記載されている．
+
 ### mix.`target`
 
 - **Main Source** : [`SRC/main/lmf`](https://github.com/tkotani/ecalj)
