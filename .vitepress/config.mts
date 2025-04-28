@@ -68,7 +68,7 @@ export default withMermaid({
           // { text: 'Band dispersion', link: '/manual/band' },
           // { text: 'Spin-orbit interaction', link: '/manual/soi' },
           // { text: 'Spin response function', link: '/manual/chipm' },
-          // { text: 'Dielecric function', link: '/manual/eps' },
+          { text: 'Dielecric function', link: '/manual/optical' },
           // { text: 'Structural optimization', link: '/manual/opts' },
           // { text: 'Quasi-particle\'s life time', link: '/manual/lifetime' },
           // { text: 'Spectrum function', link: '/manual/spec' },
