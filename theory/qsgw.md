@@ -20,7 +20,7 @@ where
 $$
 H_{\text{DFT}} = -\frac{\hbar^2}{2m}\nabla^2 + V_{\text{ext}} + V_{\text{H}} + V^\mathrm{LDA/GGA}_{\text{xc}}
 $$
-- $\frac{\hbar^2}{2m}\nabla^2$: Kinetic energy term
+- $-\frac{\hbar^2}{2m}\nabla^2$: Kinetic energy term
 - $V_{\text{ext}}$: External potential
 - $V_{\text{H}}$: Hartree term (Coulomb interaction between electrons)
 - $V_{\text{xc}}$: Exchange-correlation potential
@@ -36,11 +36,11 @@ $$
 \end{align}
 $$
 
-## flowchart
+## Flowchart
 
 ```mermaid
 graph TD
-    A1[Get H0 by solving one-particle equation with given ΔV^xc self-consistently] --> A2[Eigenvalues and eigenfunctions]
+    A1[Get H_0 by solving one-particle equation with given ΔV^xc self-consistently] --> A2[Eigenvalues and eigenfunctions]
     A2 --> B1[MPBC]
     A2 --> B2[MPB]
     B1 --> C1[Core-exchange self-energy Σ^Cx]
@@ -51,8 +51,10 @@ graph TD
     C2 --> E1
     C3 --> E1
     E1 --> F1{Σ - Σ^old ≤ Δ_QP}
-    F1 -->|No QSGW cycle| A1
+    F1 -->|No: QSGW cycle| A1
     F1 -->|Yes| G1[Converge]
 ```
-This flowchart outlines the process of obtaining the GW self-energy Σ and the QSGW potential V^xc_QSGW.
-It starts with solving a one-particle equation to get H^0, followed by determining the eigenvalues and eigenfunctions of H^0. The process then branches into calculating core-exchange self-energy Σ^Cx, exchange self-energy Σ^x, and correlation self-energy Σ^c, which are combined to obtain the GW self-energy Σ and the QSGW potential V^xc_QSGW. The cycle continues until the condition |Σ - Σ^old| ≤ Δ_QP is met.
+This flowchart outlines the process of obtaining the GW self-energy $𝛴$ and the QSGW potential $V^\mathrm{xc}_\mathrm{QSGW}$.
+It starts with solving a one-particle equation to get $H^0$, followed by determining the its eigenvalues and eigenfunctions.
+The process then branches into calculating core-exchange self-energy $𝛴^\mathrm{Cx}$, exchange self-energy $𝛴^\mathrm{x}$, and correlation self-energy $𝛴^\mathrm{c}$, which are combined to obtain the $GW$ self-energy $𝛴$ and the QSGW potential $V^\mathrm{xc}_\mathrm{QSGW}$.
+The cycle continues until the condition $| 𝛴 - 𝛴^\mathrm{old}| ≤ Δ_\mathrm{QP}$ is met.
