@@ -48,7 +48,7 @@ However, if you run out of memory, reduce the number of cores per node to ensure
 > [!TIP]
 > If you encounter MKL (Intel Math Kernel Library) errors during execution, set `-c 1`.
 
-### special modification of ecalj code for kugui (just for developer)
+### special modification of ecalj code for Ohtaka (just for developer)
 The ecalj MPI execution command assumes `mpirun`. (It is specified in the script)
 Before installation, change `mpirun -np` to `srun -n` in the following files to match the ISSP specifications. (It will work with `mpirun` but may give warnings)
 Replace the `ecalj` directory path with your own.
@@ -56,8 +56,12 @@ Replace the `ecalj` directory path with your own.
 ~/ecalj/SRC/exec/gwutil.py
 ~/ecalj/SRC/exec/run_arg.py
 ~/ecalj/SRC/exec/job_tdos
+~/ecalj/SRC/exec/run_arg
 ```
-```python Around line 24 in gwutil.py
+> [!TIP]
+> `run_arg` script (bash script) is old version of `run_arg.py` (python script). It is not usually used, but some scripts may depend on it.
+
+ ```python Around line 24 in gwutil.py
 def run_program(commandline, ncore=0,x0=0):
     import subprocess,datetime
     xdate=datetime.datetime.now() #today().isoformat()
