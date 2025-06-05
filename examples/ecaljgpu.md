@@ -6,6 +6,9 @@ ecalj ではGPUによるQSGW計算が可能です。
 > [!IMPORTANT]
 > CPUで実行される部分とGPUで実行される部分で、それぞれ並列数を指定する必要があります。
 
+* GPU の使用には NVIDIA のコンパイラでecaljのGPUバージョンをコンパイルする必要があります。
+Kugui でのインストール、初期設定、GPUテスト計算は[installISSP](../install/installISSP.md) を参照してください。
+
 ## おすすめ設定 in ISSP Kugui
 * ACCノード(GPU搭載ノード)を1ノード使用する。 1ノードに4GPUが搭載されています。
 * CPUで実行される部分のMPI並列数(`-np` で指定)を64。
@@ -25,7 +28,7 @@ gwsc -np 64 -np2 4 --gpu 2 inas2gasb2 > lgwsc
 `i1accs` はテストキュー(最大時間30分)ですので、プロダクトランでは`F1accs`等を使用してください。
 
 `GWinput` の部分的な抜粋
-```GWinput
+```
 !GaussianFilterX0 0.0001 !(a.u.) Gaussian smearing for the polarization function x0. 
                          ! This stabilize convergence for metallic systems
                          ! This can be a default setting in the future
