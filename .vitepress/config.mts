@@ -75,6 +75,12 @@ export default withMermaid({
         ]
       },
       {
+        text: 'Examples',
+        items: [
+          { text: 'ecalj GPU', link: '/examples/ecaljgpu' },
+        ]
+      },
+      {
         text: 'Theory',
         items: [
           // { text: 'PMT', link: '/theory/pmt' },
