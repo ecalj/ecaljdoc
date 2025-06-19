@@ -41,3 +41,15 @@ MEMnmbatch 4
 * `zmel_max_size` を 4 に設定します。
 * `MEMnmbatch` を 4 に設定します。
 それぞれの意味は [GWinput](../manual/gwinput.md) を参照してください。
+
+### MPSの設定
+
+以下を`~/.bashrc` に記載する。
+```bash ~/.bashrc
+if which nvidia-cuda-mps-control > /dev/null 2>&1 ; then
+  export CUDA_MPS_PIPE_DIRECTORY=$(pwd)/nvidia-mps-$(hostname)
+  export CUDA_MPS_LOG_DIRECTORY=$(pwd)/nvidia-log-$(hostname)
+  echo "start nvidia-cuda-mps-control at" $(hostname)
+  nvidia-cuda-mps-control -d
+fi
+```
