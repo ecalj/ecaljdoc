@@ -41,6 +41,7 @@ $GW$自己エネルギー計算におけるk点の数。`ctrl` file に記載す
 バッチサイズ:単位GB。1MPIが使用できるメモリサイズの3分の1から4分の1程度を記載すると良い。`zmel_max_size` とほぼ同様な意味をもつ。自己エネルギーの計算で使用される。大規模系では大きい方が計算は早くなるが，メモリ不足で計算が落ちる場合は小さくする。
 - **type** : float
 - **default** : 2.0
+系に対して値が小さいと"sxcf_fal2_count.sc. Too small memory for nmbatch mechanism. Enlarge GWinput MEMnmbatch" との出力が`stdout.xxxx.hsfp0_sc.mode.yyy`に出力され計算が終了する場合がある。その場合は大きくする。
 
 ### `zmel_max_size`
 バッチサイズ:単位GB。1MPIが使用できるメモリサイズの3分の1から4分の1程度を記載すると良い。 `MEMnmbatch` とほぼ同様な意味をもつが, $W$の計算で使用される。大規模系では大きい方が計算は早くなるが，メモリ不足で計算が落ちる場合は小さくする。
