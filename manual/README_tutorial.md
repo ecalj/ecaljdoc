@@ -2,37 +2,45 @@
 (不親切です。)[Qiitaでの解説](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)も参考にしてください。
 
 ## 基礎知識check 
-* LDA計算の流れ。基底関数。MTOやAPW（MT division of space, Augmentation, radial function).
-* バンド計算法として PMT=LMTO+LAPWを基本にしている. 3-component formalism. 優位性
-* 独立粒子近似とは。
-* Hartree-Fock とLDA、ハイブリッド法
-* GW近似。分極媒質中を走る粒子のイメージ
+* LDA計算の流れ
+* MT division of space
+* 基底関数 MTOとAPW　（AugmentationとMT内の原子的な波動関数). 3つの成分をもつ。envelope + true - counter
+* バンド計算法PMT=LMTO+LAPW法. ３つの成分で電荷も表現する。MTOの張る空間の不満足な部分を3Ry以下程度のAPWでサポートする。
+* 独立粒子近似とは
+* Hartree-Fock(HF)近似で水素Hがきちんと解ける。一様ガスではフェルミ面で状態密度がゼロになる。
+* LDAでは一様ガスがきちんと解けるがHのバンドギャップはかなり小さい。
+* LDAとHFは両極にある。HFではSiのバンドギャップは10eV以上（なぜか？）　ハイブリッド法HSE。自己相互作用。
+* 交換項の重要性。H2のbonging-antibondingを区別するには、占有状態へのプロジェクタの役割をするFock項が重要
+* GW近似. Fock項にくわえて相関項。分極媒質中を走る荷電粒子の感じる時間依存ポテンシャル。スクリーンHF+クーロンホール
+　バンドギャップ、dバンドの位置、Uの効果
+* QSGW法。GW近似における自己エネルギーからいくらか強引に時間依存性をとりのぞいて特殊な交換相関項をつくる。
+* （できたら線形応答理論の基礎、ステップ関数のフーリエ変換、古典的な減衰振動系でのグリーン関数（線形応答関数）。）
 
 ## ecalj 何ができるか？
 
 * LDA計算 
-VWN,GGA,LDA+U, 
+VWN,PBE-GGA,LDA+Uがえらべる。
 構造緩和（格子変化は手動）、Colinear,  SOC(軸を選べる）, AFの対称性を入れることができる。
-ESM法でのスラブ計算. 最適化しきれてないので現状では構造緩和などでは優位性がない
+ESM法でのスラブ計算. 最適化しきれてないので現状では構造緩和などでは優位性がない。
 
 * QSGW計算：
 self-consistent GW法。特殊な交換相関項を作る計算であるといえる。
-インパクトイオン化率（オージェによる寿命）。
 自己エネルギースペクトルプロット。
-GPU化、自動化セッテイング
-GW法でのバンドプロットが可能
+インパクトイオン化率（オージェによる寿命）。
+GPU化、自動化セッテイング。
+GW法でのバンドプロットが直接に可能。
 QSGWでは現状全エネルギー計算ができない。バンド構造（固有値、波動関数）のみ。
 * 線形応答などの計算。
 RPAでの誘電率計算、スピンゆらぎ計算 （改良の余地。金属でもできる。ドルーデウエイト(q→0）
-MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余地あり）。 自動化が弱い
-
-* 自動計算が可能。QSGW方ではMaterial Projectから1500個の構造ファイルを持ってきて自動化でQSGW計算しているが
-ほぼ問題なく計算できている。手動で個別にセッティングをいじらなくても良い（4f,5fについては自動化がまだ設定できてないが基本的に可能）
+MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余地あり）。 自動化がすこしできてないところがある。
+その他の物理量についても応用できるはず。
+* かなりの部分で自動計算が可能。QSGW法ではMaterial Projectから1500個程度の構造ファイルを持ってきて自動化でQSGW計算しているが
+ほぼ問題なく可能。個別にセッティングを手動でいじらなくても良い（4f,5fについては自動化がまだ設定できてないが基本的に可能）
 バンドプロットも対称ラインも含め自動化してある。データはgnuplotなどでプロットするので読みやすい。結晶構造についてはPOSCARとの相互コンバータあり。
 複数のPOSCARを一括計算するecalj_autoも梱包してある（整備中）。
 
-### 実際の計算のながれ
-#### 1. POSCARからctrlsファイル生成。
+## 実際の計算のながれ
+### 1. POSCARからctrlsファイル生成。
 ctrls.foobarはecaljの構造ファイル。vasp2ctrlで生成する。サンプルがあるのでたとえば以下の手順でPOSCARを準備
 ```bash
 cd ecalj
@@ -67,7 +75,7 @@ SITE
     - ctrl2vasp ctrl.mp-2534 can convert back to VASP file. Check this by VESTA. We can use viewvesta (convert and invoke VESTA).
     - many unused files are generated (forget them).
 
-#### 2. ctrlsからctrl
+### 2. ctrlsからctrl
 ctrlはecaljの基本入力ファイル。ctrlgenM1.pyで生成する。
 生成されたctrlに説明が埋め込まれている。k点、pwemax, nspin, soなどが注目点. 
 
@@ -88,7 +96,7 @@ cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
   * socaxis
 ctrlに書き込める[インプットの表](./lmf_input.md).
 
-#### 3. LDA計算
+### 3. LDA計算
 lmfa,lmfの順で行う。lmfaは瞬時に終わる。初期条件のための球対称原子の計算。lmfaの出力をgrep confすると、原子の電子配置が見て取れる。lmfaは繰り返しても副作用なし。PlatQlat.chk, SiteInfo, estatpot.dat,ECOREなどのファイルができる。grep gap llmfでバンドギャップ確認。
 
 ```bash
@@ -123,12 +131,12 @@ Repeat lmf stops with two iteration.
  - PlatQlat.chk
  - estaticpot.dat
 
-#### 4. job_pdos,job_tdos, job_fermisurface,job_band などでバンドプロットなどをおこなう
-job_band実行前にバンドプロットの対称ラインsyml.foobarが必要。これはgetsyml foobarとして取得できる。
+### 4. job_pdos,job_tdos, job_fermisurface,job_band などでバンドプロットなどをおこなう
+job_band実行前にバンドプロットの対称ライン[syml.foobar](syml.md)が必要。これはgetsyml foobarとして取得できる。
 ```
 getsyml mp-2534
 ```
-これでsyml.mp-2534ができる。BZ.htmlにはBZ図とシンメトリラインが描かれる。
+これでsyml.mp-2534ができる。[BZ.html](https://ecalj.sakura.ne.jp/BZgetsyml/)にはBZ図とシンメトリラインが描かれる。
 bandplotを行うには
 ```
 job_band mp-2534 -np 8 [options]
@@ -136,7 +144,7 @@ job_band mp-2534 -np 8 [options]
 とする。job_bandの最後にoptionとして vso=1 -vnspin=2とすればSOCを摂動として加えたバンドがプロットできる。
 結果はgnuplotファイルに書かれる bandplot.isp1.glt。
 
-#### 5. QSGW計算
+### 5. QSGW計算
 
 QSGW計算を行うには、mkGWinput foobarで[GWinput](./gwinput.md)を作っておくこと。
 ```
@@ -185,7 +193,7 @@ lsxは交換項の計算、lscが相関項の計算。lvccはクーロン行列�
 
 gwscを追加で行うと、イテレーションの回数が追加される。
 
-#### 計算やり直しには？
+#### 計算やり直しするには？
 Start over
 Remove mix* rst* (mix* is mixing files)
 If MT changes, start over from lmfa (remove atm* files)
@@ -193,10 +201,10 @@ If MT changes, start over from lmfa (remove atm* files)
 - As long as converged, no problem. 
 - If you have 3d spagetti bands at Ef, need caution.
 
-#### 6. 誘電関数、,ESM法、スピンゆらぎ、準粒子寿命（QSGW)、ワニエ法など（要相談）
+### 6. 誘電関数、,ESM法、スピンゆらぎ、準粒子寿命（QSGW)、ワニエ法など（要相談）
 
 
-#### 7.lmchk 
+### 7.lmchk 
 lmchk mp-2534
 で結晶対称性、MT半径、重なり具合などがチェックできる。通常-3%の重なり具合になるようにしている。 
   - symmetry 
@@ -204,8 +212,8 @@ lmchk mp-2534
 たとえば磁性が結晶の格子の対称性より低い場合、これの表示する対称性をみて、空間群の生成子をSYMGRPのあとに加えてやる必要がある。そうするとfindで
 おこなったよりも低対称な計算ができる。SOCをいれて磁気モーメントを見たいときなども注意する必要あり。
 
-### memo
-#### スピン軌道相互作用を入れたバンドプロット
+## memo
+### スピン軌道相互作用を入れたバンドプロット
 method 1: only band plot
 ```bash
 job_band mp-2534 -np 8 -vso=1 -vnspin=2: band plot only
@@ -227,5 +235,5 @@ job_band mp-2534 -np 8 : band plot only
 Caution: when you set nspin=2, rst is twiced. No way to move it back to rst for nspin=1.
 
 
-#### ecalj/Samples/MgO_PROCAR
+### ecalj/Samples/MgO_PROCAR
 ファットバンドのサンプル.job_procarを実行する。epsができる。
