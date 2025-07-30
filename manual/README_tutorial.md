@@ -1,8 +1,11 @@
 # ecalj tutorial 
 
-Here is a minimum getstated to obtain QSGW band plot.
+Here are minimum GetStated to obtain QSGW band plot.
+
 [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)
+
 [Qiiita English](https://qiita.com/takaokotani/items/4cd5e13f2e2c4b534b3f)
+
 
 <!-- 
 ## 基礎知識check 
