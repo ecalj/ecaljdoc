@@ -21,10 +21,10 @@ hero:
       link: /manual/lmf
 
 features:
-  - title: Quasi-particle self-consistent 𝘎𝘞 methods
+  - title: Quasi-particle self-consistent 𝘎𝘞 methods (QSGW)
     details: First-principles electronic structure calculations to determine the best independent particle picture for describing electronic excitations
-  - title: Material properties
-    details: Linear responses. Wannier and MLO modelling. Spectrum functions, life time due to e-e scattering.
+  - title: Material properties on top of QSGW 
+    details: Linear responses. Maxloc Wannier modeling. In addition new modeling MLO is going to be implemented. Spectrum functions, life time due to e-e scattering.
   - title: Easy to use 
-    details: ecalj is based on the th PMT method, which is a all electron method with LMTO + LAPW, where we use only < 3Ry cutoff for APW. Automatically applicable to wide range of materials. Read in POSCAR for VASP (converter). Automatic band path. Plot GW band without the Wannier interpolation.
+    details: ecalj is based on the th PMT method, which is an all electron method with LMTO + LAPW, where we use only ~ 3Ry cutoff for APW. Automatically applicable to wide range of materials. POSCAR in the VASP format can be readable. Automatic band path. Plot GW band structures without the Wannier interpolation.
 ---

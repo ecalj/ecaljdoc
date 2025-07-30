@@ -77,7 +77,7 @@ tail -f ecalj/SRC/TestInstall/summary.txt
 と表示され、FAILとかエラーがなければOKです。
 
 #### 4.GPU計算テスト
-ecalj/Samples_ISSP/inas2gasb2_kugui
+ecalj/Samples/Samples_ISSP/inas2gasb2_kugui
 に移動して、
 ```
 qsub job_kugui.sh

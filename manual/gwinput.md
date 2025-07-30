@@ -1,8 +1,8 @@
 # `GWinput`
 
-GWinput は GW/QSGW 計算での計算条件を記述する
+GWinput sets the computatioanl conditions for  GW/QSGW calculations.
 
-## 自動生成
+## mkGWinputによる自動生成
 - GWinput は 自動生成することができ、殆どのパラメータはデフォルト設定で使用できる。
 
 自動生成コマンド

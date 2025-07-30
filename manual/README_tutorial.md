@@ -1,6 +1,10 @@
 # ecalj tutorial 
-(不親切です。)[Qiitaでの解説](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)も参考にしてください。
 
+Here is a minimum getstated to obtain QSGW band plot.
+[Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48)
+[Qiiita English](https://qiita.com/takaokotani/items/4cd5e13f2e2c4b534b3f)
+
+<!-- 
 ## 基礎知識check 
 * LDA計算の流れ
 * MT division of space
@@ -37,11 +41,16 @@ MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余
 * かなりの部分で自動計算が可能。QSGW法ではMaterial Projectから1500個程度の構造ファイルを持ってきて自動化でQSGW計算しているが
 ほぼ問題なく可能。個別にセッティングを手動でいじらなくても良い（4f,5fについては自動化がまだ設定できてないが基本的に可能）
 バンドプロットも対称ラインも含め自動化してある。データはgnuplotなどでプロットするので読みやすい。結晶構造についてはPOSCARとの相互コンバータあり。
-複数のPOSCARを一括計算するecalj_autoも梱包してある（整備中）。
+複数のPOSCARを一括計算するecalj_autoも梱包してある（整備中）。 -->
 
-## 実際の計算のながれ
-### 1. POSCARからctrlsファイル生成。
-ctrls.foobarはecaljの構造ファイル。vasp2ctrlで生成する。サンプルがあるのでたとえば以下の手順でPOSCARを準備
+
+## Minimum flowchart to perform QSGW in ecalj.
+
+### 1. Get ctrls from POSCAR
+ctrls.foobar is the structure file in ecalj.
+We obtain ctrls from POSCAR by a converter.
+
+We already have POSCAR in ecalj/ecalj_auto/INPUT/testSGA/POSCARALL as
 ```bash
 cd ecalj
 mkdir TEST
@@ -52,7 +61,7 @@ cat ecalj_auto/INPUT/testSGA/joblist.bk
 cp ../ecalj_auto/INPUT/testSGA/POSCARALL/POSCAR.mp-2534 test1
 cp ../ecalj_auto/INPUT/testSGA/POSCARALL/POSCAR.mp-8062 test2
 ```
-これらのPOSCARをvasp2ctrlで変換する。cifのときは一度POSCARに直してからvasp2ctrlを行う。
+Then we convert POSCAR  by vasp2ctrl. If you have cif, you need to convert the cif to POSCAR at firlst.
 ```
 vasp2ctrl POSCAR.mp-2534 
 mv ctrls.POSCAR.mp-2534.vasp2ctrl ctrls.POSCAR.mp-2534
@@ -75,18 +84,23 @@ SITE
     - ctrl2vasp ctrl.mp-2534 can convert back to VASP file. Check this by VESTA. We can use viewvesta (convert and invoke VESTA).
     - many unused files are generated (forget them).
 
-### 2. ctrlsからctrl
-ctrlはecaljの基本入力ファイル。ctrlgenM1.pyで生成する。
-生成されたctrlに説明が埋め込まれている。k点、pwemax, nspin, soなどが注目点. 
+### 2. Get ctrl from ctrls
+ctrl is a basis input file for ecalj. We generate template of ctrl  by ctrlgenM1.py.
+Minimum explanations are embedded in the generated ctrl file.
+Number of k points (nk1 nk2 nk3), APW cutoff (pwemax), nspin, so(spin orbit switch) are only what we need to tweak usually.
 
-lmf起動時に-vnspin=2などでconst foobar=1 などと書かれている変数{foobar}がoverrideできる。
-対称性、AF対称性を課した計算が可能(QSGWでも)。ctrlgenM1.pyの内部ではlmfa,lmchk(原子球サイズ決定）などを呼んでいる。
-これ以後の計算にはctrl.foobarのみ残しておけば良い（ムダファイルが大量にできているのは消して良い）. 
+When we run lmf, we can add command line option such as -vnspin=2. Then const foobar=1 defined in the ctrl file is overridden (referred with {foobar}). save.* file show which -vfoobar you used.
+
+It is possible to enforce symmetry, antiferro symmetry.
+<!-- ctrlgenM1.pyの内部ではlmfa,lmchk(原子球サイズ決定）などを呼んでいる。
+これ以後の計算にはctrl.foobarのみ残しておけば良い（ムダファイルが大量にできているのは消して良い）.  -->
+We only need ctrl file in the following calculations (while some tmp* kinds of files are generated).
+
 ```bash
 ctrlgenM1.py mp-2534
 cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
 ```
-- ctrlでセットされるいくつかの変数
+- importand settings in ctrl
   * nk1,nk2,nk3 
   * xcfun
   * ssig 
@@ -94,10 +108,12 @@ cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
   * gmax
   * so
   * socaxis
-ctrlに書き込める[インプットの表](./lmf_input.md).
+
+[Here is a list of ctrl file](./lmf_input.md).
 
 ### 3. LDA計算
-lmfa,lmfの順で行う。lmfaは瞬時に終わる。初期条件のための球対称原子の計算。lmfaの出力をgrep confすると、原子の電子配置が見て取れる。lmfaは繰り返しても副作用なし。PlatQlat.chk, SiteInfo, estatpot.dat,ECOREなどのファイルができる。grep gap llmfでバンドギャップ確認。
+Run lmfa at first. It is for spherical atomic electron density. It ends instantaneously.
+If you run `lmfa foobar|grep conf`, we can see electronic configulation. No side effects if you repeat lmfa. 
 
 ```bash
 lmfa ctrl.mp-2534
@@ -127,40 +143,50 @@ mpirun -np 8 lmf mp-2534 |tee llmf
 LDA energy shown two values need to be the same (but slight difference).
 Repeat lmf stops with two iteration.
 
- - SiteInfo.lmchk
- - PlatQlat.chk
- - estaticpot.dat
+ - SiteInfo.lmchk : Site infor
+ - PlatQlat.chk : Lattice info
+ - estaticpot.dat : electrostatic potential of smooth part.
 
-### 4. job_pdos,job_tdos, job_fermisurface,job_band などでバンドプロットなどをおこなう
-job_band実行前にバンドプロットの対称ライン[syml.foobar](syml.md)が必要。これはgetsyml foobarとして取得できる。
+### 4. job_pdos,job_tdos, job_fermisurface,job_band 
+For band plot, we use job_band. Before this, we need to generate symmetry lines writtenin [syml.foobar](syml.md)。This can be generated  by getsyml foobar.
+
 ```
 getsyml mp-2534
 ```
-これでsyml.mp-2534ができる。[BZ.html](https://ecalj.sakura.ne.jp/BZgetsyml/)にはBZ図とシンメトリラインが描かれる。
-bandplotを行うには
+This generates syml.mp-2534.
+[BZ.html](https://ecalj.sakura.ne.jp/BZgetsyml/) contains BZ and symmetry lines.
+For bandplot,
 ```
 job_band mp-2534 -np 8 [options]
 ```
-とする。job_bandの最後にoptionとして vso=1 -vnspin=2とすればSOCを摂動として加えたバンドがプロットできる。
-結果はgnuplotファイルに書かれる bandplot.isp1.glt。
+At the end of job_band, you can add options for lmf as -vso=1 -vnspin=2.
+(these are for SOC as perturbation)
+We use gnuplot for band plot bandplot.isp1.glt.
 
-### 5. QSGW計算
+In the similar manner, we can run job_pdos, job_tdos, job_fermisurface.
 
-QSGW計算を行うには、mkGWinput foobarで[GWinput](./gwinput.md)を作っておくこと。
+### 5. QSGW calcualtion
+
+We need one additional input file GWinput, whose template can be ganerated by
+mkGWinputで[GWinput](./gwinput.md) as
 ```
 mkGWinput ctrl.mp-2534
 ```
-生成されたGWinput.tmpをあ編集してGWinputとする。
-n1n2n3のk点数は小さめに取らざるをえない。Siで6x6x6が目安。
-それ以外はあまりいじらない。gwscで実行できる。半導体で数回回すと良い。QPUファイルにGW計算の対角項の成分が書かれる。Mixed Produce basisのコンセプトがこのGW計算のキーになる。
+The edit GWimput.tmp to GWinput.
+n1n2n3 should be something smaller thatn nk1 nk2 nk3 in ctrl file.
+If 6x6x6 for Si, it is reasobale. Except k points, not need to modify so much
+(ask us).
 
 #### QSGW計算の流れ
+We can run QSGW calculation with gwsc. For semiconductors, several iterations are fine.QPU file contains diagonal components of GW calculations.
+Note that our Mixed Produce basis is a key technology for the GW calculation.
 ```
 gwsc -np NP [--phispinsym] [--gpu] [--mp] nloop extension
 ```
 (--phispinsym is for magnetic materials to keep the same basis for up and down)
-を実行すると、
 
+
+Then console outputs of gwsc is somthing like
 ```
 ### START gwsc: ITERADD= 1, MPI size=  4, 4 TARGET= si
 ===== Ititial band structure ====== 
@@ -188,32 +214,38 @@ OK! ==== All calclation finished for  gwsc ====
  Comparison OK!  MaxDiff= 0.00019999999999997797 < tol= 0.003  for  log.si
 === EndOf si_gwsc  at  /home/takao/ecalj/SRC/TestInstall/work/si_gwsc
 ```
-という感じで進行する。Cが末尾につくのはコア。lsxCでコアからの交換項への寄与が計算できる。
-lsxは交換項の計算、lscが相関項の計算。lvccはクーロン行列の計算。この計算ではgwsc -np 8 1 siとしてまわしている。1はQSGWイテレーションの回数。
+... 
 
-gwscを追加で行うと、イテレーションの回数が追加される。
+The log files of console outputs are staring from l. C at the ends means Core-releated parts. lsxC is the exchange self-energy due to cores.
+lsx is for exchange. lsc is correlation. lvcc is for Coulomb matrix。
+In this calculation we run `gwsc -np 8 1 si`, where 1 is the number of QSGW iteration.
 
-#### 計算やり直しするには？
-Start over
+If you repeat gwsc, you can add  additional QSGW iterations added to your previous calculations.
+
+#### How to start over calcualtions
 Remove mix* rst* (mix* is mixing files)
 If MT changes, start over from lmfa (remove atm* files)
 
 - As long as converged, no problem. 
 - If you have 3d spagetti bands at Ef, need caution.
 
-### 6. 誘電関数、,ESM法、スピンゆらぎ、準粒子寿命（QSGW)、ワニエ法など（要相談）
+### 6. Dielectric function, ESM, spin fluctuation, life time of QP, Wannier method,...
+Ask us.
 
 
 ### 7.lmchk 
 lmchk mp-2534
-で結晶対称性、MT半径、重なり具合などがチェックできる。通常-3%の重なり具合になるようにしている。 
+is to check the crystal symmetry. In addition determine MT radius. and Check the ovarlap of MTs. Defaults setting is with -3% overlap.(no overlap).
+
   - symmetry 
   - MT overlap
-たとえば磁性が結晶の格子の対称性より低い場合、これの表示する対称性をみて、空間群の生成子をSYMGRPのあとに加えてやる必要がある。そうするとfindで
-おこなったよりも低対称な計算ができる。SOCをいれて磁気モーメントを見たいときなども注意する必要あり。
+If you have less symmetry rather than than the symmetry of lattice for magnetic systems,
+you have to set crystal symmetry by hand.
+This can be done by adding space group symmetry generator to SYMGRP (instead of find).
+We need to pay attention for this point in the case of SOC.
 
 ## memo
-### スピン軌道相互作用を入れたバンドプロット
+### band plot with spin orbit coupling.
 method 1: only band plot
 ```bash
 job_band mp-2534 -np 8 -vso=1 -vnspin=2: band plot only
@@ -236,4 +268,4 @@ Caution: when you set nspin=2, rst is twiced. No way to move it back to rst for 
 
 
 ### ecalj/Samples/MgO_PROCAR
-ファットバンドのサンプル.job_procarを実行する。epsができる。
+This is a sample of fat band. Run job_procarを実行する。You will have eps file.
