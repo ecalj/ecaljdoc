@@ -1,8 +1,9 @@
 # ecalj Install
 
 ## 1. Some software tools including fortran compilars
-ecalj mainly ade from fortran source codes located at 
+Main part of ecalj is written in fortran90. Source codes are located at 
 ```ecalj/SRC/main/*.f90``` and at ```ecalj/SRC/subroutines/*.f90```.
+GPU implementation with OpenACC/CuBlas is embedded in the source codes.
 In addition, python are used. Bash scripts remain (but gradually replacing bash with python).
 
 We may need to install following tools and libraries.We need
@@ -29,7 +30,7 @@ We can use apt to install them when ubuntu. Similar in other systems, or your sy
 + git makes things easier. Especiall for version up. >git diff at ecalj/ shows orginal and your modification. gitk --all show all the history of ecalj.
 
 
-## 2. Python and python modules. 
+## 2. Python and python modules 
 > [!TIP]
 > We need python >3.9. Usually we will prepare the latest Python in your ./local.
 
@@ -122,16 +123,17 @@ At ecalj/StructureTool/, we have 'viewvesta' command. Try
 ```
 viewvesta ctrl.si
 ```
-to check the structure in viewer.At /StructureTool, we have exchange converters, 
-```vasp2ctrl``` and ```ctrl2vasp```. These allows convert structures with POSCAR.
+to check the structure in the viewer. At /StructureTool, we have converters, 
+```vasp2ctrl``` and ```ctrl2vasp```. These allows us to convert structures with POSCAR.
 
 In addition, we need to install getsyml.py to obtain symmetry line for band plot.
-Generated syml.* is used for the band plot in ecalj. (syml is a little strange... we will fix).
-As long as you have spglib and seekpath, we don't need extra things to do.
+Generated syml.* is used for the band plot in ecalj. 
+As long as we have spglib and seekpath, we don't need extra things to do.
 But here is a memo for install [./GetSyml/README.org](./GetSyml/README.org).
 
+
 ## Additional memo
-* When InstallAll have finished, we have all required binaries and shell scripts in a directory specified by --bindir (Default is your ~/bin/). 
+* When InstallAll.py have finished, we have all required binaries and shell scripts in a directory specified by --bindir (Default is your ~/bin/). 
 
 * Clean up by CleanAll:  
 If something wrong, run InstallAll.py with --clean.

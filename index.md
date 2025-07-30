@@ -19,13 +19,15 @@ hero:
     - theme: alt
       text: Manual
       link: /manual/lmf
-
+    - theme: alt
+      text: QSGW database (under construction)
+      link: https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos
 
 
 features:
   - title: Quasi-particle self-consistent 𝘎𝘞 methods (QSGW)
     details: First-principles electronic structure calculations to determine the independent-particle picture for describing electronic excitations
   - title: Material properties on top of QSGW 
-    details: Linear responses. Maxloc Wannier modeling. In addition new modeling MLO is going to be implemented. Spectrum functions, life time due to e-e scattering.
+    details: Linear responses. Maxloc Wannier modeling. In addition, new modeling MLO is going to be implemented. Spectrum functions, life time due to e-e scattering.
   - title: Easy to use 
-    details: ecalj is based on the th PMT method, which is an all electron method with LMTO + LAPW, where we use only ~ 3Ry cutoff for APW. Automatically applicable to wide range of materials. POSCAR in the VASP format can be readable. Automatic band path. Plot GW band structures without the Wannier interpolation.In fact we are going to generate [QSGW database](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos).
+    details: ecalj is based on the th PMT method, which is an all-electron method with LMTO+LAPW, where we use only ~ 3Ry cutoff for APWs, which are very effective to complement the problem of MTO. This basis allows us to apply our method to wide range of materials. POSCAR in the VASP format can be readable. Automatic band path. Plot GW band structures without the Wannier interpolations.
