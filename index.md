@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "ecaljdoc"
   text: 
-  tagline: "This is a documents for ecalj package at github/tkotani/ecalj : xxx under construction xxx"
+  tagline: "ecalj package at github/tkotani/ecalj for first-principles electronic-structure  calculations"
   actions:
     - theme: brand
       text: Install
@@ -20,11 +20,12 @@ hero:
       text: Manual
       link: /manual/lmf
 
+
+
 features:
   - title: Quasi-particle self-consistent 𝘎𝘞 methods (QSGW)
-    details: First-principles electronic structure calculations to determine the best independent particle picture for describing electronic excitations
+    details: First-principles electronic structure calculations to determine the independent-particle picture for describing electronic excitations
   - title: Material properties on top of QSGW 
     details: Linear responses. Maxloc Wannier modeling. In addition new modeling MLO is going to be implemented. Spectrum functions, life time due to e-e scattering.
   - title: Easy to use 
-    details: ecalj is based on the th PMT method, which is an all electron method with LMTO + LAPW, where we use only ~ 3Ry cutoff for APW. Automatically applicable to wide range of materials. POSCAR in the VASP format can be readable. Automatic band path. Plot GW band structures without the Wannier interpolation.
----
+    details: ecalj is based on the th PMT method, which is an all electron method with LMTO + LAPW, where we use only ~ 3Ry cutoff for APW. Automatically applicable to wide range of materials. POSCAR in the VASP format can be readable. Automatic band path. Plot GW band structures without the Wannier interpolation.In fact we are going to generate [QSGW database](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos)

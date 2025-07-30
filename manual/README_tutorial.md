@@ -6,6 +6,18 @@ Here are minimum GetStated to obtain QSGW band plot.
 
 [Qiita English](https://qiita.com/takaokotani/items/4cd5e13f2e2c4b534b3f)
 
+## Overview of QSGW calculation
+
+* LDA calculations are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (a calculation that finishes instantaneously). 
+* A file `sigm.foobar` is the key for QSGW calculations. The file `sigm.foobar` contains $V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$. By adding this potential term to the usual LDA calculation performed by `lmf`, we can perform QSGW calculations.
+* Thus the problem is how to generate $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$. This is calculated from the self-energy  $\Sigma({\bf r},{\bf r}',\omega)$, which is calculated in the GW approximation. Roughly speaking, we obtain $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$ with fixing the omega-dependence in $\Sigma({\bf r},{\bf r}',\omega)$.
+* Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle , and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. As a guideline, it takes about 10 hours for 20 atoms (depending on the number of electrons). 
+
+* GPU can accelerate it, https://arxiv.org/abs/2506.03477.  Thus we can handle large systems. 
+* Since automation is being promoted, there is almost no need to tweak parameters that are difficult to understand (if something strange, let me know). I think it is probably the GW kinds of computation codes which is the easiest to use. See band database in QSGW at
+https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md
+(this is supplement of https://arxiv.org/abs/2507.19189)
+
 
 <!-- 
 ## 基礎知識check 
