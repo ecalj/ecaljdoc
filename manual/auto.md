@@ -1,19 +1,21 @@
-# ecaljauto
+# ecal_jauto
 
-自動バッチ計算用のスクリプトセット
+automatic calculations for tons of ctrl files.
 
-## 依存関係
-通常のecaljの計算に加え
- - python3.9以上
-python ライブラリ
+--- followings are still under construction ---
+
+## dependency
+We need 
+ - `>python3.9'
  - pandas
  - seekpath
  - spglib
 
-python ライブラリのinstall は pip で以下のように行う
 ```bash
-pip3 install pandas seekpath spglib --user
+pip install pandas seekpath spglib --user
 ```
+
+
 ### python のImportError が発生する場合
 
 python の version や環境によって以下のようなエラーがでる場合がある(ISSP python3.6で発生)

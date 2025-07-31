@@ -1,5 +1,7 @@
 ## This is an input help described in ctrl for lmf 
 
+これはlmf (lmfa,lmchk)がctrlから読み込む Category_Tokenの完全リストである。
+
 <!-- ```
 INFO: Ubuntu 20.04.4 LTS \n \l
 INFO: GNU Fortran (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
