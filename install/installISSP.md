@@ -4,9 +4,9 @@ Content-Type: text/markdown; charset=UTF-8
 # ISSPのkuguiとohtakaでのインストール
 
 ## kuguiでのインストール
-#### １．ログイン。
-#### ２．[miseあるいはanacondaを用いてpythonとツールをインストール](./install.md)
-#### ３．`~/.bashrc`の書き換え
+### １．ログイン
+### ２．[miseあるいはanacondaを用いてpythonとツールをインストール](./install.md)
+### ３．`~/.bashrc`の書き換え
 `~/.bashrc`の最後に
 ```bash
 ulimit -s unlimited
@@ -25,7 +25,7 @@ fi
 > Script for loading the required `modules` and starting MPS.
 
 
-#### 4.ecaljのインストールとテスト
+### 4.ecaljのインストールとテスト
 ```bash
 git clone https://github.com/tkotani/ecalj.git
 cd ecalj
@@ -76,7 +76,7 @@ tail -f ecalj/SRC/TestInstall/summary.txt
 を見ていれば、順にテストが進んでいくのが確認できます。最後にPASSED! srvo3_crpa/Screening_W-v_crpa.h
 と表示され、FAILとかエラーがなければOKです。
 
-#### 4.GPU計算テスト
+### 4.GPU計算テスト
 ecalj/Samples/Samples_ISSP/inas2gasb2_kugui
 に移動して、
 ```
@@ -89,7 +89,7 @@ OK! ==== All calclation finished for  gwsc ====
 ```
 で終了していればOKです。
 
-#### 6. 使い方メモ
+### 5. 使い方メモ
 [使い方メモ](./UsageISSP.md)
 
 ## ohtakaでのインストール
@@ -116,6 +116,5 @@ sbatch job_ohtaka.sh
 
 
 ## ISSPシステムでのカスタマイズについて
-[ecaljソースコードの変更点](UsageISSP.md)
-あるいはecalj packageのecalj/job_install_kugui.sh
-を見てください。
+ecaljソースコードにおいて、SRC/exec/MachineDependence.pyにマシン依存性を書いています。
+kuguiではmpiがsrunのためgwscなどではこれが必要です。

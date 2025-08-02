@@ -41,7 +41,7 @@ export default withMermaid({
         text: 'Install',
         items: [
           { text: 'Install', link: '/install/install' },
-          { text: 'Install ISSP', link: '/install/installISSP' }
+          { text: 'Install@ISSP', link: '/install/installISSP' }
         ]
       },
       {
@@ -51,19 +51,11 @@ export default withMermaid({
         ]
       },
       {
-        text: 'Input files',
-        items: [
-          { text: 'ctrl file', link: '/manual/lmf_input' },
-          { text: 'syml file', link: '/manual/syml' },
-          { text: 'GWinput', link: '/manual/gwinput' },
-        ]
-      },
-      {
         text: 'Manual',
         items: [
-          { text: 'DFT: lmf', link: '/manual/lmf' },
-          { text: 'Quasi-particle self-consistent GW: gwsc', link: '/manual/gwsc' },
-          { text: 'ecalj auto', link: '/manual/auto' },
+          { text: 'DFT:  lmf', link: '/manual/lmf' },
+          { text: 'QSGW: gwsc', link: '/manual/gwsc' },
+          { text: 'Usage at ISSP@u-tokyo',link: '/manual/UsageISSP.md' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion', link: '/manual/band' },
           // { text: 'Spin-orbit interaction', link: '/manual/soi' },
@@ -72,12 +64,15 @@ export default withMermaid({
           // { text: 'Structural optimization', link: '/manual/opts' },
           // { text: 'Quasi-particle\'s life time', link: '/manual/lifetime' },
           // { text: 'Spectrum function', link: '/manual/spec' },
+          { text: 'ecalj auto', link: '/manual/auto' }
         ]
       },
       {
-        text: 'Examples',
+        text: 'Input files',
         items: [
-          { text: 'ecalj GPU', link: '/examples/ecaljgpu' },
+          { text: 'ctrl file', link: '/manual/lmf_input' },
+          { text: 'syml file', link: '/manual/syml' },
+          { text: 'GWinput', link: '/manual/gwinput' },
         ]
       },
       {

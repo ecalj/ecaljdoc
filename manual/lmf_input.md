@@ -1,6 +1,8 @@
 ## This is an input help described in ctrl for lmf 
 
-これはlmf (lmfa,lmchk)がctrlから読み込む Category_Tokenの完全リストである。
+This is a complete lits of Category_Token described in ctrl.foobar.
+ctrl is read by lmf,lmfa, and lmchk.
+
 
 <!-- ```
 INFO: Ubuntu 20.04.4 LTS \n \l
@@ -17,24 +19,24 @@ INFO:    linked at Fri Feb 10 08:16:46 JST 2023
   Token           Input   cast  (size,min) --------------------------
  IO_VERBOS         opt    i4       1,  1          default= 30
     Verbosity for printout. Set from the command-line with --pr=xxx
+ 
  IO_TIM            opt    i4v      2,  1          default= 1 1
     Turns CPU timing log. Value sets tree depth.
     Optional 2nd arg prints CPU times as routines execute.
-    Args may be set through command-line: --time=#1,#2
+    Args may be set through command-line: --time=#1,#2  --time=5,3 for example.
+
  STRUC_ALAT        reqd   r8       1,  1      Units of length (a.u.)
  STRUC_NBAS        reqd   i4       1,  1      Size of basis
  STRUC_PLAT        reqd   r8v      9,  9      Primitive lattice vectors
- STRUC_DALAT       opt    r8       1,  1          default= 0 
-   added to alat after reading inputs (only affecting to SPEC_ATOM_R/A case)
- OPTIONS_HF        opt    lg       1,  1          default= F       
-   T for non-self-consistent Harris
- HAM_NSPIN         opt    i4       1,  1          default= 1       
-   Set to 2 for spin polarized calculations
- HAM_REL           opt    i4       1,  1          default= 1       
+ STRUC_DALAT       opt    r8       1,  1      default= 0   added to alat after reading inputs (only affecting to SPEC_ATOM_R/A case)
+ OPTIONS_HF        opt    lg       1,  1      default= F   T for non-self-consistent Harris
+ HAM_NSPIN         opt    i4       1,  1      default= 1   Set to 2 for spin polarized calculations
+ HAM_REL           opt    i4       1,  1      default= 1       
    relativistic switch
    0 for nonrelativistic Schrodinger equation
    1 for scalar relativistic Schrodinger equation
    2 for Dirac equation
+   
  * To read the magnetic parameters below, HAM_NSPIN must be 2
  HAM_SO            opt    i4       1,  1          default= 0
     Spin-orbit coupling (for REL=1)

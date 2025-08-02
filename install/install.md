@@ -1,4 +1,6 @@
 # ecalj Install
+To install ecalj package, we have to install softwares and python modules, which are used in ecalj.
+In addition, we need to make some softlinks. Most of all are almost automatic. Follow steps below. 
 
 ## 1. Some software tools including fortran compilars
 Main part of ecalj is written in fortran90. Source codes are located at 

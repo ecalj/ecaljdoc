@@ -6,6 +6,9 @@ Here are minimum GetStated to obtain QSGW band plot.
 
 [Qiita English](https://qiita.com/takaokotani/items/4cd5e13f2e2c4b534b3f)
 
+To install ecalj, read them or look into [install](../install/install.md)
+Then go to following steps.
+
 ## Overview of QSGW calculation
 
 * LDA calculations are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (a calculation that finishes instantaneously). 

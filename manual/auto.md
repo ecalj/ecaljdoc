@@ -1,6 +1,7 @@
-# ecal_jauto
+# ecal_auto
 
-automatic calculations for tons of ctrl files.
+This is for automatic calculations for many cif files.
+`ecalj_atuo` was used for generating [ecaljdatabase](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos)
 
 --- followings are still under construction ---
 
