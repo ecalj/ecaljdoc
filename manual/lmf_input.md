@@ -244,6 +244,7 @@ To see full list, look into `m_lmfinit.f90` which reads in ctrlp file.
     Exchange parameter J for LDA+U
 ```
 
+
 Core hole options 
 ```
  SPEC_ATOM_C-HOLE  opt    chr      1,  0
@@ -371,6 +372,9 @@ The following tokens are input for each site. See examples.
 ```    
 
 ### lmf console input
+ecalj made from band structure part (lmf), and GW part (plus some additional functionalities such as Wannier). 
+
+lmfa (spherical atom for initial condition) and lmchk (crystal structure check) are by single core.
 
 usage:  lmf [--OPTION] [-var-assign] [extension] 
 ```
@@ -384,8 +388,16 @@ usage:  lmf [--OPTION] [-var-assign] [extension]
 
  -vnam=expr     Define numerical variable "nam"; set to result of 'expr'
   --jobgw=1 or 2       lmf-MPIK works as the GW driver (previous lmfgw-MPIK)
-  --quit=band, --quit=mkpot or --quit=dmat: Stop points. Surpress writing rst
+  --quit=band, 
+    Quit after band 
+  --quit=dmatu 
+    Quit after initial setup. Convenient for check.
+  --quit=band 
+     Quit after band calculation.
+  --quit=mkpot or --quit=dmat: Stop points. Surpress writing rst
 
   NOTE: Read rst.* prior to atm.* file (No --rs options: 2022-6-20)
   NOTE: Other command-line-options => Search "call cmdopt" in SRC/*/*.f90
 ```
+Search --quit option in ```SRC/*/*.f90```
+

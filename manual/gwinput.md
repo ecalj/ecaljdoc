@@ -32,6 +32,18 @@ cp GWinput.tmp GWinput
 $GW$自己エネルギー計算におけるk点の数。`ctrl` file に記載するk点とは異なる点を指定できる。 計算コストは, このk点数の2乗に比例することに注意。
 - **type** : integer list
 
+We set number of k points for self-energy in GWinput. These can be 1/2 or 2/3 of k points specified in ctrl, in order to reduce computational time.
+The 6x6x6 k points is feasible setting for ZB structure (2 atoms per cell). That is, 6x6x6x2 =432 \sim `k points \times atom number`.
+For example, when we try 8 atoms per cell, 4x4x4 or 3x3x3
+is fine because 4x4x4x8 \sim 400.
+For metallic systems, larger is fine, but limited by computational
+time. See takao kotani's papers, for example, https://doi.org/10.1103/PhysRevB.93.075125
+Good news is that we don't need to use so many k points as in ctrl.
+In cases, 4x4x4 for ZB is not so bad --- roughly speaking, this is a low limit for
+publication. This means 3x3x3x8 (for 8 atom case) is not so bad. (3x3x3x8 > 4x4x4x2).
+See our examinations shown in  https://doi.org/10.7566/JPSJ.83.094711 and
+http://doi.org/10.7567/JJAP.55.051201
+
 ### `KeepEigen`  
 波動関数をメモリに保持するかどうか。波動関数は`CPHI` および`GEIG`というファイルで出力される。それらが1MPIが使用できるメモリに対して, 同等もしくはそれ以上である場合は必ず`.false.`にする。 $k$点や軌道数が多い場合は`.false.`にする。
 - **type**: boolean
@@ -73,3 +85,41 @@ MT内の積基底とMT内波動関数基底の行列要素(`ppb`変数)をメモ
 フェルミ準位から測った, 計算する準粒子状態の自己エネルギーの最大値: 単位 Ryd。QSGW計算では自己エネルギーはポテンシャル構築に使用されるため小さくするとポテンシャルの精度も下がる。
 - **type**: float
 - **default** : 3.0
+
+### `High resolution energy mesh near Ef for metal` 
+For metal, it may be better to set
+```
+HistBin_dw    1d-5 ! 1d-5 is fine mesh (good for metal?) !(a.u.) BinWidth along real axis at omega=0.
+HistBin_ratio 1.03 ! 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=ratio-1.0 and dw=b*a
+```
+
+### `Smaller lcutmx to reduce computatinal time`
+  To reduce the computational time, we reduce number of MPB (mixed product basis).
+  One is lcutoff of Product Basis (PB) within MT. Use lcutmx=2 for oxygen or something (s,p block atoms). 
+  Thus it  is like
+  ```
+  lcutmx(atom) = maximum l-cutoff for the product basis.  =4 is required for atoms with valence d, like N
+   4 4 4 2 2 2 
+```
+in the section of GWinput. 
+* NOTE: we know that lcutmx =6 is requied for 4f systems. 
+
+### `Smaller IPW related part to reduce computational time`
+To reduce compuational time, we may reduce MPB coming from IPS, reduce the size of IPW for psi, reduce emax_sigm and pwemax as follows.
+   + QpGcut_cou is fort the Interstitial plane wave (IPW) for MPB. 
+   + QpGcut_psi is for expantion of eigenfunctions.
+   + emax_sigm is the upper cutoff (relative to the Fermi energy) to calculate self energy.
+   + pwemax (in ctrl) is the APW basis cutoff for the eigenfunciton.
+
+To reduce computational time, we may use
+```
+   QpGcut_psi 3.0
+   QpGcut_cou 2.5
+   emax_sigm 2.0
+```
+In addition, we use
+```
+   pwemax=2 (in ctrl file).
+```
+   We sometimes use this setting. It is better to check how the numerical
+   results are affected. 

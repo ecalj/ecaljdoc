@@ -10,15 +10,13 @@ GPU implementation with OpenACC/CuBlas is embedded in the source codes.
 In addition, python are used. Bash scripts remain (but gradually replacing bash with python).
 
 We may need to install following tools and libraries.We need
-> git, gfortran, openmpi, bash, cmake intel-mel
-
-* git (To download the ecalj. It is convenient to upgrade your code)
+* git (To download the ecalj. It is convenient to upgrade your code), gitk(GUI) is convenient
 * Fortran compiler (we can choose gfortran, ifort, or nvfortran)
 * Math library (blas, lapack, fft). We can usually use intel-mkl. 
-* MPI library (open mpi works for ubuntu24 )
+* MPI library (openmpi works for ubuntu24 )
 * cmake, make, bash, gnuplot 
 
-We can use apt to install them when ubuntu. Similar in other systems, or your system already have.
+We can use apt to install them for ubuntu. Similar in other systems. Recently, we are asked to install things to our own .local in cases.
 
 |**I use following versions for thinkpad T14: ubuntu 24.04**|
 |---|
@@ -86,11 +84,7 @@ After you did the above git clone command, a directory ecalj/ appears.
 We can check history of ecalj by ">gitk --all" at ecalj/ directory after you got git clone.
 
 ### InstallAll.py
-To install, we use 
-```bash
-InstallAll.py [Options]
-```
- InstallAll.py --h shows a help as
+To install, we use  `InstallAll.py [Options]`. `InstallAll.py --h` shows a help as
 ```
 takao@t14:~/ecalj$ ./InstallAll.py -h
 usage: InstallAll [-h] [-np NP] [--clean] [--gpu] [--bindir BINDIR] --fc FC [--notest] [--verbose]
@@ -114,9 +108,8 @@ options:
   --verbose        verbose on for debug
 ```
 
-InstallAll.py writes binaries and scripts to a directory foobar given by --bindir foobar/.
-(Defaults is $HOME/bin/.)  Add the directory foobar to your path.  --fc is required.
---fc nvfortran together with --gpu is needed for GPU.
+InstallAll.py copies all binaries and scripts for ecalj to your directory foobar specified by --bindir foobar/. (Defaults is $HOME/bin/.)  Set foobar/ as you like.  --fc is required.
+For GPU, --fc nvfortran together with --gpu is needed.
 
 
 ## Install ecalj
@@ -239,4 +232,3 @@ Then you describe the comparison check in testecalj.py.  To test all of binaries
   ```
 
 * I had openmpi failed on ubuntu22.  I observed that gfortran+openmpi failed for ubuntu22. Use mpich. But I don't know cucrrent status.  
-

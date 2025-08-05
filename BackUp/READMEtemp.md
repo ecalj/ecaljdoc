@@ -1,7 +1,6 @@
 We have manuals and presentations of ecalj at [.Document/](./Document). Especially, [ecaljmanual.pdf](./Document/Manual/ecaljmanual.pdf) is the main manual. Read "LDA/GGA calculations and Plots" at first (but some part become obsolate---I have to revise)
 QSGW calculations can be performed easily after you learend the procedure. Band plot and so on are in the same manner of the LDA calculations, althogh QSGW is computationally expensive (roughly 100~1000 times expensive. We ara going to use GPU now.).
 
-It is instractive to reproduce samples in [./Document/PAPERandPRESENTATION/deguchi2016.pdf](). We can set up templates for your calculations. Ask us.
 
 * How to perform paper quality calculations with minimum costs? See [./README_hints.org]()
 * Usage minimum. QSGW for Si
@@ -10,7 +9,6 @@ See Section.4. of [./Document/Manual/ecaljmanual.pdf]().
 
 ## Very minimum to run ecalj
 
-In Japanese, see a page by Dr.Gomi at http://gomisai.blog75.fc2.com/blog-entry-675.html and https://qiita.com/takaokotani/items/9bdf5f1551000771dc48.
 
 1. write structure file ctrls.si by hand 
     (you can generate ctrls from POSCAR(VASP) with vasp2ctrl in
@@ -57,79 +55,6 @@ Furthermore, we have a tool to generate BZ and symmetry lines on it for
 band plot in [./GetSyml/]()
 The symmetry line is written into syml.* and used for the
 band plot mode, job_band. The BZ and the lines are visualized.
-
-#### Install the viever at StructureTool/
------
-Here we use VESTA at http://jp-minerals.org/vesta/.
-Download it, and expand it to a directory. 
-VESTA can handle kinds of format of crystal structure.
-
-Then make a softlike by
->  ln -s ~/ecalj/StructureTool/viewvesta.py ~/bin/viewvesta  
->  ln -s ~/ecalj/StructureTool/ctrl2vasp.py ~/bin/ctrl2vasp  
->  ln -s ~/ecalj/StructureTool/vasp2ctrl.py ~/bin/vasp2ctrl  
- 
-With this procedure we can run command viewvesta, ctrl2vasp,
-vasp2ctrl from console as long as you have ~/bin/ in the command
-search path. In my case, .bashrc have a line
-  export PATH=$HOME/bin:$HOME/VESTA-x86_64:$PATH  
-
-It depends on your machine. (after editing .bashrc, you have to do
-"source ~/.bashrc" to reflect changes).
-
-Set the variable of VESTA=, at the begining of 
-~/ecalj/StructureTool/viewvesta.py to let it know where is VESTA.
-
-#### Symmetry line finder at GetSyml/
------
-This is to generate symmetry lines. syml.* from ctrl.* in ecalj/GetSyml/
-In the directory, we have getsyml.py, which is based on the
-[seekpath](https://github.com/giovannipizzi/seekpath/)
-on top of [spglib](https://github.com/spglib/spglib).
-See Lincence.txt in it. Folllowing citations are required.
- 1.Y. Hinuma, G. Pizzi, Y. Kumagai, F. Oba, I. Tanaka, 
-    Band structure diagram paths based on crystallography, Comp. Mat. Sci. 128, 140 (2017) 
- 2.You should also cite spglib that is an essential library used in the implementation.
-
-## How to do version up? minimum for git
-Be careful to do version up. It may cause another problem.
-But it is not so difficult to move it back to original version if you have knowledge of git.
-An important things is keeping your changes by yourself.
-
->cd ecalj  
->git log  
-   This shows what version you use now.
-
->git diff > gitdiff_backup    
-This is to save your changes added to the original (to a file git_diff_backup ) for safe.
-I recommend you do take git diff >foobar as backup.   
->git stash also move your changes to stash.
-
->git checkout -f             
-     CAUTION!!!: this delete your changes in ecalj/.
-     This recover files controlled by git to the original which was just downloaded.
-
->git pull                    
-    This takes all new changes.
-
-
-I think it is recommended to use 
->gitk --all 
-
-and read this document. Difference can be easily taken,
-e.g. by 
->git diff d2281:README 81d27:README 
-(here d2281 and 81d27 are several digits of the begining of its version id). 
-
->git show 81d27:README 
-
-is also useful.  
-
-## Licence 
-- [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html)
-- For publications, we hope to make a citation cleary to this homepage such as;
-  
-  [foobar] ecalj package available from https://github.com/tkotani/ecalj/.
 
 
 
