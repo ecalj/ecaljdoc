@@ -38,9 +38,9 @@ export default withMermaid({
 
     sidebar: [
       {
-        text: 'Main Documents',
+        text: 'Main',
         items: [
-          { text: 'Tutorial', link: '/manual/README_tutorial' },
+          { text: 'RootDocument', link: '/manual/README_tutorial' },
         ]
       },
       {

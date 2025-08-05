@@ -1,10 +1,16 @@
 # ecalj main documents
-
 **This is a main document of ecaljdoc. All files in ecaljdoc are linked from this file.**
 
 * [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are here.
 
-Here we give [GetStarted](#getstarted) and links to [UsageDetailed](#usagedetailed), followed by install and Overview section.
+* Here we give [GetStarted](#getstarted) and  [UsageDetailed](#usagedetailed), followed by install and Overview section.
+
+## Licence 
+- [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html)
+- For publications, we hope to make a citation cleary to this homepage such as;
+  
+  [foobar] ecalj available from https://github.com/tkotani/ecalj/.
+
 
 ## Install
 To install ecalj, look into [install](../install/install.md), as well as [install for ISSP](../install/install.md)
@@ -189,6 +195,7 @@ Primitive lattice vector (plat) Primitive reciprocal lattice vector (qlat)
 
  **Hereafter, we only use `ctrl.foobar` (`ctrls.foobar` is used hereafter.). We can delete temporary files.**
 
+
 #### Install VEST 
 It is convenient to see crystal structures with VESTA.
 (I installed VESTA-gtk3.tar.bz2 (ver. 3.5.8, built on Aug 11 2022, 23.8MB) on ubuntu 24)
@@ -231,6 +238,12 @@ to see the structure in VESTA. At /StructureTool, we have converters,
    * SiteInfo.lmchk : Site infor
    * PlatQlat.chk : Lattice info
    * estaticpot.dat : electrostatic potential of smooth part.
+
+NOTE:
+We have deguchi paper https://sci-hub.tw/https://doi.org/10.7567/JJAP.55.051201
+All calculation is by the default setting in QSGW on the PMT method. 
+> No empty spheres. EH=-1,EH=-2, MT radius is -3% untouching.
+> RSMH=RSMH2=R/2
 
 ### Step 4. Create k-path and BZ for band plot
 After the calculation converges, it might be necessary to make a band plot with `job_band` command explain later on. The normality of the calculation of bands can be confirmed by the band plot (for magnetic systems, check the total magnetic moment and the magnetic moment for each site).
@@ -410,10 +423,9 @@ If MT changes, start over from lmfa (remove atm* files)
 
 
 ## A mini database for tests.
-ecalj contains a mini database and auto calculation for test purpose (at LDA level).
-
-At ecalj/MATERIALS/, you can run ./jobmaterials.py. 
-Then you can perform LDA calculations for simple materials whose crystal structures are already contained in a mini database.
+At ecalj/MATERIALS/, you can run ./jobmaterials.py. It shows a help with a list of materials.
+It contains samples of simple materials.It performs LDA calculations and generates GWinput for materials.
+Run as follows. Then we perform LDA calculations where crystal structures are already contained in a mini database.
 ```
 ./job_materials.py
 ``` 
@@ -422,7 +434,12 @@ gives a help, showing a list of materials. Then
 ```
 ./job_materials.py Si
 ``` 
-performs LDA calculation of Si at ecalj/MATERIALS/Si/.
+performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
+>job_materials.py works as follows for given names.
+ Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
+ Step 2. Generate ctrl by ctrlgenM1.py
+ Step 3. Make directtory such as Si/ and run lmf, lmfa, mkGWinput. 
+
 
 * Key input files are
 ```ctrls.si,ctrl.si```
@@ -453,7 +470,7 @@ If you have less symmetry rather than than the symmetry of lattice for magnetic 
 you have to set crystal symmetry by hand.
 This can be done by adding space group symmetry generator to SYMGRP (instead of find).
 We need to pay attention for this point in the case of SOC.
-
+(we have to explain how to read space group and so on.)
 
 # UsageDetailed
 
@@ -522,7 +539,7 @@ IORBTM:  orbital moments :
     2    N            1    0.000000   -0.004174    0.001584    0.000291    0.000129
     2    N            2    0.000000    0.004622    0.000236    0.000045    0.000006
  total orbital moment   2:    0.002738
-```.
+```
 
 ## Antiferro symmetry without SOC
 We can set Antiferro symmetry (not yet for SOC=1).
@@ -569,6 +586,8 @@ See a sample at ecalj/Samples/FermiSurface
 See a sample at ecalj/Samples/MgO_PROCAR
 We can generate PROCAR file containing the size of eigenfuncitons**2. 
 The sample (run job file) generates eps file showing fat band of O2 components.
+ Run jobprocar. This gives *.eps file which shows Fat band picture.
+ PROCAR (vasp format) is generated and analysed by a script BandWeight.py.
 
 
 ## LDA+U
@@ -581,19 +600,19 @@ We have samples
 
 
 ## Dielectric function
-~/ecalj/Samples/EPS
+`~/ecalj/Samples/EPS`
 Dielectric functions for Cu and GaAs. For Cu, we have intraband and interband contributions separately.
 See [dielectric fuctnion](optical.md).
 
 ## Impact ionization rate
-~/ecalj/Samples/IIR
+`~/ecalj/Samples/IIR`
 
 ## Spin fluctuation
-~/ecalj/Samples/Magnon
+`~/ecalj/Samples/Magnon`
+   now with MaxlocWannier. going to move to MLO
 
 ## Effective Screening Medium (ESM)
 We can apply electric field to slab model. ESM combined with QSGW is quite unique. Ask us.
-
 
 ## lmf and ctrl
 See [lmf and ctrl](lmf_input.md)
@@ -610,6 +629,17 @@ These citations are required.
 1.Y. Hinuma, G. Pizzi, Y. Kumagai, F. Oba, I. Tanaka, Band structure diagram paths based on crystallography, Comp. Mat. Sci. 128, 140 (2017)
 2.Cite spglib that is essential for getsyml.
 
+### ecalj/Samples/
+* MLO: new localized basis
+  Maximally localized Wannier function and cRPA interaction
+* MLWF_samples
+  Wannier function generator and cRPA 
+  wannier90 method implemented in ecalj and cRPA. 
+  (a cRPA method by Juelich group).
+  See Samples_MLWF/README.
+   ~/ecalj/README_wannier.md This is going to be replaced with README_MLO.md
+* mass_fit_test
+  Effective mass calculation. See README. probably not maitained\dots
 
 ## ecalj_auto
 This is a suit of python script to run thousands of gwsc calculations.
@@ -618,7 +648,7 @@ This is a suit of python script to run thousands of gwsc calculations.
 ## background charge and fractional Z
 [backcround charge](Memo_bgcharge.md)
 
-###  -- how to perform paper-quarilty QSGW calculations with minimum costs. 
+### How to perform paper-quarilty QSGW calculations with minimum costs. 
 
 The accuracy of band gaps can be  ~0.1eV or larger for larger band gap materials.. 
 In cases, it is easy, but in cases not so easy. So, it is better to use your own "simple criterion".
@@ -631,17 +661,109 @@ I think this is a little too old--> [HowToSet4f_GdQSGW4.pdf](Document/HowToSet4f
 (I will revise this)
 Except 4f systems, use default setting (just change k points).
 
-## Deguchi paper
-It is instractive to reproduce samples in [ecalj/Document/PAPERandPRESENTATION/deguchi2016.pdf]. 
+## Papers
+It is instractive to reproduce samples in Deguchi paper[ecalj/Document/PAPERandPRESENTATION/deguchi2016.pdf]. 
 We can set up templates for your calculations. Ask us.
+We have latest paper at https://arxiv.org/abs/2506.03477 for GPU version, but show some details of computational steps in ecalj.
 In Japanese, pages by Dr.Gomi at http://gomisai.blog75.fc2.com/blog-entry-675.html and https://qiita.com/takaokotani/items/9bdf5f1551000771dc48.
 
 
-## others
-Wannier samples and Superlattice samples are available.
+##  How to perform paper-quarilty QSGW calculations with minimum costs. 
+We expect that the accuracy of band gaps can be  ~0.1eV (or larger for larger band gap materials). 
+In cases, it is easy but in cases not so easy (magnetic metals requires many number of iterations). 
+So, it is better to use your own "simple criterion".
+"Not stick to convergence so much. Just stick to Reproducibility."
+### LDA calculation
+ We need to confirm LDA-level of calculations first.
+ The ctrl file is generated just from ctrls.* (crystal structure file)
+ For calculation of QSGW, use large enough NKABC, so as to avoid
+ convergence check on them. 
+### QSGW: how to check convergence
+QSGW iteration cycle by gwsc contains (1) and (2)
+  (1) One-body self-consistent calculation 
+      (where we add sigm = Sigma-Vxc^LDA to one-body potential).
+      to determine one-body Hamiltonian $H_0$.
+  (2) For given $H_0$, we calculate sigm file.
+
+Big iteration cycle of QSGW is made from (1)+(2).
+(gwsc script. not run_arg is a subroutine of bash script) 
+With (1), we have small iteration cycle of one-body calculaiton with keeping given sigm.
+
+In `save.*`, we see total energy (but not the total energy in the QSGW
+mode with sigm file), a line per each iteration of (1). A line "c ..." is the final
+iteration cycle of (1)."x ..." is unconverged 
+(but no problem as long as we finally see "c ...").
+
+The command `"grep '[cx] ' save.*"` gives an indicator for 
+going to be converged or not.
+Or you can take "grep gap llmf.*run" (see it bottom.)
+
+Another way:
+`~/ecalj/TestInstall/bin/diffnum QPU.3run QPU.6run` 
+is to compare two QPU files which contains QP energies.
+(note: QP energies shown are calculated just at the begininig of iteration).
+
+For insulater, (I think), comparing band gap for each iteration 
+is good enough to check onvergence. But for metal, it is better to plot energy bands
+for some of final iterations, and overlapped(`cd QSGW.*run` and run `job_band`).
+
+Another way is `grep rms lqpe*`. This gives rmsdel. Diffence of self-energy
+(at least we see it is getting smaller for initial first cycles). 
+
+
+### How to make 80%QSGW +20% LDA, and SO setting
+  Note that sigm file contains $V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$.
+  If sigm exists, lmf read it, and run self-consistent calculations
+  with adding sigm to the one-body potential.
+
+  See TableII in 
+  https://iopscience.iop.org/article/10.7567/JJAP.55.051201/pdf
+
+###### 1. QSGW80(NoSC)
+  For practical prediction of band structure, such as band gap and so
+  on, it may be better to use 80% QSGW +20% LDA procedure when you
+  make band plot.  After, you have rst and sigm files determined self-consistently
+  Run 
+  ```
+  job_band gaas -np 4 -vssig=0.80 
+  ```
+  (Confirm ssig is defined and cited as `ScaledSigma={ssig}` in the ctrl file). This gives a result of QSGW80nosc in the TableII.
+
+###### 2. QSGW80(Nosc)+SO 
+   80%QSGW+20%LDA with SO=1 (L.S method).
+   If you like to include L.S method 
+
+```
+mpirun lmf gaas -np 4 -vssig=0.80 -vso=1 -vnspin=2
+```
+This procedure makes self-consistency with keeping the sigm file. This may/(or may not) required. If you expect large obital moment this procedure may be needed.
+
+```
+job_band gaas -np 4 -vssig=0.80 -vso=1 -vnspin=2
+```
+NOTE: nspin=2 is required for so=1. rst and sigm are expanded for npsin=2 (you can not run with nspin=1, after rst and sigm are expanded).
+  
+###### 3. QSGW80
+  With ssig=0.80, you can run QSGW calculaiton in gwsc.
+  Then you have self-consistent results of QSGW80.
+  You can simultaneously use the setting so=2 (Lz.Sz scheme).
+  Be careful for z-direction and setting of SYMOPS (so as to keep the z-axis), for so=2.
+  If you like to get results of QSGW80+SO, you need to set so=1 after self-consistent of sigm atteined.
+
+###### 4. Example of GaAs   
+  Good example to check band gap, and SO splitting at top of valence of Gamma point for ZB structure as GaAs.
+  Before run it, make sure your ctrl file include variables ssig, so, nspin by
+  ```   
+  >grep ssig ctrl.gaas
+  >grep so   ctrl.gaas
+  >grep nspin ctrl.gaas
+  ```   
+  to know the variable ssigm is defined and used as 
+  `ScaledSigma={ssig}, NSPIN={nspin}`. For `-vso=1` work, you also need to so is defined and `SO={so}` is set in ctrl.
+
 
 ## How to do version up? git minimum
-<small>
+
 Be careful to do version up ecalj. It may cause another problem.
 If you are not good at git, make another clone. 
 Do not mix up with previous version (e.g. where you install)
@@ -650,17 +772,17 @@ Do not mix up with previous version (e.g. where you install)
 >git log  
    This shows what version you use now.
 
->git diff > gitdiff_backup    
+>git diff > gitdiff_backup
 This is to save your changes added to the original (to a file git_diff_backup ) for safe.
-I recommend you do take git diff >foobar as backup.   
+I recommend you do take git diff >foobar as backup.
 >git stash also move your changes to stash.
 
->git checkout -f             
+>git checkout -f
      CAUTION!!!: this delete your changes in ecalj/.
      This recover files controlled by git to the original which was just downloaded.
 
->git pull                    
-    This takes all new changes.
+>git pull
+    This takes all new changes. It is safer to use `git fetch` and `gitk --all` (`git checkout FETCH_HEAD -b youbranch`) to checkout your local branch.
 
 
 I think it is recommended to use 
@@ -674,170 +796,3 @@ e.g. by
 >git show 81d27:README 
 
 is also useful.  
-</small>
-
-
-##  How to perform paper-quarilty QSGW calculations with minimum costs. 
-
-We expect that the accuracy of band gaps can be  ~0.1eV (or larger for larger band gap materials). 
-In cases, it is easy but in cases not so easy (magnetic metals requires many number of iterations). 
-So, it is better to use your own "simple criterion".
-"Not stick to convergence so much. Just stick to Reproducibility."
-
-### LDA calculation
- We need to confirm LDA-level of calculations first.
- The ctrl file is generated just from ctrls.* (crystal structure file)
- For calculation of QSGW, use large enough NKABC, so as to avoid
- convergence check on them. 
-
-
-
-### -- QSGW: how to check convergence
-QSGW calculation contains (1) and (2)
-  (1). One-body self-consistent calculation 
-      (where we add sigm = Sigma-Vxc^LDA to one-body potential).
-      H_0 is determined.
-  (2). For given H0, we calculate sigm file.
-
-Big iteration cycle of QSGW is made from (1)+(2).
-(gwsc script. not run_arg is a subroutine of bash script) 
-With (1), we have small iteration cycle of one-body calculaiton with keeping given sigm.
-
-In save.*, we see total energy (but not the total energy in the QSGW
-mode), a line per each iteration of (1). A line "c ..." is the final
-iteration cycle of (1)."x ..." is unconverged 
-(but no problem as long as we finally see "c ...").
-
-The command "grep '[cx] ' save.*" gives an indicator for 
-going to be converged or not.
-Or you can take "grep gap llmf.*run" (see it bottom.)
-
-Another way:
-$~/ecalj/TestInstall/bin/diffnum QPU.3run QPU.6run 
-is to compare two QPU files which contains QP energies.
-(note: QP energies shown are calculated just at the begininig of iteration).
-
-For insulater, (I think), comparing band gap for each iteration 
-is good enough to check onvergence. But for metal, it is better to plot energy bands
-for some of final iterations, and overlapped (cd RUN.ITER* and run
-job_band).
-
-Another way is
->grep rms lqpe*
-
-This gives rmsdel. Diffence of self-energy
-(at least we see it is getting smaller for initial first cycles). 
-
-### -- How to make 80%QSGW +20% LDA, and SO setting
-  Note that sigm file contains Vxc^QSGW-Vxc^LDA.
-  If sigm exists, lmf read it, and run self-consistent calculations
-  with adding sigm to the one-body potential.
-
-  See TableII in 
-  https://iopscience.iop.org/article/10.7567/JJAP.55.051201/pdf
-
-###### 1. QSGW80(NoSC)
-  For practical prediction of band structure, such as band gap and so
-  on, it may be better to use 80% QSGW +20% LDA procedure when you
-  make band plot. 
-  After, you have rst and sigm files determined self-consistently
-  Run 
-  ```job_band gaas -np 4 -vssig=0.80 ```
-  (check ssig is defined and cited as
-      ScaledSigma={ssig} 
-   in the ctrl file).
-  This gives a result of QSGW80nosc in the TableII.
-
-###### 2. QSGW80(Nosc)+SO 
-   80%QSGW+20%LDA with SO=1 (L.S method).
-   If you like to include L.S method 
-
-```mpirun lmf gaas -np 4 -vssig=0.80 -vso=1 -vnspin=2```
-    this procedure makes self-consistency with keeping the sigm file. This may/(or may not) required.
-     If you expect large obital moment this procedure may be needed.)
-
-```job_band gaas -np 4 -vssig=0.80 -vso=1 -vnspin=2```
-
-  NOTE: nspin=2 is required for so=1
-  rst and sigm are expanded for npsin=2 (you can not run nspin=2, after rst and sigm are expanded).
-  
-###### 3. QSGW80
-  With ssig=0.80, you can run QSGW calculaiton in gwsc.
-  Then you have self-consistent results of QSGW80.
-  You can simultaneously use the setting so=2 (Lz.Sz scheme).
-  Be careful for z-direction and setting of SYMOPS (so as to keep the z-axis), for so=2.
-  If you like to get results of QSGW80+SO, you need to set so=1 after self-consistent of 
-  sigm atteined.
-
-###### 4. Example of GaAs   
-  Good example to check band gap, and SO splitting at top of valence of Gamma point for
-  ZB structure as GaAs.
-  Before run it, make sure your ctrl file include variables ssig, so,
-  nspin by   
-  >grep ssig ctrl.gaas
-  >grep so   ctrl.gaas
-  >grep nspin ctrl.gaas
-
-  to know the variable ssigm is defined and used as
-  ScaledSigma={ssig}, NSPIN={nspin}.
-  For -vso=1 work, you also need to so is defined and SO={so} is set.
-
-
-### -- ecalj/MATERIALS/ 
-At ~/ecalj/MATERIALS/, run ./job_materials.py
-  It shows a help with a list of materials.
-  It contains samples of simple materials.
-  It performs LDA calculations and generates GWinput for materials.
- This job_materials.py works as follows for given material names.
- Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
- Step 2. Generate ctrl by ctrlgenM1.py
- Make directtory such as Si/
-
-We have deguchi paper 
-https://sci-hub.tw/https://doi.org/10.7567/JJAP.55.051201
-All calculation is by the default setting in QSGW on the PMT method.
-   No empty spheres. EH=-1,EH=-2, MT radius is -3% untouching.
-   RSMH=RSMH2=R/2
-
-
-### -- ecalj/Samples
-
-We have samples of 
- 
-* Magnon: magnon 
-   now with MaxlocWannier. going to move to MLO
-* MLO: new localized basis
-  Maximally localized Wannier function and cRPA interaction
-* CuepsPP 
-Dielectric function. We will improved this 
-
-* MgO_PROCAR : PROCAR generation sample
- Run jobprocar. This gives *.eps file which shows Fat band picture.
- PROCAR (vasp format) is generated and analysed by a script BandWeight.py.
-
-* MLWF_samples
-  Wannier function generator and cRPA 
-  wannier90 method implemented in ecalj and cRPA. 
-  (a cRPA method by Juelich group).
-  See Samples_MLWF/README.
-   ~/ecalj/README_wannier.md This is going to be replaced with README_MLO.md
-
-* mass_fit_test
-  Effective mass calculation. See README. probably not maitained\dots
-
-* IIR
-  impact ionization rate
-
-In addition, we have Boltztorap, FermiSurface, LaGaO3_relax(in LDA/GGA), ReN(cubic) samples\dots
-We are going to organize samples, but not clean yet. Ask us.
-
-### ecalj/ecalj_auto
-massive calculations for given sets of POSCAR files.
-
-# Licence 
-- [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html)
-- For publications, we hope to make a citation cleary to this homepage such as;
-  
-  [foobar] ecalj package available from https://github.com/tkotani/ecalj/.
-
-
