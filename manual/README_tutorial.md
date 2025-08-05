@@ -11,18 +11,55 @@
   
   [foobar] ecalj available from https://github.com/tkotani/ecalj/.
 
-
 ## Install
 To install ecalj, look into [install](../install/install.md), as well as [install for ISSP](../install/install.md)
 
-## Overview of QSGW calculation
+## Features of ecalj package
 
-* band calculations calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously). 
+1. **All electron full-potential PMT method**
+   
+   The PMT method means; a mixed basis method of two kinds of augmented waves, that is, APW+MTO.
+   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. Our recent research shows that very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $a.u), together with APW (cutoff is $\approx 3$ Ry) works well to get reasonable convergences. We can perform atomic-position relaxiation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
+   
+   The current PMT formulation is given in
+
+   [1][KotaniKinoAkai2015, PMT formalism](../presentations/KotaniKinoAkai2015FormulationPMT.pdf)   
+   [2][KotaniKino2013, PMT applied to diatomic molecules](../presentations/KotaniKino2013PMTMolecule.pdf).
+
+   Since we have automatic settings for basis set parameters, 
+   we don't need to be bothered with the parameter settings. Just crystal structure (POSCAR) are needed for calculation. 
+   In principle, it is possible to perform reasonable calculations just from crystal structures and very minimum setting. 
+
+2. **the PMT-QSGW method** 
+   
+   The PMT-QSGW means 
+   `the Quasiparticle self-consistent GW method (QSGW) based on the PMT method`.
+   After converged, we can easily make band plots without the Wanneir interpolation. This is because an interpolation scheme of self-energy is internally built in.
+   We can handle even metals, Fermi surface as well. Since we have implemented ecalj on GPU, we can handle ~40 atoms with four GPUs.
+
+   [3][Kotani2014,Formulation of PMT-QSGW method](../presentations/Kotani2014QSGWinPMT.pdf)
+
+   [4][PMT-QSGW applied to a variety of insulators](../presentations/deguchi2016.pdf)
+
+   [5][Obata GPU implementation](https://arxiv.org/abs/2506.03477)
+  
+3. **Dielectric functions and magnetic susceptibilities**
+    We can calculate GW-related quantities such as **dielectric functions, spectrum function** of the Green's functions. 
+    **Magnetic fluctuation** 
+
+4. **The Model Hamiltonian with Wannier functions** 
+   We can generate the effective model (Maxloc Wannier and effective interaction between Wannier funcitons). 
+   This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. We are now replacing this with a new version MLO (Muffin-Tin-orbail-based localized orbital).
+
+
+## Overview of QSGW 
+
+* band calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously). 
 * A file `sigm.foobar` is the key for QSGW calculations. The file `sigm.foobar` contains the non-local potential $V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$. By adding this potential term to the usual LDA calculation performed by `lmf`, we can perform QSGW calculations.
 * Thus the problem is how to generate $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$. This is calculated from the self-energy  $\Sigma({\bf r},{\bf r}',\omega)$, which is calculated in the GW approximation. Roughly speaking, we obtain $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$ with removing the omega-dependence in $\Sigma({\bf r},{\bf r}',\omega)$.
-* Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle , and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. As a guideline, it takes about 10 hours for 20 atoms (depending on the number of electrons). See https://arxiv.org/abs/2506.03477 
+* Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle, and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. As a guideline, it takes about 10 hours for 20 atoms (depending on the number of electrons). We see the QSGW cycle in Figure 1 in https://arxiv.org/abs/2506.03477 . 
 
-* We have GPU acceleration for QSGW, https://arxiv.org/abs/2506.03477.  Thus we can handle large systems. With 4 GPU, we can compute systems with 40 atoms per cell with surfaces.
+* We have [GPU acceleration for QSGW](https://arxiv.org/abs/2506.03477).  Thus we can handle large systems. With 4 GPU, we can compute systems with 40 atoms per cell with surfaces.
 * We intend to perform calculations **without parameter settings by hands**.
  Thus I think ecalj is one of the easiest code to perform GW for users. See band database in QSGW at
 https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md
@@ -77,7 +114,7 @@ We explain things step by step.
 
 Further details are explained at AdvancedUsage.
 
-### 0. POSCAR
+## Step 0. Get POSCAR
 We first need POSCAR (crystal structure in VASP format). 
 You can find samples of POSCAR in ecalj/ecalj_auto/INPUT/testSGA/POSCARALL as
 ```bash
@@ -128,7 +165,7 @@ If you have cif and like to convert it to `POSCAR`, do
 `cif2cell foobar.cif -p vasp --vasp-cartesian --vasp-format=5`.
 
 
-### Step 1. convert POSCAR to ctrls file
+## Step 1. convert POSCAR to ctrls
 Then we convert POSCAR to ctrls by vasp2ctrl.
 ctrls is the structure file used in ecalj.
 
@@ -156,7 +193,7 @@ SITE
     - ctrl2vasp ctrl.mp-2534 can convert back to VASP file. Check this by VESTA. We can use viewvesta (convert and invoke VESTA).
     - many unused files are generated (forget them).
 
-### Step 2. Get ctrl from ctrls
+## Step 2. Get ctrl from ctrls
 ctrl is a basis input file for ecalj. We generate template of ctrl  by ctrlgenM1.py.
 Minimum explanations are embedded in the generated ctrl file.
 Number of k points (nk1 nk2 nk3), APW cutoff (pwemax), nspin, so(spin orbit switch) are only what we need to tweak usually.
@@ -196,7 +233,7 @@ Primitive lattice vector (plat) Primitive reciprocal lattice vector (qlat)
  **Hereafter, we only use `ctrl.foobar` (`ctrls.foobar` is used hereafter.). We can delete temporary files.**
 
 
-#### Install VEST 
+### Install VEST 
 It is convenient to see crystal structures with VESTA.
 (I installed VESTA-gtk3.tar.bz2 (ver. 3.5.8, built on Aug 11 2022, 23.8MB) on ubuntu 24)
 At ecalj/StructureTool/, we have 'viewvesta' command. Try 
@@ -209,7 +246,7 @@ to see the structure in VESTA. At /StructureTool, we have converters,
 
 
 
-### Step 3. LDA calculation
+## Step 3. LDA calculation
 1. Run lmfa at first. It is for spherical atomic electron densities, contained in the crystals. lmfa ends instantaneously.
    ```bash
    lmfa ctrl.mp-2534
@@ -245,7 +282,7 @@ All calculation is by the default setting in QSGW on the PMT method.
 > No empty spheres. EH=-1,EH=-2, MT radius is -3% untouching.
 > RSMH=RSMH2=R/2
 
-### Step 4. Create k-path and BZ for band plot
+## Step 4. Create k-path and BZ for band plot
 After the calculation converges, it might be necessary to make a band plot with `job_band` command explain later on. The normality of the calculation of bands can be confirmed by the band plot (for magnetic systems, check the total magnetic moment and the magnetic moment for each site).
 
 Before `job_band`, run ```getsyml gaas```. Install any missing packages with pip. It is on spglib by Togo and seekpath. After finished, view BZ.html. It shows the k-path in the BZ ashow show below for ba2pdo2cl2. 
@@ -261,7 +298,7 @@ getsyml mp-2534
 
 
 
-### Step 5. band plot
+## Step 5. band plot
 （this is a case for ba2pdo2cl2 ）
 ```
 >job_band ctrl.ba2pdo2cl2 -np 8
@@ -282,7 +319,7 @@ Here we are talking about band energies.
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/8169cff0-78e6-ea50-0084-66a4cefc4cda.png)
 
 
-#### job_tdos, job_fermisurface, job_pdos
+### job_tdos, job_fermisurface, job_pdos
 `job_pdos` calculates PDOS, `job_tdos` calculates total DOS, and `job_fermisurface` draws the Fermi surface with Xcrysden.
 `job_fermisurface` can be used to draw the shape of the CBM bottom as ellipsoid of Si.
 xxx 
@@ -302,7 +339,7 @@ We use gnuplot for band plot bandplot.isp1.glt.
 
 In the similar manner, we can run job_pdos, job_tdos, job_fermisurface. -->
 
-### Step 6. QSGW calculation
+## Step 6. QSGW calculation
 We now run QSGW calculations. qSGW is compuationally very expensive. So we recommend you to run smaller systems at first.
 
 For QSGW calculations, we need one additional input file `GWinput`, whose template is generated by mkGWinput [GWinput](./gwinput.md) as
@@ -316,7 +353,7 @@ in order to reduce computational time (1/2 or 2/3 of ctrl, for example)
 If 6x6x6 for Si, it is reasoble. Except k points, not need to modify so much (ask us).
 `GWinput` is explained [here](./gwinput.md). Input system is different from ctrl.
 
-#### flow of QSGW calculation with the script gwsc
+### flow of QSGW calculation with the script gwsc
 We run the QSGW calculations with gwsc. For semiconductors, several QSGW iterations are fine, close enough to final results.
 QSGW is to obtain band structures (or one-body Hamiltonian), the total energy is not yet.
 
@@ -413,8 +450,21 @@ gwsc -np 32 5 ba2pdo2cl2 -vssig=0.8
 * Example of QSGW for KTaO3 (perovskite,mp-3614）
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/2e785d2a-9418-acc3-93f9-788daa2bd19b.png)
 
+## lmchk 
+  ```
+  lmchk mp-2534
+  ```
+  is to check the crystal symmetry. In addition determine MT radius. and Check the ovarlap of MTs. Defaults setting is with -3% overlap.(no overlap).
 
-#### How to start over calcualtions
+  - symmetry 
+  - MT overlap
+If you have less symmetry rather than than the symmetry of lattice for magnetic systems,
+you have to set crystal symmetry by hand.
+This can be done by adding space group symmetry generator to SYMGRP (instead of find).
+We need to pay attention for this point in the case of SOC.
+(we have to explain how to read space group and so on.)
+
+## How to start over calcualtions
 Remove mix* rst* (mix* is mixing files)
 If MT changes, start over from lmfa (remove atm* files)
 
@@ -422,7 +472,7 @@ If MT changes, start over from lmfa (remove atm* files)
 - If you have 3d spagetti bands at Ef, need caution.
 
 
-## A mini database for tests.
+# A mini database for tests.
 At ecalj/MATERIALS/, you can run ./jobmaterials.py. It shows a help with a list of materials.
 It contains samples of simple materials.It performs LDA calculations and generates GWinput for materials.
 Run as follows. Then we perform LDA calculations where crystal structures are already contained in a mini database.
@@ -458,19 +508,6 @@ be generated by
   results band plots in the gnuplot.
 
 
-### lmchk 
-  ```
-  lmchk mp-2534
-  ```
-  is to check the crystal symmetry. In addition determine MT radius. and Check the ovarlap of MTs. Defaults setting is with -3% overlap.(no overlap).
-
-  - symmetry 
-  - MT overlap
-If you have less symmetry rather than than the symmetry of lattice for magnetic systems,
-you have to set crystal symmetry by hand.
-This can be done by adding space group symmetry generator to SYMGRP (instead of find).
-We need to pay attention for this point in the case of SOC.
-(we have to explain how to read space group and so on.)
 
 # UsageDetailed
 

@@ -20,7 +20,7 @@ hero:
       link: https://github.com/tkotani/ecalj
     - theme: brand
       text: Download ecaljdoc (this docucment)
-      link: https://github.com/msobt/ecaljdoc
+      link: https://github.com/ecalj/ecaljdoc
 
 features:
   - title: Quasiparticle self-consistent 𝘎𝘞 methods (QSGW)
