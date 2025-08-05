@@ -4,7 +4,7 @@ We need ctrl file ctrl.foobar for inputs.
 
 
 ## lmfa: spherical atom calculations
-Example:
+Example:` 
 ```
 lmfa si 
 ```
@@ -12,9 +12,10 @@ It finishes instantaneously.
 ```
 lmfa si |grep conf
 ```
-shows electronic configurations.
-It gives electron density of spherical atoms.
-From which we construct initial electronic density for lmf.
+shows electronic configurations. It gives electron densities of spherical atoms
+contained in the primitive cell specified by .
+With the superposition of the densities From which, we construct initial electronic density for lmf.
+In addition,`lmfa` generates  
 
 ## lmf: solving the Kohn-Sham equation
 

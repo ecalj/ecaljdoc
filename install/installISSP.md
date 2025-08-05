@@ -23,6 +23,8 @@ fi
 を挿入。
 > [!TIP]
 > Script for loading the required `modules` and starting MPS.
+> OneAPI_MPI is slightly faster but less stable.
+> We use intel MKL, which can be used in nvfortran and gfortran.
 
 
 ### 4.ecaljのインストールとテスト
@@ -74,7 +76,7 @@ Elapsed time for testecalj.py: 409 seconds
 tail -f ecalj/SRC/TestInstall/summary.txt
 ```
 を見ていれば、順にテストが進んでいくのが確認できます。最後にPASSED! srvo3_crpa/Screening_W-v_crpa.h
-と表示され、FAILとかエラーがなければOKです。
+と表示され、FAILとかエラーがなければOKです。nvfortranでもテストはCPU実行です。
 
 ### 4.GPU計算テスト
 ecalj/Samples/Samples_ISSP/inas2gasb2_kugui
@@ -90,7 +92,7 @@ OK! ==== All calclation finished for  gwsc ====
 で終了していればOKです。
 
 ### 5. 使い方メモ
-[使い方メモ](./UsageISSP.md)
+[使い方メモ](../manual/UsageISSP.md)
 
 ## ohtakaでのインストール
 ほぼ同様です。`~/.bashrc`の最後に
@@ -117,4 +119,4 @@ sbatch job_ohtaka.sh
 
 ## ISSPシステムでのカスタマイズについて
 ecaljソースコードにおいて、SRC/exec/MachineDependence.pyにマシン依存性を書いています。
-kuguiではmpiがsrunのためgwscなどではこれが必要です。
+kuguiではmpirunのかわりにsrunがつかわれるなどのためgwscなどを走らせるときにこれが必要です。

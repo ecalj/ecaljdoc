@@ -1,9 +1,10 @@
-# ecal_auto
+# ecalj/ecal_auto
 
-This is for automatic calculations for many cif files.
+This is for automatic calculations for many POSCAR files.
 `ecalj_atuo` was used for generating [ecaljdatabase](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos)
 
---- followings are still under construction ---
+
+xxxxx followings are still under construction xxxxx
 
 ## dependency
 We need 

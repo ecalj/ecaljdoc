@@ -38,6 +38,12 @@ export default withMermaid({
 
     sidebar: [
       {
+        text: 'Main Documents',
+        items: [
+          { text: 'Tutorial', link: '/manual/README_tutorial' },
+        ]
+      },
+      {
         text: 'Install',
         items: [
           { text: 'Install', link: '/install/install' },
@@ -45,19 +51,13 @@ export default withMermaid({
         ]
       },
       {
-        text: 'Get Started',
-        items: [
-          { text: 'Tutorial', link: '/manual/README_tutorial' },
-        ]
-      },
-      {
         text: 'Manual',
         items: [
-          { text: 'DFT:  lmf', link: '/manual/lmf' },
-          { text: 'QSGW: gwsc', link: '/manual/gwsc' },
-          { text: 'Usage at ISSP@u-tokyo',link: '/manual/UsageISSP.md' },
+          { text: 'DFT calculaiton  :  lmf', link: '/manual/lmf' },
+          { text: 'QSGW calculation : gwsc', link: '/manual/gwsc' },
+          { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
           // { text: 'Density of states', link: '/manual/dos' },
-          // { text: 'Band dispersion', link: '/manual/band' },
+          // { text: 'Band dispersion plot', link: '/manual/band' },
           // { text: 'Spin-orbit interaction', link: '/manual/soi' },
           // { text: 'Spin response function', link: '/manual/chipm' },
           { text: 'Dielecric function', link: '/manual/optical' },
@@ -70,9 +70,9 @@ export default withMermaid({
       {
         text: 'Input files',
         items: [
-          { text: 'ctrl file', link: '/manual/lmf_input' },
-          { text: 'syml file', link: '/manual/syml' },
+          { text: 'ctrl.foobar', link: '/manual/lmf_input' },
           { text: 'GWinput', link: '/manual/gwinput' },
+          { text: 'syml.foobar', link: '/manual/syml' }
         ]
       },
       {
