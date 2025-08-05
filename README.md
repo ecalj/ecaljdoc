@@ -2,8 +2,8 @@
 
 ## What is ecaljdoc?
 ecaljdoc is a suit of documents of the [ecalj package](https://github.com/tkotani/ecalj/). Since we use vitepress for ecaljdoc, we have 
-* Read  ecaljdoc  ( https://ecalj.github.io/ecaljdoc)
-* Souce ecaljdoc (https://github.com/msobt/ecaljdoc)
+* Read  ecaljdoc  (https://ecalj.github.io/ecaljdoc)
+* Souce ecaljdoc  (https://github.com/ecalj/ecaljdoc)
 
 If you can join to edit ecaljdoc, ask to msobt at https://github.com/msobt.
 
