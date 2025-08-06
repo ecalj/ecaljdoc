@@ -86,14 +86,14 @@ MT内の積基底とMT内波動関数基底の行列要素(`ppb`変数)をメモ
 - **type**: float
 - **default** : 3.0
 
-### `High resolution energy mesh near Ef for metal` 
+## `High resolution energy mesh near Ef for metal` 
 For metal, it may be better to set
 ```
 HistBin_dw    1d-5 ! 1d-5 is fine mesh (good for metal?) !(a.u.) BinWidth along real axis at omega=0.
 HistBin_ratio 1.03 ! 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=ratio-1.0 and dw=b*a
 ```
 
-### `Smaller lcutmx to reduce computatinal time`
+## `Smaller lcutmx to reduce computatinal time`
   To reduce the computational time, we reduce number of MPB (mixed product basis).
   One is lcutoff of Product Basis (PB) within MT. Use lcutmx=2 for oxygen or something (s,p block atoms). 
   Thus it  is like
@@ -104,7 +104,8 @@ HistBin_ratio 1.03 ! 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=r
 in the section of GWinput. 
 * NOTE: we know that lcutmx =6 is requied for 4f systems. 
 
-### `Smaller IPW related part to reduce computational time`
+
+## `Smaller IPW related part to reduce computational time`
 To reduce compuational time, we may reduce MPB coming from IPS, reduce the size of IPW for psi, reduce emax_sigm and pwemax as follows.
    + QpGcut_cou is fort the Interstitial plane wave (IPW) for MPB. 
    + QpGcut_psi is for expantion of eigenfunctions.
