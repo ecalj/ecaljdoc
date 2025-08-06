@@ -52,7 +52,9 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 * Band calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously). 
 * A file `sigm.foobar` is the key for QSGW calculations. The file `sigm.foobar` contains the non-local potential $\Delta V_{\rm xc}=V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$. By adding this potential term to the usual LDA calculation performed by `lmf`, we can perform QSGW calculations. See figure below.
 * Thus the problem is how to generate $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$. This is calculated from the self-energy  $\Sigma({\bf r},{\bf r}',\omega)$, which is calculated in the GW approximation. Roughly speaking, we obtain $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$ with removing the omega-dependence in $\Sigma({\bf r},{\bf r}',\omega)$.
-* Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle, and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. As a guideline, it takes about 10 hours for 20 atoms (depending on the number of electrons). 
+* Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle, and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. 
+As a rule of thumb, it takes about 10 hours for 20 atoms 
+(depending on the number of electrons. For systems more than 10 atoms per cell or so, we recommend to use GPUs). 
 * Here is the QSGW cycle shown in Figure 1 in https://arxiv.org/abs/2506.03477 . MPB meand the mixed product basis to expand products of eigenfunctions. 
 ![alt text](image-4.png) 
 * We have [GPU acceleration for QSGW](https://arxiv.org/abs/2506.03477).  Thus we can handle large systems. With 4 GPU, we can compute systems with 40 atoms per cell with surfaces. (As for lmf part, GPUs are not efficiently used yet.)
@@ -61,6 +63,18 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 
 ![alt text](image-2.png) This is taken from  [4][D.Deguchi](../presentations/deguchi2016.pdf)
 
+In comparison with LDA, we see differences in QSGW;
+* Band gap. QSGW tends to give slightly larger than experiments. It looks systematic as in the Figure above.
+* Band width. Usually, sp bands are enlarged  (except very low density case such as Na).
+    This is consistent with the case for homogeneous electron gas.
+    Localized bands like 3d electrons get narrowed.
+* Relative position of bands. e.g. O(2p) v.s. Ni(3d).
+More localized bands tends to get more deeper.
+Exchange splitting between up and down get larger (like LDA+U) .
+In cases such as NiO, magnetic moment become larger; closer to experimental values.
+* Hybridization of 3d bands with others. QSGW tends to make eigenfunctions localized.
+
+However, reality is complexed, and not so simple in cases.
 
 <!-- 
 ## 基礎知識check 
