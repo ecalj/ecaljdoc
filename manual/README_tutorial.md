@@ -2,7 +2,8 @@
 **This is a MainDocument of ecaljdoc. All files in ecaljdoc are linked from this file.**
 
 * Here we give [GetStarted](#getstarted) and followed by install and QSGW overview.
-* [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are here.
+* We have [UsageDetails](./UsageDetailed.md) in another file.
+* [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are shown here.
 
 ## Licence 
  [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html).  For publications, we hope to make a citation as;
