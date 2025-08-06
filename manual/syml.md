@@ -12,7 +12,7 @@ seekpath at https://github.com/giovannipizzi/seekpath/
 and spglib at https://anaconda.org/conda-forge/spglib
 
 ### Usage: 
-We have softlink getsyml.py as getsyml during InstallAll.py.
+We make softlink getsyml to ecalj/SRC/GetSyml/getsyml.py during the install by InstallAll.py.
 Run 
 ```
 getsyml nio
@@ -24,8 +24,7 @@ See [BZsamples](https://ecalj.sakura.ne.jp/BZgetsyml/) here.
 The symmetry lines are written into the `syml.*` file for ecalj.
 The number of divisions for `syml` is give by a crude algorism, so edit it if necessary.
 
-
-### Needed citations
+### Needed citations for getsyml
   In addition to usual ecalj acknowledgement, following citations are required when you make a publication.
 
    1.Y. Hinuma, G. Pizzi, Y. Kumagai, F. Oba, I. Tanaka, 

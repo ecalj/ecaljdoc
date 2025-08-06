@@ -1,15 +1,15 @@
 # ecalj Install
 To install ecalj package, we have to install softwares and python modules, which are used in ecalj.
-In addition, we need to make some softlinks. Most of all are almost automatic. Follow steps below. 
+In addition, we make some softlinks for convenience. Most of all are almost automatic. Follow steps below. 
 
 
 ## 1. Some software tools including fortran compilars
 Main part of ecalj is written in fortran90. Source codes are located at 
 ```ecalj/SRC/main/*.f90``` and at ```ecalj/SRC/subroutines/*.f90```.
-GPU implementation with OpenACC/CuBlas is embedded in the source codes.
-In addition, python are used. Bash scripts remain (but gradually replacing bash with python).
+GPU implementation with OpenACC/CuBlas is embedded in the source codes switched by cpp.
+In addition, python are used. But we still use bash scripts in cases (but gradually replacing bash with python).
 
-We may need to install following tools and libraries.We need
+We may need to install following tools and libraries.
 * git (To download the ecalj. It is convenient to upgrade your code), gitk(GUI) is convenient
 * Fortran compiler (we can choose gfortran, ifort, or nvfortran)
 * Math library (blas, lapack, fft). We can usually use intel-mkl. 
@@ -36,33 +36,33 @@ We can use apt to install them for ubuntu. Similar in other systems. Recently, w
 > We need python >3.9. Usually we will prepare the latest Python in your ./local.
 
 We need to install following modules (see step4 with pip.). Usually we can use venv, anaconda  or something. 
+
 Here we show a case using mise.
 > The mise is a package management software (We can use anaconda instead). Or you can install tools at the following step 4.
 > I think you can install all python tootls just by venv, which is a default in python.
 
 1. Add the following settings to `~/.bashrc` for the automatic installation and activation of `mise`:
-```bash ~/.bashrc
-export PATH="$HOME/.local/bin:$PATH"
-type mise > /dev/null 2>&1 || curl https://mise.run | sh
-eval "$(~/.local/bin/mise activate bash)"
-```
+    ```bash ~/.bashrc
+    export PATH="$HOME/.local/bin:$PATH"
+    type mise > /dev/null 2>&1 || curl https://mise.run | sh
+    eval "$(~/.local/bin/mise activate bash)"
+    ```
 
 2. Update `~/.bashrc` to install `mise`:
-```bash
-source ~/.bashrc
-```
+    ```bash
+    source ~/.bashrc
+    ```
 
 3. Install `python` using `mise`:
-```bash
-mise use python@latest -g
-```
+    ```bash
+    mise use python@latest -g
+    ```
 
 4. Install the required `python` libraries:
-```bash
-pip install numpy pandas seekpath spglib pymatgen mp-api scipy plotly gnuplot cif2cell
-```
-For the latest Ubuntu or so, you are asked to install these tools in your `.local/` directory after generating your environment with venv. 
-(ask copilot, chatGPT or something).
+    ```bash
+    pip install numpy pandas seekpath spglib pymatgen mp-api scipy plotly gnuplot cif2cell
+    ```
+For latest OS such as linux, we are asked to install these in your `.local/` directory after generating your environment with venv. (Ask chatGPT or something).
 
 
 ## 3. Install and InstallTest
