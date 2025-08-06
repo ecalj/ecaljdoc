@@ -45,13 +45,23 @@ We have some kinds of options for electron density plot, boltztrap and so on.
 
 ### Output files
 * rst.`target`
-  restart file : it mainly contains electron density.
-
+  restart file, containing density and related information.  
+  Together with the ctrl, atmpnu*, sigm*, and rst*, we can start lmf calculation.
+  (dmat* is used for LDA+U) calculation.
+  
 * save.`target` 
  This contains very minimum history for you to execute lmf, lmf, lmchk, and total energies for each iteration stepsof lmf.
 
-* mix.`target`
+* __mix.`target`
  mixing file for electron density. When you stop iteration at the middle, you may need to delete this.
+ mixm  retains prior iterations of sets
+        of input and output moments.  Used by the Anderson or
+        Broyden mixing scheme to accelerate convergence towards
+        self-consistency.  Usually you should delete these when
+        starting a new calculation (such as changing the lattice
+        constant) so it doesn't get used in subsequent runs.  
+
+
 
 ** Main Source** : [`SRC/main/lmf.f90`](https://github.com/tkotani/ecalj)
 

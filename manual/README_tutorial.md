@@ -1,15 +1,12 @@
-# ecalj main documents
-**This is a main document of ecaljdoc. All files in ecaljdoc are linked from this file.**
-
-* [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are here.
+# ecalj MainDocument
+**This is a MainDocument of ecaljdoc. All files in ecaljdoc are linked from this file.**
 
 * Here we give [GetStarted](#getstarted) and  [UsageDetailed](#usagedetailed), followed by install and Overview section.
+* [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are here.
 
 ## Licence 
-- [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html)
-- For publications, we hope to make a citation cleary to this homepage such as;
-  
-  [foobar] ecalj available from https://github.com/tkotani/ecalj/.
+ [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html).  For publications, we hope to make a citation as;
+    [1] ecalj package available from https://github.com/tkotani/ecalj/.
 
 ## Install
 To install ecalj, look into [install](../install/install.md), as well as [install for ISSP](../install/install.md)
@@ -19,18 +16,18 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 1. **All electron full-potential PMT method**
    
    The PMT method means; a mixed basis method of two kinds of augmented waves, that is, APW+MTO.
-   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. Our recent research shows that very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $a.u), together with APW (cutoff is $\approx 3$ Ry) works well to get reasonable convergences. We can perform atomic-position relaxiation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
+   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. Our recent research shows that very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $ a.u), together with APW (cutoff is $\approx 3$ Ry) works well to get reasonable convergences. We can perform atomic-position relaxiation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
    
    The current PMT formulation is given in
 
    [1][KotaniKinoAkai2015, PMT formalism](../presentations/KotaniKinoAkai2015FormulationPMT.pdf)   
    [2][KotaniKino2013, PMT applied to diatomic molecules](../presentations/KotaniKino2013PMTMolecule.pdf).
 
-   Since we have automatic settings for basis set parameters, 
-   we don't need to be bothered with the parameter settings. Just crystal structure (POSCAR) are needed for calculation. 
-   In principle, it is possible to perform reasonable calculations just from crystal structures and very minimum setting. 
+   Since we have automatic settings for basis-set parameters,
+   we don't need to be bothered with the parameter settings. Just crystal structures (POSCAR) are needed for calculations. 
+   <!-- In principle, it is possible to perform reasonable calculations just from crystal structures and very minimum setting.  -->
 
-2. **the PMT-QSGW method** 
+2. **PMT-QSGW method** 
    
    The PMT-QSGW means 
    `the Quasiparticle self-consistent GW method (QSGW) based on the PMT method`.
@@ -42,28 +39,25 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
    [4][PMT-QSGW applied to a variety of insulators](../presentations/deguchi2016.pdf)
 
    [5][Obata GPU implementation](https://arxiv.org/abs/2506.03477)
-  
+
 3. **Dielectric functions and magnetic susceptibilities**
-    We can calculate GW-related quantities such as **dielectric functions, spectrum function** of the Green's functions. 
-    **Magnetic fluctuation** 
+    We can calculate GW-related quantities such as dielectric functions, spectrum function of the Green's functions, 
+    Magnetic fluctuation, and so on. 
 
 4. **The Model Hamiltonian with Wannier functions** 
    We can generate the effective model (Maxloc Wannier and effective interaction between Wannier funcitons). 
    This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. We are now replacing this with a new version MLO (Muffin-Tin-orbail-based localized orbital).
 
-
 ## Overview of QSGW 
 
-* band calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously). 
+* Band calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously). 
 * A file `sigm.foobar` is the key for QSGW calculations. The file `sigm.foobar` contains the non-local potential $V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$. By adding this potential term to the usual LDA calculation performed by `lmf`, we can perform QSGW calculations.
 * Thus the problem is how to generate $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$. This is calculated from the self-energy  $\Sigma({\bf r},{\bf r}',\omega)$, which is calculated in the GW approximation. Roughly speaking, we obtain $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$ with removing the omega-dependence in $\Sigma({\bf r},{\bf r}',\omega)$.
 * Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle, and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. As a guideline, it takes about 10 hours for 20 atoms (depending on the number of electrons). We see the QSGW cycle in Figure 1 in https://arxiv.org/abs/2506.03477 . 
 
-* We have [GPU acceleration for QSGW](https://arxiv.org/abs/2506.03477).  Thus we can handle large systems. With 4 GPU, we can compute systems with 40 atoms per cell with surfaces.
-* We intend to perform calculations **without parameter settings by hands**.
- Thus I think ecalj is one of the easiest code to perform GW for users. See band database in QSGW at
-https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md
-(this is supplement of https://arxiv.org/abs/2507.19189).  This is away from complete one, but showing the abity of ecalj.
+* We have [GPU acceleration for QSGW](https://arxiv.org/abs/2506.03477).  Thus we can handle large systems. With 4 GPU, we can compute systems with 40 atoms per cell with surfaces. (As for lmf part, GPUs are not efficiently used yet.)
+* As noted, we can perform QSGW virtually without parameter settings by hands. Thus I think ecalj is one of the easiest code to perform GW for users. See band database in QSGW at https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md
+(this is a supplement of https://arxiv.org/abs/2507.19189).  This is away from complete one, but showing the ability of ecalj.
 
 
 <!-- 
@@ -108,11 +102,10 @@ MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余
 
 
 # GetStarted
-We explain DFT/QSGW calculations with ecalj. Then we explain how to make band plots.
-For simplicity, we treat paramagetic cases (nsp=1), no 4f, no SOC.
+Here we explain DFT/QSGW calculations with ecalj. Then we explain how to make band plots. For simplicity, we treat paramagetic cases (nsp=1), no 4f, no SOC.
 We explain things step by step.
 
-Further details are explained at AdvancedUsage.
+Further details are explained at [UsageDetailed](#usagedetailed).
 
 ## Step 0. Get POSCAR
 We first need POSCAR (crystal structure in VASP format). 
@@ -142,7 +135,7 @@ direct
    0.2500000000000000    0.2500000000000000    0.2500000000000000 As
 
 ```
-This is another POSCAR for ba2pdo2cl2:
+This is another POSCAR for ba2pdo2cl2 (QSGW results are shown below):
 ```
 POSCAR_ba2pdo2cl2
 1.0
@@ -207,11 +200,22 @@ We only need ctrl file in the following calculations (while some tmp* kinds of f
 
 ```bash
 ctrlgenM1.py mp-2534
+```
+If no problem, you see
+```
+...
+=== End of ctrlgenM1.py. OK! A template of ctrl file, ctrlgenM1.ctrl.mp-2534, is generated.
+```
+Here `ctrlgenM1.py` internally calls `lmf` and `lmchk`, which generate irrelevant files which are automatically deleted.
+'SiteInfo.lmchk and PlatQlat.chk' are explained later on (these are easily reproduced by ctrl).
+
+Then copy as
+```
 cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
 ```
+and edit `ctrl.foobar` if necessary. 
 
-
-Edit `ctrl.foobar` if necessary. Explanations are embedded in ctrl.foobar (please let me know wrong descriptions). Possible points to rewrite in ctrl.foobar:
+How to edit? Explanations are embedded in ctrl.foobar (please let me know wrong descriptions). Possible points to rewrite in ctrl.foobar:
 1. Number of k points (nk1,nk2,nk3).
 2. nsp=2 if magnetic
 3. SpinOrbitCoupling: so=0 (none), so=1 (LdotS), 2 (LzSz). nsp=2 is required for so=1,2. so=1 does not yet support QSGW. SOC axis can also be freely selected, but currently (0,0,1) default and (1,1,0) are supported (m_augmbl.f90). If you want to set SO=1 in QSGW, currently, run QSGW calculation with so=0 or so=2 to obtain ssig file, then set so=1
@@ -230,7 +234,7 @@ Primitive lattice vector (plat) Primitive reciprocal lattice vector (qlat)
 
 [Here we explain details of ctrl file](./lmf_input.md).
 
- **Hereafter, we only use `ctrl.foobar` (`ctrls.foobar` is used hereafter.). We can delete temporary files.**
+ **Hereafter, we only use `ctrl.foobar` (`ctrls.foobar` is used hereafter.). We can delete other files.**
 
 
 ### Install VEST 
@@ -512,7 +516,9 @@ be generated by
 # UsageDetailed
 
 ## console output
-We can see the flow of calculation. We can check band energies, Fermi energies, whether sigm, rst are read.
+Console output is now mainly for debug purpose. 
+But we still need to read some of output data from the console output (we are trying to modify this).
+From console output, we can check convergece behevior, band energies, Fermi energies, whether sigm, rst are correctly read in or not.
 
 ## save.foobar
 * Save file record starting history of lmf,lmchk,lmfa. In addition, it give a line of total energies
@@ -629,8 +635,14 @@ The sample (run job file) generates eps file showing fat band of O2 components.
 
 ## LDA+U
 We have samples 
-~/ecalj/Samples/GdNldau
-~/ecalj/Samples/ReNcub 
+* https://github.com/tkotani/ecalj/tree/master/Samples/GdNldau
+
+* ~/ecalj/Samples/ReNcub 
+
+*  IDU=, UH=, JH= specify parameters for LDA+U.  IDU=#,#,#,... specifies which l-channels are to have U and the type of LDA+U implementation.
+          0 in a particular l-channel means no U is to be applied, 1 or 2 are for particular forms of LDA+U.  For example,
+             IDU= 0 0 0 1  UH= 0 0 0 -0.28    JH=0 0 0 0
+
 
 ## BoltTrap 
 --boltztrap option is to generate files required for boltztrap

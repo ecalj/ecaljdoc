@@ -4,7 +4,7 @@ import MarkdownItMathjax3 from 'markdown-it-mathjax3';
 
 export default withMermaid({
   base : '/ecaljdoc/',
-  title: "ecaljdoc",
+  title: "ecaljdoc: ",
   vite: { publicDir: 'public' },
   description: "document of ecalj",
   cleanUrls: true,
@@ -38,9 +38,8 @@ export default withMermaid({
 
     sidebar: [
       {
-        text: 'Main',
         items: [
-          { text: 'RootDocument', link: '/manual/README_tutorial' },
+          { text: 'MainDocument', link: '/manual/README_tutorial' },
         ]
       },
       {
@@ -53,7 +52,7 @@ export default withMermaid({
       {
         text: 'Manual',
         items: [
-          { text: 'DFT calculaiton  :  lmf', link: '/manual/lmf' },
+          { text: 'DFT  calculation : lmf', link: '/manual/lmf' },
           { text: 'QSGW calculation : gwsc', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
           // { text: 'Density of states', link: '/manual/dos' },

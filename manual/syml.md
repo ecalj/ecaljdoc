@@ -43,3 +43,21 @@ The number of divisions for `syml` is give by a crude algorism, so edit it if ne
    b.Numerical accuracy of calculations. 
      np.set_printoptions(precision=16) is not meaningful since we read output of lmchk
 
+ symmetry-line file : input for plotting energy bands along
+    selected symmetry lines or for generating constant-energy
+    contours such as a Fermi surface.  This file (whose name is
+    specified as a modifier with the command-line argument
+    --band, described in the "Command-line switches" section) can
+    take on of several forms.
+
+### format of syml
+    generate bands along specific symmetry lines.
+    The following sample input illustrates input for lines
+    X->Gamma and Gamma->M for the simple cubic lattice.
+       21  .5 0  0    0  0  0         X     Gamma
+       21  0  0  0    .5 .5 0         Gamma  M
+       0   0  0  0    0  0  0
+    The first number designates how many points along each line.
+    The next six label the starting and ending q-points,
+    respectively.  Note that the last line must contain zeros.
+
