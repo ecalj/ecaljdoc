@@ -139,7 +139,7 @@ cp ../ecalj_auto/INPUT/testSGA/POSCARALL/POSCAR.mp-8062 test2
 ```
 
 For example, POSCAR of mp-2534 GaAs is given as:
-```POSCAR
+```
 Ga1 As1
 1.0
    3.5212530000000002    0.0000000000000000    2.0329969999999999
