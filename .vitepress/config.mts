@@ -96,12 +96,6 @@ export default withMermaid({
           { text: 'hsfp0_sc', link: '/implementation/hsfp0' },
         ]
       },
-      {
-        text: 'Unchecked',
-        items: [
-          { text: 'Unchecked Files', link: '/list' },
-        ]
-      },
     ],
 
     socialLinks: [
