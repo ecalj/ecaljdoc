@@ -27,9 +27,8 @@ The ideal choice of sphere radii best approximates a potential that is spherical
 * When we treat molecules (especially dimers), we have to use very small size of MT radius. T.Kotani checked PMT works well even for such systems. However, we need examination a little more.
 
 
-## lmf: solving the Kohn-Sham equation
-
-- **Usage**: `mpirun lmf TARGET [options] > llmf`
+## lmf: Solve one-body problem.
+This is for band calculation in LDA/GGA and LDA+U. In addition, we can add the potential term for QSGW via `sigm.foobar`. 
 
 Example: 
 ```
@@ -40,8 +39,8 @@ This is a case we have ctrl.si.
 ### options
 * quit option at some point. `--quit=band`, `--quit=ldau`... We need to do 'grep cmdopt SRC/*/*.f90|grep quit' to know details.
 * `--tdos`
-total dos calculation.
-* `-vfoobar=xxx` : This overide const foobar=yyy defined in ctrl, and used as {foobar} in ctrl file. This is shown in save file explained below.
+total dos calculation. But we usually use `job_tdos'
+* `-vfoobar=xxx` : This overides `%const foobar=yyy` defined in ctrl (foobar is used as {foobar} in ctrl file). This is shown in save file explained below.
 
 We have some kinds of options for electron density plot, boltztrap and so on.
 (not yet described).
@@ -204,7 +203,17 @@ The following tokens are input for each site. See examples.
    (for jobgw=1, lmf automatically set PWMODE=11)
  HAM_PWEMAX        opt    r8       1,  1          default= 0
     Include APWs with energy E < PWEMAX (Ry) ctrlgenM1.py set pwemax=3
+```    
 
+## READP option
+Recently, we found that READP=T works well to stabilize computations.
+With this setting, we fix the logarithmic derivative of radial functions for each $l$ as the value   contained in `atmpnu*` given by the spherical-atom calculation `lmfa`.  
+This is a replacement of the traditional procedure that radial functions for each $l$ are calculated at the center of gravity of PDOS. We think this makes things stabilized.
+`ctrlgenM1.py` automatically set `HAM_READP=T`.
+
+For the logarithmic derivative with the electron density, we solve radial Schrödinger equation to obtain radial functions $\phi_l$ and $\dot{\phi}_l$ for every step of iteration (then no `sigm` contribution included).
+
+```    
  . HAM_READP         opt    lg       1,  1          default= F !but =T in ctrlgenM1.py
     Read Pnu and PZ (b.c. of radial func) from atmpnu.*(by lmfa) when we have no rst file
  . HAM_V0FIX         opt    lg       1,  1          default= F
@@ -214,6 +223,7 @@ The following tokens are input for each site. See examples.
  . HAM_EWALD         opt    lg       1,  1          default= F
     Make strux by Ewald summation
 ```    
+
   <!-- HAM_PMIN          opt    r8v     10,  1
     Global minimum in fractional part of P-functions.
    Enter values for l=0..:

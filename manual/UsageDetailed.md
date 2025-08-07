@@ -288,8 +288,9 @@ Here is the setting for RareEarth rocksalt nitrides ReN such as ErN.
     * LMXA=6 to expand augmented waves is needed.
     * Make sure READP=T.
 
-With these settings, we have series of calculations finished for 4f ReN. 
-So input files are available. Ask us.
+With these settings, we can perform series of calculations finished for 4f ReN. 
+Input files are available from [here](../data/RENctrlGWinput.tar.gz). Ask us when you like to use them.
+
 
 ## QPU and QPD files
 This contains the contents of self-energy
