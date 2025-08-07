@@ -4,8 +4,7 @@ layout: home
 
 hero:
   name: "ecaljdoc"
-  tagline: This is for ecalj, a first-principles electronic-structure package for QSGW available from https://github.com/tkotani/ecalj/
-  (source of this document is at https://github.com/ecalj/ecaljdoc/)
+  tagline: This is for ecalj, a first-principles electronic-structure package for QSGW available from https://github.com/tkotani/ecalj/ (this doc is at https://github.com/ecalj/ecaljdoc/)
   actions:
     - theme: alt
       text: Tutorial
