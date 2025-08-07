@@ -17,7 +17,14 @@ With the superposition of the densities From which, we construct initial electro
 In addition,`lmfa` generates  
 
 ## lmchk: Check crystal symmetry.
-lmchk gives useful information of space group symmetry recognized by lmf. In addition, it determines MT radius.
+lmchk gives useful information of space group symmetry recognized by lmf. In addition, it determines MT radius.The space-group operations are explained at [SYMGRP](#symgrp).
+
+### MT radius determined by lmchk
+The ideal choice of sphere radii best approximates a potential that is spherical within the MT spheres and flat outside. Program lmchk has implemented one algorithm that makes a reasonable initial choice for MT radii. The algorithm works by computing the (electrostatic) potential obtained from overlapping free-atom densities along all connecting vectors between a given site and its relatively near neighbors. The MT radius is taken as the first potential maximum along any ray. This choice is a pretty reasonable estimate for the potential being approximately spherical inside. Also, note that for a completely symmetric bond, the potential maximum will fall exactly midway between the bond, so for that case the two sphere radii will exactly touch and have equal potentials. To tell lmchk to find these radii, invoke lmchk as
+`lmchk --getwsr`. This is performed in `ctrlgenM1.py`. 
+* In addition, `ctrlgenM1.py` do give limitaiton of maximum radius for alkali atoms. This is to avoid linear-dependency problem between APWs and MTOs.
+
+* When we treat molecules (especially dimers), we have to use very small size of MT radius. T.Kotani checked PMT works well even for such systems. However, we need examination a little more.
 
 
 ## lmf: solving the Kohn-Sham equation
@@ -689,9 +696,9 @@ equivalent specifications
 
 We can check the space group is correcly recognized or not, with lmchk and/or shown at the begining of lmf.
 
----
 
-### Q: Should the Harris-Foulkes and Hohenberg-Kohn Sham functionals agree at self-consistency?
+
+# Q: Should the Harris-Foulkes and Hohenberg-Kohn Sham functionals agree at self-consistency?
 
 A: Yes. If they do not, either you have not reached self-consistency, or a tolerance is set too loosely in the evaluation of the matrix elements. A likely culprit is that the mesh of points for the interstitial integrals is not fine enough. Here is part of an output where mesh of 14x14x14 divisions were used for the interstitial density.
 
@@ -722,7 +729,12 @@ The table reflects how well each of the basis orbitals is converged in a PW expa
 ```
 
 
-### old note for APW test (at 2010 around)
+---
+# old notes 
+(following notes are somehow obsolate)
+
+
+### old note for APW test (at year 2010 around)
  APWs. It is very simple to add augmented plane waves to the basis. Add these tokens to category HAM:
 
         PWMODE=1 PWEMIN=# PWEMAX=#
@@ -778,7 +790,7 @@ At present, the P with the higher principal quantum number is automatically froz
 
 
 
-## old memo for SPEC 
+## old note for SPEC 
 (TK: We now detour this difficulty to set RSMH and EH thanks to the PMT method)
 
 First, the muffin-tin radii should be taken somewhat smaller than in the ASA. There is no volume-filling condition as found in the ASA. Strictly speaking, there should be no sphere overlaps, though in practice overlaps up to about 10% seem to engender minimal error, because of the way the augmented potential is constructed. See section on "Selection of Sphere Radii" for a discussion of choosing sphere radii and a way to automatically find good choices for them.
@@ -818,9 +830,3 @@ Tetrahedron is almost always more accurate (Using Bloechl weights it converges a
 Also printed is the sum of occupied bands, which is needed together with the potential to compute the total energy. The Bloechl correction is of interest because it shows how much the energy changes from straight tetrahedron (converges as h^2) and the Bloechl-corrected tetrahedron (which converges as h^3) 
 
 
-## MT radius determined by lmchk
-The ideal choice of sphere radii best approximates a potential that is spherical within the MT spheres and flat outside. Program lmchk has implemented one algorithm that makes a reasonable initial choice for MT radii. The algorithm works by computing the (electrostatic) potential obtained from overlapping free-atom densities along all connecting vectors between a given site and its relatively near neighbors. The MT radius is taken as the first potential maximum along any ray. This choice is a pretty reasonable estimate for the potential being approximately spherical inside. Also, note that for a completely symmetric bond, the potential maximum will fall exactly midway between the bond, so for that case the two sphere radii will exactly touch and have equal potentials. To tell lmchk to find these radii, invoke lmchk as
-`lmchk --getwsr`. This is performed in `ctrlgenM1.py`. 
-* In addition, `ctrlgenM1.py` do give limitaiton of maximum radius for alkali atoms. This is to avoid linear-dependency problem between APWs and MTOs.
-
-* When we treat molecules (especially dimers), we have to use very small size of MT radius. T.Kotani checked PMT works well even for such systems. However, we need examination a little more.

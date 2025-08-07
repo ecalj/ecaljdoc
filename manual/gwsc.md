@@ -60,6 +60,10 @@ GW計算ではDFT計算(`lmf`)で得られた波動関数を`lmf`とは異なる
 #### `--normcheck`
 `lmf --jobgw=1` で使用される。 GW計算で使用される波動関数の規格直交性を確認したいときに使用する。
 
+### `--ntqxx`
+This fix the number of bands to calculate self energy at the first iteration for each $\bf q$ point in the IBZ.
+In principle, the number is determined by
+
 ## Cautions
 * QPU.[number]runをチェックして、number回のQSGWイテレーションが終了している、と認識する。
 (初期状態から実行したいときはすべての`*run*`ディレクトリ、ファイルを消すこと）。

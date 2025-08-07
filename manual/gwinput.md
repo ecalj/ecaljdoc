@@ -25,7 +25,7 @@ cp GWinput.tmp GWinput
 - !で開始する行はコメント
 - keyword  value(s) の形式であり記載順序は問わないが, 同じkeywordを複数記述しないようにする
 
-## Parameters
+## Parameters in GWinput
 生成されたGWinputに, パラメータの意味は記載されていますが, 以下に重要な変数と記載がない変数について記述します。
 
 ### `n1n2n3`
@@ -75,6 +75,7 @@ MT内の積基底とMT内波動関数基底の行列要素(`ppb`変数)をメモ
 波動関数の平面波基底のカットオフエネルギー: 単位 Ryd。 `lmf`計算で用いるPMT手法とは波動関数の基底関数が異なることに注意。原子間領域の波動関数は全て平面波で記述される。
 - **type**: float
 - **default** : 4.0
+波動関数のIPWのカットオフctrl内のpwemaxとも関係する。pwemaxとしては2,3を試すことが多い(単位Ryd)。
 
 ### `QpGcut_cou`
 積基底の平面波部分のカットオフエネルギー: 単位 Ryd
@@ -118,9 +119,10 @@ To reduce computational time, we may use
    QpGcut_cou 2.5
    emax_sigm 2.0
 ```
-In addition, we use
+In addition, we may use
 ```
    pwemax=2 (in ctrl file).
 ```
-   We sometimes use this setting. It is better to check how the numerical
-   results are affected. 
+This is for the APWs in the band calculation.
+
+We sometimes use this setting. It is better to check how the numerical results are affected. 

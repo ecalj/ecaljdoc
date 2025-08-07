@@ -197,7 +197,8 @@ We have samples
 
 
 ## BoltTrap 
---boltztrap option is to generate files required for boltztrap
+--boltztrap option is to generate files required for boltztrap.
+See `~/ecalj/Samples/Boltztrap`
 
 
 ## Dielectric function
@@ -210,10 +211,13 @@ See [dielectric fuctnion](optical.md).
 
 ## Spin fluctuation
 `~/ecalj/Samples/Magnon`
-   now with MaxlocWannier. going to move to MLO
+It is via the MaxlocWannier. We are going to move to MLO instead. Here is a figure (this is on top of LDA) for the spin fluctuation of Fe in [Okumura2021](../presentations/okumura2021.pdf).
+![alt text](image-6.png)
 
 ## Effective Screening Medium (ESM)
-We can apply electric field to slab model. ESM combined with QSGW is quite unique. Ask us.
+We can apply electric field to slab model. ESM combined with QSGW is quite unique.
+Used in the paper https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205120
+Ask us.
 
 ## lmf and ctrl
 See [lmf and ctrl](lmf.md)
@@ -243,10 +247,10 @@ These citations are required.
   Effective mass calculation. See README. probably not maitained\dots
 
 ## ecalj_auto
-This is a suit of python script to run thousands of gwsc calculations.
+This is a suit of python scripts to run thousands of gwsc calculations automatically.
 [ecalj_auto](auto.md)
 
-## background charge and fractional Z
+## Background charge and fractional Z
 [backcround charge](Memo_bgcharge.md)
 
 ### How to perform paper-quarilty QSGW calculations with minimum costs. 
@@ -255,17 +259,46 @@ The accuracy of band gaps can be  ~0.1eV or larger for larger band gap materials
 In cases, it is easy, but in cases not so easy. So, it is better to use your own "simple criterion".
 "Not stick to convergence so much. Just stick to Reproducibility."
 
-## 4f and 5f
-Caution: For 4f and probably also for 5f systems, some special
-care is required; just defaults ctrlgenM1 do not work.; 
-I think this is a little too old--> [HowToSet4f_GdQSGW4.pdf](Document/HowToSet4f_GdQSGW4.pdf)
-(I will revise this)
-Except 4f systems, use default setting (just change k points).
+## 4f and 5f atoms
+We need special care to tread atoms where 4f and 5f are fractionally filled.
+We have not yet include following setting in ctrlgenM1.py as for 4f/5f atoms (2025-08-07).
+
+Here is the setting for RareEarth rocksalt nitrides ReN such as ErN.
+1. Set nsp=2, so=2 (since QSGW can not treat so=1 now). (If necessary set so=1 after QSGW).
+2. SYMGRP r4z. This is needed since we have lower symmetry rather than the lattice. It fixes the direction of spins and orbital moments.
+3. Our setting is
+    ```
+    --- ctrl.ern
+      ATOM=Er Z=68 R=2.58
+          PZ=0,5,0,5
+          IDU=0 0 0 12  UH=0 0 0 0.773  JH=0 0 0 0.0945  MMOM=0 0 0 3
+          EH=-1 -1 -1 -1  RSMH=1.29 1.29 1.29 1.29
+          EH2=-2 -2 -2 -2  RSMH2=1.29 1.29 1.29 1.29
+          KMXA={kmxa}  LMX=3 LMXA=6 NMCORE=1
+          (pwemax=2, nk=8 8 8 was used)
+    --- GWinput
+    (n1n2n3 6 6 6 was used)
+    (tol 1d-2 was used)
+    lcutmx(atom)
+    6 2  
+    ```
+    Here PZ is the principle quantum number of local orbitals. This sets 5p and 5f as local orbitals. Run `lmfa crn|grep conf` to check atomic configulation.
+    * IDU,UH,JH are the LDA+U parameters, only for initial condition. Since IDU is 10+2, we skip U effect when sigm exists.
+    * MMOM is the initial magnetic moments.
+    * LMXA=6 to expand augmented waves is needed.
+    * Make sure READP=T.
+
+With these settings, we have series of calculations finished for 4f ReN. 
+So input files are available. Ask us.
+
+## QPU and QPD files
+This contains the contents of self-energy
 
 ## Papers
-It is instractive to reproduce samples in Deguchi paper[ecalj/Document/PAPERandPRESENTATION/deguchi2016.pdf]. 
+It is instractive to reproduce samples in [Deguchi paper](../presentations/deguchi2016.pdf). 
 We can set up templates for your calculations. Ask us.
-We have latest paper at https://arxiv.org/abs/2506.03477 for GPU version, but show some details of computational steps in ecalj.
+We have a latest paper at https://arxiv.org/abs/2506.03477 for GPU version. 
+It shows some details of computational steps in ecalj.
 In Japanese, pages by Dr.Gomi at http://gomisai.blog75.fc2.com/blog-entry-675.html and https://qiita.com/takaokotani/items/9bdf5f1551000771dc48.
 
 
@@ -300,7 +333,7 @@ going to be converged or not.
 Or you can take "grep gap llmf.*run" (see it bottom.)
 
 Another way:
-`~/ecalj/TestInstall/bin/diffnum QPU.3run QPU.6run` 
+`dqpu QPU.3run QPU.6run` 
 is to compare two QPU files which contains QP energies.
 (note: QP energies shown are calculated just at the begininig of iteration).
 

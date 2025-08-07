@@ -360,6 +360,7 @@ We use gnuplot for band plot bandplot.isp1.glt.
 
 In the similar manner, we can run job_pdos, job_tdos, job_fermisurface. -->
 
+
 ## Step 6. QSGW calculation
 We now run QSGW calculations. qSGW is compuationally very expensive. So we recommend you to run smaller systems at first.
 
@@ -417,6 +418,7 @@ The console outputs are redirected to log files `l*`. `lsxC` is the exchange sel
 In this calculation we run `gwsc -np 8 1 si`, where 1 is the number of QSGW iteration.
 If you repeat gwsc, we have additional QSGW iterations on top the previous calculations.
 
+#### a case of La2CuO4
 For La2CuO4, I had 
 ```
 2025-06-27 19:09:01.465241   mpirun -np 1 echo --- Start gwsc ---
@@ -449,9 +451,8 @@ We found QPU.5 -->start to generate QPU.6...
 This is without GPU. We see one QSGW iteration requires 24 minutes (start timing is shown at the top of lines).
 Since I had 5th-QSGW iteration finished (checked  by the existence of QPU.5run), it start from 6th iteration.
 
----
-Here is a case of ba2pdo2cl2.
 
+#### a case of ba2pdo2cl2.
 Run
 ```
 mkGWinput ba2pdo2cl2
@@ -498,7 +499,8 @@ gwsc -np 32 5 ba2pdo2cl2 -vssig=0.8
 ```
 , this overide ssig, which is defined in ctrl.ba2pdo2cl2, in lmf calculations. (Check it in save.ba2pdo2cl2)
 
-* Example of QSGW for KTaO3 (perovskite,mp-3614）
+#### a case of KTaO3
+Example of QSGW for KTaO3 (perovskite,mp-3614）
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/2e785d2a-9418-acc3-93f9-788daa2bd19b.png)
 
 
