@@ -69,7 +69,7 @@ export default withMermaid({
       {
         text: 'Input files',
         items: [
-          { text: 'ctrl.foobar', link: '/manual/lmf_input' },
+          { text: 'ctrl.foobar', link: '/manual/lmf' },
           { text: 'GWinput', link: '/manual/gwinput' },
           { text: 'syml.foobar', link: '/manual/syml' }
         ]
