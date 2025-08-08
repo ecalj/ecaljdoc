@@ -116,6 +116,7 @@ some finite esmr to make calculations converged.
 - **type**: float
 - **default** : 3.0
 
+
 ## `HistBin` if `High resolution energy mesh near Ef for metal` 
 This defines histogram bins to accumulate weight (imaginary part) of the polarization functions.
 
@@ -143,13 +144,14 @@ when we plot quantities such as W (ω) near ω = 0.
 the Γ-cell [?]. And ¯W (ω get closer to v for larger ω. -->
 
 ## `niw`
- Number of frequencies along Im axis. Used for integration along imaginary axis.
- Probably 10 is enough. 
-* Number of integration points along the imaginary axis to get Sigma_c. See routines wint*. The integration points are iω′(n) = i(1/x(n) − 1), where x(n) is the
-usual Gaussian-integration points for the interval [0,1]. In addition, we give the special analytical treatment for the peaky part at ω′ = 0. Out tests shows niw=6 for Si is good enough for 0.01 eV accuracy. The convergence as for niw is quite good. This integration scheme has been developed by Ferdi Aryasetiawan. The number of points should be the one of 6,10,12,16,20,24,32,40,or 48, because we use a subroutine gauss in mate.f90 prepared by Ferdi.
+ Number of frequencies along Im axis. Used for integration along imaginary axis. Probably 10 is goog enough. 
+See routines `wintzsg.f90`. 
 
-## ~~Q0PChoice~~
-This is not used anymore. We now use |q| which is ten times smaller than regular mesh. See lqg4gw and Q0P file. 
+The integration points are $i \omega'(n)= i( 1/x(n) -1)$, where $x(n)$ is the
+usual Gaussian-integration points for the interval $[0,1]$. In addition, we give the special analytical treatment for the peaky part at $\omega'= 0$. Out tests shows niw=6 for Si is good enough for 0.01 eV accuracy. The convergence as for niw is quite good. This integration scheme has been developed by Ferdi Aryasetiawan. The number of points should be the one of 6,10,12,16,20,24,32,40,or 48, because we use a subroutine gauss in mate.f90 prepared by Ferdi.
+
+## Q0PChoice (This is not used anymore) 
+We now use offset Gamma Q0P which is ten times smaller than regular mesh. See lqg4gw and Q0P file. 
 
 ### `deltaw`
 real (a.u.) only for one-shot case.
@@ -157,10 +159,10 @@ deltaw is the interval for the numerical derivative ∂Σ(ω)/∂ω.  We calcula
 From these values, we can calculate two Z (or second-derivative of Σ(ω)). 
 
 
-## <QforGW> section
+## `<QforGW>` section
 This is only for one-shot/spectrum function mode. 
-In this section set q vector (in the unit of 2pi/alat. See BZ.html and syml file to check).
-If no <QforGW>, all irreducible q points are used. (see m_getqforgw.f90 L64 for ret=0)
+In this section set q vector (in the unit of `2pi/alat`. See BZ.html and syml file to check).
+If no `<QforGW>`, all irreducible q points are used. (see m_getqforgw.f90 L64 for ret=0)
 
 ## EMAXforGW
 one-shot GW. Set this (eV,above the Fermi energy) to specify up to which bands you calculate. 
@@ -172,7 +174,7 @@ We can use any q in the QforGW section
 Because of the shifted-mesh method, we can use any q point which is not on the mesh points.
 If on the mesh point, we need to prepare less number of eigenfunctions for GW calculations.
 
-## <QforEPS>
+## `<QforEPS>`
 This is for dielectric function mode. Set as
 ```
  0 0 0.00050
@@ -181,7 +183,7 @@ This is for dielectric function mode. Set as
 ```
 Because of the shifted-mesh method, we can use any q point which is not on the mesh points.
 ### QforEPSau 
-Whether q is in the unit of 2pi/alat or in the unit of a.u.(=bohr^{-1}). I think `QforEPSau on` might be convenient.
+Whether q is in the unit of `2pi/alat` or in the unit of a.u.(=`bohr^{-1}`). I think `QforEPSau on` might be convenient.
 
 
 
