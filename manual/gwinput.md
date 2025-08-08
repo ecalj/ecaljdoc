@@ -71,28 +71,119 @@ MT内の積基底とMT内波動関数基底の行列要素(`ppb`変数)をメモ
 - **default** : 0
 - **examples**: GaussianFilterX0 0.0001
 
+## `esmr`
+In (Ry). this is the smeaing of poles of G for G x W. To reduce the effect of the sharp cutoff of Fermi energy, use larger esmr (maybe stablized).
+### `GaussSmear on `
+We usually use Gaussian smearing. Rectangular smearing otherwise.
+
+Poles of the Green function G are treated as if they have width esmr in G x W. 
+If GaussSmear is on, each pole of G is smeared by a Gaussian function with sigma=esmr
+in the calculation of hsfp0. If GaussSmear is off, we assume rectangular smearing for the
+poles. Usually it is necessary to take rather smaller value than band gap for insulators. Try
+to use 0.003 or so in the case of Si and GaussSmear=on.
+For metal, this esmr is somehow related to how we capture the Fermi surface; In principle,
+we have to take the limit n1n2n3 → ∞ and esmr → 0. However, we may inevitably use
+some finite esmr to make calculations converged.
+
+### `unit_2pioa`
+  unit_2pioa off ! off --> a.u.; on--> unit of QpGcut_* are in 2*pi/alat
+  普通offでよい.
+
+###  `alpha_OffG`
+  1.000 !(a.u.) Used in auxially function in the offset-Gamma method.
+  Not need to change.
+
 ### `QpGcut_psi`
-波動関数の平面波基底のカットオフエネルギー: 単位 Ryd。 `lmf`計算で用いるPMT手法とは波動関数の基底関数が異なることに注意。原子間領域の波動関数は全て平面波で記述される。
+
+波動関数のIPW基底のカットオフ~~エネルギー: 単位 Ryd~~。 `lmf`計算で用いるPMT手法とは波動関数の基底関数が異なることに注意。原子間領域の波動関数はIPWで展開し直して記述される。IPWとはinterstitial plane wave.
 - **type**: float
 - **default** : 4.0
+
 波動関数のIPWのカットオフctrl内のpwemaxとも関係する。pwemaxとしては2,3を試すことが多い(単位Ryd)。
+|q+G|<QpGcut_psi 単位 1/a.u.
+個数はqg4gwの結果（lqg4gw)にかかれている。
 
 ### `QpGcut_cou`
-積基底の平面波部分のカットオフエネルギー: 単位 Ryd
+積基底のIPW部分のカットオフ~~エネルギー: 単位 Ryd~~ 
+|q+G|<QpGcut_cou 単位 1/a.u.
 - **type**: float
 - **default** : 3.0
+
+個数はqg4gwの結果（lqg4gw)にかかれている。
 
 ### `emax_sigm`
 フェルミ準位から測った, 計算する準粒子状態の自己エネルギーの最大値: 単位 Ryd。QSGW計算では自己エネルギーはポテンシャル構築に使用されるため小さくするとポテンシャルの精度も下がる。
 - **type**: float
 - **default** : 3.0
 
-## `High resolution energy mesh near Ef for metal` 
-For metal, it may be better to set
+## `HistBin` if `High resolution energy mesh near Ef for metal` 
+This defines histogram bins to accumulate weight (imaginary part) of the polarization functions.
+
+For metal, it might be better to test
 ```
 HistBin_dw    1d-5 ! 1d-5 is fine mesh (good for metal?) !(a.u.) BinWidth along real axis at omega=0.
 HistBin_ratio 1.03 ! 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=ratio-1.0 and dw=b*a
 ```
+m_freq.f90のgetfreqでこのメッシュを作っている。
+
+* HistBin_dw and HistBin_ratio specify real space bins which we accumulate imaginary part
+weight of polarization functions. The bins are (see frhis in ecalj/fpgw/gwsc/m_freq.F)
+$\omega_i = b ∗ (exp(a ∗ (i − 1)) − 1) $
+where $[\omega_i, \omega_{i+1}]$ $(i = 1, 2, ...,nwhis+1)$ is the i-th bin. HistBin_dw is bin width at ω = 0.
+The ratio ω(i + 1)/ω(i) for large ω is exp(a)=HistBin_ratio. This choice of getting coarser
+at high energy is because we think W (ω) around ω ∼ 0 gives most important contribution
+to the GW approximation. If histogram bins are too wide, dielectric function can be less
+accurate, but results may be not so much affected.
+In GW calculation, the Plasmon pole is important. It is determined not by the Drude weight;
+it usually gives small contribution to the Plasmon pole (for example, Si is described well by
+a Plasmon pole model, but Si has no Fermi surface). We expect that the GW results are not
+so sensitive to the choice of HistBin_dw, HistBin_ratio usually. We may use fine mesh
+when we plot quantities such as W (ω) near ω = 0.
+<!-- The ecalj gives ¯W (ω = 0) ∼ 0 for metal; where ¯W (ω) is the effective interaction averaged in
+the Γ-cell [?]. And ¯W (ω get closer to v for larger ω. -->
+
+## `niw`
+ Number of frequencies along Im axis. Used for integration along imaginary axis.
+ Probably 10 is enough. 
+* Number of integration points along the imaginary axis to get Sigma_c. See routines wint*. The integration points are iω′(n) = i(1/x(n) − 1), where x(n) is the
+usual Gaussian-integration points for the interval [0,1]. In addition, we give the special analytical treatment for the peaky part at ω′ = 0. Out tests shows niw=6 for Si is good enough for 0.01 eV accuracy. The convergence as for niw is quite good. This integration scheme has been developed by Ferdi Aryasetiawan. The number of points should be the one of 6,10,12,16,20,24,32,40,or 48, because we use a subroutine gauss in mate.f90 prepared by Ferdi.
+
+## ~~Q0PChoice~~
+This is not used anymore. We now use |q| which is ten times smaller than regular mesh. See lqg4gw and Q0P file. 
+
+### `deltaw`
+real (a.u.) only for one-shot case.
+deltaw is the interval for the numerical derivative ∂Σ(ω)/∂ω.  We calculate $\Sigma(\omega),\Sigma(\omega\pm {\rm deltaw})$.
+From these values, we can calculate two Z (or second-derivative of Σ(ω)). 
+
+
+## <QforGW> section
+This is only for one-shot/spectrum function mode. 
+In this section set q vector (in the unit of 2pi/alat. See BZ.html and syml file to check).
+If no <QforGW>, all irreducible q points are used. (see m_getqforgw.f90 L64 for ret=0)
+
+## EMAXforGW
+one-shot GW. Set this (eV,above the Fermi energy) to specify up to which bands you calculate. 
+(we have EMINforGW).
+
+
+## `--readQforGW` option
+We can use any q in the QforGW section
+Because of the shifted-mesh method, we can use any q point which is not on the mesh points.
+If on the mesh point, we need to prepare less number of eigenfunctions for GW calculations.
+
+## <QforEPS>
+This is for dielectric function mode. Set as
+```
+ 0 0 0.00050
+ 0 0 0.00100
+ 0 0 0.00200
+```
+Because of the shifted-mesh method, we can use any q point which is not on the mesh points.
+### QforEPSau 
+Whether q is in the unit of 2pi/alat or in the unit of a.u.(=bohr^{-1}). I think `QforEPSau on` might be convenient.
+
+
 
 ## `Smaller lcutmx to reduce computatinal time`
   To reduce the computational time, we reduce number of MPB (mixed product basis).
@@ -102,8 +193,9 @@ HistBin_ratio 1.03 ! 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=r
   lcutmx(atom) = maximum l-cutoff for the product basis.  =4 is required for atoms with valence d, like N
    4 4 4 2 2 2 
 ```
-in the section of GWinput. 
-* NOTE: we know that lcutmx =6 is requied for 4f systems. 
+in the section of GWinput. Atom ID is in SiteInfo.foobar. The ordring of SITE in ctrl (need check).
+
+* NOTE: we need lcutmx =6 is requied for 4f/5f atoms, while 2 is enough for Oxygen (probably other species on the same row).
 
 
 ## `Smaller IPW related part to reduce computational time`

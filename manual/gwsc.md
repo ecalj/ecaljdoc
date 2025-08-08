@@ -72,3 +72,25 @@ In principle, the number is determined by
 * QSGW.[number]runディレクトリには、QSGWのnumber回目の結果rst,sigm(加えてatmpnu,ctrl,GWinput)が格納されており、これを用いてバンドプロットなどができる。
 
 
+
+---
+
+# other scripts 
+
+`cleargw`: clean up temporary files
+
+`gw_lmfh`: The one-shot \GW calculation. Lifetime(impact ionization rate) of QPs.
+
+`epsPP0`: dielectric function.
+ 
+(`epsPP_lmfh, eps_lmfh` : Dielectric function without or with local-field effects.)
+
+
+<!-- \item
+{\bf epsPP\_lmfh\_chipm} : non-interacting spin susceptibility. 
+One-degree of freedom like Rigid moment approx.
+After it ends, you need to do \verb#calj_nlfc_metal# and/or \verb#calj_summary_mat#
+to get the full spin susceptibility. -->
+
+`genMLWF` : Wannier function and its matrix elements of the Screened Coulomb interaction.
+

@@ -374,25 +374,34 @@ For the first, a line must be added to the input file for each species that cont
 The IDU token tells lmf that no U is to be added to the s or p channels, but that a U is to be added to the d and f channels. IDU=2 specifies LDA+U functional style 2; this is the "Fully Localized Limit" described in Liechtenstein, PRB 52, R5467 (1995)). IDU=1 specifies the "Around Mean Field" functional (Petukhov, PRB 67, 153106 (2003)). U=0.1 Ry is included on the d orbital, and U=0.632 is included on the f orbital. Additionally J=0.055 is put on the f orbital.
 
 The density-matrix is read from and written to a file dmats.ext. Two density-matrices (1 for each spin) are written to this file in a (2l+1) by (2l+1) block for each l block for which a U is defined. dmats.ext is an ASCII file which you can read, and it's quite useful to interpret what's going on. The diagonal parts are the occupation numbers and are the most important.
+
+The density matrix is printed out in the standard output. It can be represented on the real harmonics. To check it, run
+>lmf eras --quit=dmat
+This stops promptly without side effect.
+
  <!-- Note that the file may be stored in either spherical harmonics or real harmonics, depending on how SHARM= is set in the OPTIONS category. -->
 
 Initial dmats.ext is automatically generated from the 1st-shot LDA calculation without U.
 But you can supply a file occnum.ext, which is a starting guess for the density-matrix (its diagonal part). occnum.ext has one line of (2l+1) numbers for the occupation numbers of the first spin, following by a line with the occupation numbers for the second spin. 
 
-In this test: fp/test/test.fp eras, the script assumes a particular starting spin configuration through the occupation number file occnum.eras it uses. Er has 11 f electrons, 7 of which go into the majority channel and 4 into the minority channel. There is some choice in which m states to fill and which to keep empty. A key point is that the self-consistent solution you end up with will depend on this choice. The ErAs test uses the following input file for occnum.eras :
+
 ```
-  0 0 0 0 0
-  0 0 0 0 0
-  1 1 1 1 1 1 1
-  0 1 1 1 1 0 0
+(Need check this block: probably obsolate)   
+      In this test: fp/test/test.fp eras, the script assumes a particular starting spin configuration through the occupation number file occnum.eras it uses. Er has 11 f electrons, 7 of which go into the majority channel and 4 into the minority channel. There is some choice in which m states to fill and which to keep empty. A key point is that the self-consistent solution you end up with will depend on this choice. The ErAs test uses the following input file for occnum.
+      --- occunum for eras ---
+      0 0 0 0 0
+      0 0 0 0 0
+      1 1 1 1 1 1 1
+      0 1 1 1 1 0 0
+      --------------
+      The first and second lines are occupation numbers for the majority and minority d channel; the third corresponds to the majority f channel where all states are taken to be filled. The last line corresponds to the minority f channel. In this case, m=-2,-1,0,1 are filled and m=-3,2,3 are empty. As the script notes, different choices of starting occupation numbers lead to different self-consistent solutions. The one with the lowest energy is that which satisfies Hund's rule (m=0,1,2,3 filled and m=-3,-2,-1 empty).
+
+      [The occupation numbers are by default correpond to spherical harmonic representations of Ylm. If you want to define the occupation numbers in real harmonics, put
+
+      % real
+
+      on the first line of occnum.ext. (xxx T.Kotani needs to check)]
 ```
-The first and second lines are occupation numbers for the majority and minority d channel; the third corresponds to the majority f channel where all states are taken to be filled. The last line corresponds to the minority f channel. In this case, m=-2,-1,0,1 are filled and m=-3,2,3 are empty. As the script notes, different choices of starting occupation numbers lead to different self-consistent solutions. The one with the lowest energy is that which satisfies Hund's rule (m=0,1,2,3 filled and m=-3,-2,-1 empty).
-
-[The occupation numbers are by default correpond to spherical harmonic representations of Ylm. If you want to define the occupation numbers in real harmonics, put
-
-% real
-
-on the first line of occnum.ext. (xxx T.Kotani needs to check)]
 
 Note that in the LDA case, complete information is contained in the density, stored in file rst.ext. In the LDA+U case, complete information is contained in the combination of rst.ext and dmats.ext.
 
@@ -410,7 +419,8 @@ There is additionally a tolerance parameter
 that tells lmf to stops mixing dmats when its rms change falls below TOLU. Usually it's not necessary, and setting TOLU=0 (or leaving it out) means it plays no role. 
 
 ## Core hole options 
-(need check)
+(If necessary we need fixing. Not checked well)
+
  Partially occupied core holes. Calculations involving partial core hole occupancy are useful in the context of Slater transition-state theory, which undoes most of the error in the LDA description of the core hole eigenvalue (see example J. Phys. Cond. Mat. 12, 729 (2000)). You specify which orbital in which species is to be treated as a partially occupied by core by adding a token C-HOLE= to the SPEC category. You also have to specify what the partial occupation is, which you do with token C-HOLE= . An example is the N 1s core. A core hole of 1 electron can be put in by
 
      C-HOLE=1s C-HQ=-1
@@ -438,6 +448,24 @@ C-HOLE and C-HQ= enable partial occupation of a particular core channel.
 . SPEC_ATOM_EREF    opt    r8       1,  1          default= 0
     Reference energy subtracted from total energy (we use little)
 ```
+
+ An example setting for Nd case is
+--------------------------
+ATOM=Nd Z=60 R=3.00
+C-HOLE=4f C-HQ=-11 P=6.5,6.5,5.5,5.2 <-- NOTE: this line is added
+--------------------------
+1. C-HOLE=4f means that 4f core is to set “core hole”.
+2. P=6.5,6.5,5.5,5.2 is to set principle (fractinal) quantum number explicitly for valence
+electrons. To set this, try lmfa nd|grep conf first. Then you can see the electronic
+configulation of an atom. Key point here is to set “5.2” for f channel. Thus 4f is treated
+as core and 5f as valence. Fractional parts (0.2 of 5.2) means the radial funciton contains
+nodes as 5f and closer to the energy right on the change of 4f to 5f. If 5.9, it is closer to
+the enrgy almost have noded of 6f.
+3. C-HQ means that corehole is -11. Thus we have only 14-11=3 electrons for 4f (spherically
+occupied).
+4. Run lmfa. If it does not show that freeat (warning) atom not neutral, it is the
+neutral atom. You can also chage the message tagged by Add core hole: Simultaneously
+
 
 
 ## Parameters for Brillouin zone integration ---

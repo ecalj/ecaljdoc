@@ -153,7 +153,8 @@ direct
    0.2500000000000000    0.2500000000000000    0.2500000000000000 As
 
 ```
-This is another POSCAR for ba2pdo2cl2 (QSGW results are shown below):
+
+This is POSCAR for ba2pdo2cl2 (QSGW results are shown below):
 ```
 POSCAR_ba2pdo2cl2
 1.0
@@ -185,9 +186,9 @@ vasp2ctrl POSCAR.mp-2534
 mv ctrls.POSCAR.mp-2534.vasp2ctrl ctrls.POSCAR.mp-2534
 cat ctrls.mp-2534
 ```
+
 ctrls.mp-2534 contains crystal structure equivalent to POSCAR:
 ```
-cat ctrls.mp-2534 
 STRUC
      ALAT=1.8897268777743552
      PLAT=       3.52125300000       0.00000000000       2.03299700000  
@@ -197,6 +198,64 @@ SITE
      ATOM=Ga POS=     0.00000000000       0.00000000000       0.00000000000 
      ATOM=As POS=     1.17375100000       0.82996725000       2.03299675000 
 ```
+Indentation is needed to show blocks of categories, STRUC and SITE.
+Another example of ctrls.GaAs
+```
+%const bohr=0.529177 a=5.65325/bohr
+STRUC
+     ALAT={a}
+     PLAT=0 0.5 0.5 0.5 0 0.5 0.5 0.5 0
+SITE
+    ATOM=Ga POS=0.0 0.0 0.0
+    ATOM=As POS=0.25 0.25 0.25
+```
+ctrls.srtio3: 
+```
+%const au=0.529177
+%const d0= a0=2*1.95/au v=a0^3 a1=v^(1/3)
+STRUC ALAT={a1}
+   PLAT=1 0 0 0 1 0 0 0 1
+SITE
+   ATOM=Sr POS=1/2 1/2 1/2
+   ATOM=Ti POS= 0 0 0
+   ATOM=O POS=1/2 0 0
+   ATOM=O POS= 0 1/2 0
+   ATOM=O POS= 0 0 1/2
+```
+The default names of atomic species are shown by `ctrlgenM1.py --showatomlist`.
+Instead of such default symbols, we can use your own symbol as
+```
+SITE
+   ATOM=M1 POS=1/2 1/2 1/2
+   ATOM=M2 POS= 0 0 0
+   ATOM=O POS=1/2 0 0
+   ATOM=O POS= 0 1/2 0
+   ATOM=O POS= 0 0 1/2
+SPEC
+   ATOM=M1 Z=38
+   ATOM=M2 Z=22
+   ATOM=O Z=8
+```
+, where we need SPEC. Thus AF magnetic NiO is given as
+```
+%const bohr=0.529177 a=7.88
+STRUC 
+   ALAT={a} PLAT= 0.5 0.5 1.0 0.5 1.0 0.5 1.0 0.5 0.5
+SITE 
+   ATOM=Niup POS= .0 .0 .0
+   ATOM=Nidn POS= 1.0 1.0 1.0
+   ATOM=O POS= .5 .5 .5
+   ATOM=O POS= 1.5 1.5 1.5
+SPEC
+   ATOM=Niup Z=28 MMOM=0 0 1.2 0
+   ATOM=Nidn Z=28 MMOM=0 0 -1.2 0
+   ATOM=O Z=8 MMOM=0 0 0 0
+```
+. If you like to use antiferro symmetry (only calculate up band only, and generate down band). 
+See [AFsymmetry](./UsageDetailed.md#antiferro-symmetry-without-soc).  MMOM is the initial condition of magnetic moments at sites.
+The numbers (here 1.2) can be not so accurate (just integers or so).
+Samples are in [minidatabase](#jobmaterialspy-mini-database-for-computational-tests). Simple materials first. But it is not so difficult
+to reproduce results by VASP or in MP from your POSCAR file.
 
 
 - MEMO: 
@@ -275,23 +334,61 @@ to see the structure in VESTA. To show ctrl.si, we use a converted at  /Structur
 ## Step 3. LDA calculation
 1. Run lmfa at first. It is for spherical atomic electron densities, contained in the crystals. lmfa ends instantaneously.
    ```bash
-   lmfa ctrl.mp-2534
+   lmfa mp-2534
+   (or lmfa ctrl.mp-2534)
    ```
    gives spherical atom calculation for initialization.`lmfa` calculates spherically symmetric atoms and generates the files required for lmf below. 
    Check `conf ` section in the console output as
    ```bash
-   lmfa ctrl.mp-2534 |grep conf
+   lmfa mp-2534 |grep conf
    ```
-   . This shows atomic configuration (there are no side effects even if `lmfa` is repeated). The initial condition of electron density for lmf is given as the superposition of spherically symmetric atomic densities given by lmfa. In addition, lmfa calculations are performed with the logarithmic derivative of the radial wave function at the MT sphere edge fixed (READP True in default ctrlgenM1.py setting). The derivatives are contained in `atmpnu.*` files. So, `atmpnu.*` are needed for `lmf`.
+   . This shows atomic configuration (there are no side effects even if you run `lmfa` repeatedly) as 
+   ```
+   conf:------------------------------------------------------
+   conf:SPEC_ATOM= Ga : --- Table for atomic configuration --- (n and nz are Pr. Quantum numbers for valence) 
+   conf:  isp  l    n nz    Qval     Qcore   CoreConf 
+   conf:    1  0    4  0    2.000    6.000 => 1,2,3,
+   conf:    1  1    4  0    1.000   12.000 => 2,3,
+   conf:    1  2    4  3   10.000    0.000 => 
+   conf:    1  3    4  0    0.000    0.000 => 
+   conf:    1  4    5  0    0.000    0.000 => 
+   conf: Species  Ga       Z=  31.00 Qc=  18.000 R=  2.230000 Q=  0.000000 nsp= 1 mom=  0.000000
+   conf: rmt rmax a=  2.230000  49.011231  0.015000 nrmt nr= 661 867
+   conf: Core rhoc(rmt)= 0.001940 spillout= 0.001839
+   conf:------------------------------------------------------
+   conf:SPEC_ATOM= As : --- Table for atomic configuration --- (n and nz are Pr. Quantum numbers for valence) 
+   conf:  isp  l    n nz    Qval     Qcore   CoreConf 
+   conf:    1  0    4  0    2.000    6.000 => 1,2,3,
+   conf:    1  1    4  0    3.000   12.000 => 2,3,
+   conf:    1  2    4  0    0.000   10.000 => 3,
+   conf:    1  3    4  0    0.000    0.000 => 
+   conf:    1  4    5  0    0.000    0.000 => 
+   conf: Species  As       Z=  33.00 Qc=  28.000 R=  2.330000 Q=  0.000000 nsp= 1 mom=  0.000000
+   conf: rmt rmax a=  2.330000  49.695135  0.015000 nrmt nr= 675 879
+   conf: Core rhoc(rmt)= 0.011286 spillout= 0.017467
+   ```
+   With this table, you can see the number of valence electrons of initial condition for Ga are 2,1, and 10 for 4s,4p, 4d+3d(with local orbital). 
+   Core configulation and charges are shown as well. Q=0 means satisfying charge neutrality. 
+   * lmfa calculates spherical atoms (virtually $r \to \infty$), and calculate logarithmic derivatives at MT boundaries, stored into `atmpnu.*`. 
+   * The initial electron density for lmf is given as the superposition of the spherically symmetric atomic densities given by lmfa. 
+   * When [READP=T](./lmf.md#readp-option) (ctrlgenM1.py set READP=T ), we use the logarithmic derivative of the radial wave function at MT boundaries fixed.
 
 2. After `lmfa`, we run LDA calculation as:
 
    ```bash
-   mpirun -np 8 lmf mp-2534 |tee llmf 
+   mpirun -np 8 lmf mp-2534 
+   (or mpirun -np 8 lmf ctrl.mp-2534) 
    ```
-
-   * mp-2534 (GaAs) gives 5.75 $\AA$ for GaAs, while the experimental value is 5.65$\AA$.
-   * llmf contains information of iterations, check eigenvalue and fermi energies, band gap.
+   It will finish with several seconds. Then we see   
+   ```bash
+   it 10  of 80    ehf=   -8398.499465   ehk=   -8398.499466
+   From last iter    ehf=   -8398.499464 ehk=   -8398.499465
+   diffe(q)= -0.000001 (0.000004)    tol= 0.000010 (0.000010)   more=F
+   c ehf(eV)=-114268.304015 ehk(eV)=-114268.304037 sev(eV)
+   ```
+   Here `c ` is the sign that `diffe(q)`,which shows the changes of energy and charge from the previous iteration, is less than the criterion, that is, converged. save.mp-2534 contains a line per iteration. We see it takes 10 times to have convergence. We show [two energies](./lmf.md/#q-should-the-harris-foulkes-and-hohenberg-kohn-sham-functionals-agree-at-self-consistency), which should be the same.
+   * Note: mp-2534 (GaAs) gives 5.75 $\AA$ for GaAs, while the experimental value is 5.65$\AA$. I guess this is a PBEsol problem.
+   * llmf contains information of iterations (since I use tee command above), check eigenvalue and fermi energies, band gap.
    * rst.mp-2534 is generated. Self-consistent charge included.
    * You can change lattice constant as ALAT=1.8897268777743552*5.65/5.75 in ctrl file. simple math operators such as `* + - / ** ` can be possible in ctrl.
    * Note: ctrlp is intermediate file generated by python from ctrl. Fortran calls a python code internally.(ctrl2ctrlp.py is responsible for the math)
@@ -300,16 +397,53 @@ to see the structure in VESTA. To show ctrl.si, we use a converted at  /Structur
    Repeat lmf stops with two iteration.
    * SiteInfo.lmchk : Site infor
    * PlatQlat.chk : Lattice info
+   * efermi.lmf: the Fermi energy 
    * estaticpot.dat : electrostatic potential of smooth part.
+   * __mixm* is the mixing file containing history of iteration.
+   * If you restart lmf again, it automatically read rst file. Thus it should be already converged-- to make it sure, it stops after two iterations.  
+Be careful about the definition of zero level of the one-body potential. We set the average of electrostatic potential at MT boundaries are zero. 
+`__*` are temporary files, which can be deleted. 
+As for the console out put, you see
+```
+...
+ bndfp: kpt     1 of    29 k=  0.0000  0.0000  0.0000 ndimh = nmto+napw =    82   55   27
+ bndfp: kpt     2 of    29 k=  0.0355 -0.0126  0.0000 ndimh = nmto+napw =    79   55   24
+ bndfp: kpt     3 of    29 k=  0.0710 -0.0251  0.0000 ndimh = nmto+napw =    82   55   27
+ bndfp: kpt     4 of    29 k=  0.1065 -0.0377  0.0000 ndimh = nmto+napw =    83   55   28
+ bndfp: kpt     5 of    29 k=  0.1420 -0.0502  0.0000 ndimh = nmto+napw =    89   55   34
+ bndfp: kpt     6 of    29 k=  0.0355  0.0251  0.0000 ndimh = nmto+napw =    78   55   23
+ bndfp: kpt     7 of    29 k=  0.0710  0.0126  0.0000 ndimh = nmto+napw =    80   55   25
+...
+```
+, where we see the Hamiltonian dimensions. When PWMODE=11, we have q-dependent energy cutoff of APWs by |q+G|^2< pwemax. (In our code, we use Rydberg $2m=\hbar=e^2/2=1$). 
 
-NOTE:
-We have deguchi paper https://sci-hub.tw/https://doi.org/10.7567/JJAP.55.051201
-All calculation is by the default setting in QSGW on the PMT method. 
-> No empty spheres. EH=-1,EH=-2, MT radius is -3% untouching.
-> RSMH=RSMH2=R/2
+* NOTE: In defaults given by ctrlgenM1.py, all the calculation are by  
+   >No empty spheres. 
+   >EH=-1,EH=-2, MT radius is -3% untouching.
+   >RSMH=RSMH2=R/2
 
-## Step 4. Create k-path and BZ for band plot
-After the calculation converges, it might be necessary to make a band plot with `job_band` command explain later on. The normality of the calculation of bands can be confirmed by the band plot (for magnetic systems, check the total magnetic moment and the magnetic moment for each site).
+   We do not claim this setting is the best, however, non-linear optimization is very problematic. We do not like to do one by one optimizaiton.
+   Changing this setting might require extensive systematic study.
+
+### job_tdos, job_pdos
+You can calculate total dos by
+```
+job_tdos mp-2534 -np 8
+gnuplot -persist tdos.mp-2534.glt
+```
+and pdos by
+```
+job_pdos mp-2534 -np 8
+```
+`job_pdos` is a little expensive because symmetry is not used. After finished, `gnuplot -p pdos.site001.mp-2534.glt` shows the PDOS resolved into $lm$ channels
+of real harmonics (shown at the end of `job_pdos`).
+![alt text](image-7.png).This is PDOS at As site of mp-2534.
+Be careful about the number of k points. You may need to enlarge number of k points for accurate DOS,PDOS. Then use
+`-vnk1=10 -vnk2=10 -vnk3=10` as the option, such as  `job_tdos mp-2534 -np 8 -vnk1=10 -vnk2=10 -vnk3=10`. Check it by
+`grep BZ_NKABC llmf_tdos` and look into save.mp-2534.
+
+## Step 4. Create k-path and Brillouin zone for band plot
+After `lmf` converges, make a band plot with `job_band` explained later on. The normality of the calculation of bands can be confirmed by the band plot (for magnetic systems, check the total magnetic moment and the magnetic moment for each site).
 
 Before `job_band`, run ```getsyml gaas```. Install any missing packages with pip. It is on spglib by Togo and seekpath. After finished, view BZ.html. It shows the k-path in the BZ. We show an example for ba2pdo2cl2 in the figure below. 
 It is an interactive figure written with plotly, so you can read the coordinate values.
@@ -538,21 +672,34 @@ If MT radius are changed, start over from lmfa (remove atm* files)
 # jobmaterials.py: mini database for computational tests
 At ecalj/MATERIALS/, type `./jobmaterials.py`. It shows a help with a list of materials.
 It contains samples of simple materials. It performs LDA calculations and generates GWinput for materials.
-
+(I think MATERIALS/ is not organaized well. We are going to clean up)
 * How to run 
   ```
   ./job_materials.py
   ``` 
-  gives a help, showing a list of materials. Then
-
+  gives a help, showing a list of materials as
   ```
-  ./job_materials.py Si
+   === Materials in Materials.ctrls.database are:===
+   2hSiC 3cSiC 4hSiC AlAs AlN AlNzb AlP AlSb Bi2Te3 C
+   CdO CdS CdSe CdTe Ce Cu Fe GaAs GaAs_so GaN
+   GaNzb GaP GaSb Ge HfO2 HgO HgS HgSe HgTe InAs
+   InN InNzb InP InSb LaGaO3 Li MgO MgS MgSe MgTe
+   Ni NiO PbS PbTe Si SiO2c Sn SrTiO3 SrVO3 YMn2
+   ZnO ZnS ZnSe ZnTe ZrO2 wCdS wZnS
+   ```  
+
+Run Si for example:
+  ```
+  ./job_materials.py Si 
   ``` 
   performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
   >job_materials.py works as follows for given names.
   Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
   Step 2. Generate ctrl by ctrlgenM1.py
-  Step 3. Make directtory such as Si/ and run lmf, lmfa, mkGWinput. 
+  Step 3. Make directtory such as Si/ and copy ctrls.si ctrl.si and GWinput (this is for QSGW) 
+  Step 4. run lmfa and lmf
+  We can skip step 4 with `--noexec`. 
+  Run "job_materials --all --noexec" is an idea to generate all input files for materials in the database.  Watch no strange erros appear.
 
 
 * Key input files are
