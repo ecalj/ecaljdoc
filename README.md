@@ -7,6 +7,8 @@ ecaljdoc is a suit of documents of the [ecalj package](https://github.com/tkotan
 
 If you can join to edit ecaljdoc, ask to msobt at https://github.com/msobt.
 
+---
+
 ### How to edit this document with vitepress
 
 - Get source of ecaljdoc
