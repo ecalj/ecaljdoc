@@ -18,7 +18,7 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
    
    The PMT method means; a mixed basis method of two kinds of augmented waves, that is, APW+MTO.
    In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. We found that MTOs and APWs are very comlementary, corresponding to the localized and the extented natures of eigenfunctions. That is, very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $ a.u.; this implies only reaching to nearest atoms) together with APWs (cutoff is $\approx 3$ Ry) works well to get reasonable convergences.  We can perform atomic-position relaxation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
-  ![alt text](image-1.png)(This fig is taken from [nfp-manual](../presentations/nfpmanual.pdf))
+  ![alt text](image-1.png)(This fig is taken from [nfp-manual](../presentations/nfpmanual.pdf)
    
    The current PMT formulation is given in
 
@@ -191,7 +191,6 @@ STRUC
      PLAT=       3.52125300000       0.00000000000       2.03299700000  
                  1.17375100000       3.31986900000       2.03299700000 
                  0.00000000000       0.00000000000       4.06599300000 
-  NBAS=2
 SITE
      ATOM=Ga POS=     0.00000000000       0.00000000000       0.00000000000 
      ATOM=As POS=     1.17375100000       0.82996725000       2.03299675000 

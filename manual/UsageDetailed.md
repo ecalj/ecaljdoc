@@ -98,7 +98,7 @@ You can run `job_band` and so on in the same manner of DFT with nspin=1.
 * We can effectively use [antiferro symmetry for calculation (only for so=0,2)](#antiferro-symmetry-without-soc) 
 
 ## orbital moments
-When so=1, orbital moments within MTs are shown at `IORBTM:` in the console output as
+When so=1, orbital moments within MTs are shown in at `orbitalmom.chk:` in the console output as
 ```
 IORBTM:  orbital moments :
  ibas  Spec        spin   Moment decomposed by l ...
