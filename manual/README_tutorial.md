@@ -200,18 +200,23 @@ SITE
 - MEMO: 
     - ctrl2vasp ctrl.mp-2534 can convert back to VASP file. Check this by VESTA. We can use viewvesta (convert and invoke VESTA).
     - many unused files are generated (forget them).
+    - you can use any name for sites such as [Niup or something](./UsageDetailed.md#antiferro-symmetry-without-soc), in such a case you have to set SPEC section in addition. [Non integer number of Z is allowed.](./UsageDetailed.md#background-charge-and-fractional-z). Learn afterward.
+    - In old ctrls, you may see NL,NBAS,NSPEC, which are not necessary now.
 
 ## Step 2. Get ctrl from ctrls
-ctrl is a basis input file for ecalj. We generate template of ctrl  by ctrlgenM1.py.
-Minimum explanations are embedded in the generated ctrl file.
-Number of k points (nk1 nk2 nk3), APW cutoff (pwemax), nspin, so(spin orbit switch) are only what we need to tweak usually.
+ctrl is the basic input file for ecalj. We generate template of ctrl with ctrlgenM1.py from ctrls.
+ctrl has user-defined extension as `ctrl.foobar`.
 
-When we run lmf, we can add command line option such as -vnspin=2. Then const foobar=1 defined in the ctrl file is overridden (referred with {foobar}). save.* file show which -vfoobar you used.
+Minimum explanations, which we expect to read by users, are embedded in the generated ctrl file.
+<!-- Number of k points (nk1 nk2 nk3), nspin, so (spin orbit switch), xc type(xcfun), APW cutoff (pwemax), are only what we need to tweak usually. -->
 
-It is possible to enforce symmetry, antiferro symmetry.
+When we run lmf, we can add command line option such as -vnspin=2. Then `%const foobarx=1` defined in the ctrl file is overridden (referred with {foobarx}). save.* file shows values of foobarx you used.
+
+It is possible to enforce antiferro symmetry (except so=1 case).
+We only need ctrl file in the following calculations (while some tmp* tmp2* and so on are generated).
+
 <!-- ctrlgenM1.pyの内部ではlmfa,lmchk(原子球サイズ決定）などを呼んでいる。
 これ以後の計算にはctrl.foobarのみ残しておけば良い（ムダファイルが大量にできているのは消して良い）.  -->
-We only need ctrl file in the following calculations (while some tmp* kinds of files are generated).
 
 ```bash
 ctrlgenM1.py mp-2534
@@ -236,8 +241,8 @@ How to edit? Explanations are embedded in ctrl.foobar (please let me know wrong 
 3. SpinOrbitCoupling: so=0 (none), so=1 (LdotS), 2 (LzSz). nsp=2 is required for so=1,2. so=1 does not yet support QSGW. SOC axis can also be freely selected, but currently (0,0,1) default and (1,1,0) are supported (m_augmbl.f90). If you want to set SO=1 in QSGW, currently, run QSGW calculation with so=0 or so=2 to obtain ssig file, then set so=1
 4. xcfun (choice of LDA exchange correlation term). Only =1:BH, =2:VWN, =103:PBE-GGA.
 5. LDA+U settings (not explained yet).
-6. ssig=1.0 (If you choose QSGW80, use ssig=0.8. Effective for QSGW calculations.
-$V^{\rm xc QSGW}-V^{\rm xc LDA}$ is stored in a file `sigm.foobar`. We add ssig $\times (V^{\rm xc QSGW}-V^{\rm xc LDA})$ to the potential in the lmf calculation as long as `sigm.foobar` file is available.
+6. ssig=1.0 (If you choose QSGW80, use ssig=0.8) is for QSGW calculations.
+$V^{\rm xc QSGW}-V^{\rm xc LDA}$ is stored in a file `sigm.foobar`. We add ssig $\times (V^{\rm xc QSGW}-V^{\rm xc LDA})$ to the potential in the lmf calculation as long as `sigm.foobar` file is available in the same directory.
 
 * `lmchk --pr60 foobar` allows you to check the recognized symmetries by `lmf`. Turning off --pr60 or reducing 60 will reduce the verbosity of output.
 
