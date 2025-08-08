@@ -39,7 +39,7 @@ export default withMermaid({
     sidebar: [
       {
         items: [
-          { text: 'MainDocument', link: '/manual/README_tutorial' },
+          { text: 'Main (containing links to all files in ecaljdoc)', link: '/manual/README_tutorial' },
         ]
       },
       {
@@ -52,8 +52,9 @@ export default withMermaid({
       {
         text: 'Manual',
         items: [
-          { text: 'DFT  calculation : lmf', link: '/manual/lmf' },
-          { text: 'QSGW calculation : gwsc', link: '/manual/gwsc' },
+          { text: 'UsageDetailed ', link: '/manual/UsageDetailed' },
+          { text: 'lmf  part', link: '/manual/lmf' },
+          { text: 'gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion plot', link: '/manual/band' },
