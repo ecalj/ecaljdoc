@@ -709,7 +709,7 @@ We can check the space group is correcly recognized or not, with lmchk and/or sh
 
 
 # Q: Should the Harris-Foulkes and Hohenberg-Kohn Sham functionals agree at self-consistency?
-
+(due to Mark van Schilfgaarde)
 A: Yes. If they do not, either you have not reached self-consistency, or a tolerance is set too loosely in the evaluation of the matrix elements. A likely culprit is that the mesh of points for the interstitial integrals is not fine enough. Here is part of an output where mesh of 14x14x14 divisions were used for the interstitial density.
 
 ```
@@ -741,7 +741,7 @@ The table reflects how well each of the basis orbitals is converged in a PW expa
 
 ---
 # old notes 
-(following notes are somehow obsolate)
+(following notes are somehow obsolete but kept. Due to Mark van Schilfgaarde)
 
 
 ### old note for APW test (at year 2010 around)

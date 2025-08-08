@@ -10,7 +10,7 @@ From console output, we can check convergence behevior, band energies, Fermi ene
 per iteration of lmf. At each line,'i: intermediate, c: converged, x:iteration max without converged'.
 * In addition, -vfoobar=xxx is recorded (overriding variables in ctrl).
 
-* Two total energies Kohn-Sham and Harris-Folker is given---both should be virtually the same. 
+* Two total energies Kohn-Sham and Harris-Folker is given---[both should be virtually the same](lmf.md#q-should-the-harris-foulkes-and-hohenberg-kohn-sham-functionals-agree-at-self-consistency). 
 But some differences for bigger systems. Take one of them.
 
 * log file
@@ -211,7 +211,7 @@ See [dielectric fuctnion](optical.md).
 
 ## Spin fluctuation
 `~/ecalj/Samples/Magnon`
-It is via the MaxlocWannier. We are going to move to MLO instead. Here is a figure (this is on top of LDA) for the spin fluctuation of Fe in [Okumura2021](../presentations/okumura2021.pdf).
+It is via the MaxlocWannier. We are going to move to MLO instead. Here is a figure (this is on top of LDA) for the spin fluctuation of Fe in [Okumura2021](https://github.com/ecalj/ecaljdoc/blob/main/presentations/okumura2021.pdf).
 ![alt text](image-6.png)
 
 ## Effective Screening Medium (ESM)
@@ -296,7 +296,7 @@ Input files are available from [here](../data/RENctrlGWinput.tar.gz). Ask us whe
 This contains the contents of self-energy
 
 ## Papers
-It is instractive to reproduce samples in [Deguchi paper](../presentations/deguchi2016.pdf). 
+It is instractive to reproduce samples in [Deguchi paper](https://github.com/ecalj/ecaljdoc/blob/main/presentations/presentations/deguchi2016.pdf). 
 We can set up templates for your calculations. Ask us.
 We have a latest paper at https://arxiv.org/abs/2506.03477 for GPU version. 
 It shows some details of computational steps in ecalj.

@@ -1,7 +1,7 @@
 # ecalj MainDocument
 **This is MainDocument of ecaljdoc. All files are linked from this file.**
 
-* Here we give [GetStarted](#getstarted), together with QSGW and install.
+* Here we give [GetStarted](#getstarted), together with install and overview of QSGW.
 * We have [UsageDetails](./UsageDetailed.md) in another file.
 * [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are shown here.
 * When link did not work, go to https://github.com/tkotani/ecalj to download.
@@ -18,17 +18,19 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 1. **All electron full-potential PMT method**
    
    The PMT method means; a mixed basis method of two kinds of augmented waves, that is, APW+MTO.
-   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. We found that MTOs and APWs are very comlementary, corresponding to the localized and the extented natures of eigenfunctions. That is, very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $ a.u.; this implies only reaching to nearest atoms) together with APWs (cutoff is $\approx 3$ Ry) works well to get reasonable convergences.  We can perform atomic-position relaxation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
-  ![alt text](image-1.png)(This fig is taken from [nfp-manual](../presentations/nfpmanual.pdf)
+   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. We found that MTOs and APWs are very comlementary, corresponding to the localized and the extented natures of eigenfunctions. That is, very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $ a.u.; this implies only reaching to nearest atoms) together with APWs (cutoff is $\approx 3$ Ry) works well to get reasonable convergences. We can perform atomic-position relaxation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
+  ![alt text](image-1.png)(This fig is taken from [nfp-manual by M. Methfessel and M. van Schilfgaarde](../presentations/nfpmanual.pdf))
    
    The current PMT formulation is given in
 
-   [1][KotaniKinoAkai2015, PMT formalism](../presentations/KotaniKinoAkai2015FormulationPMT.pdf)   
-   [2][KotaniKino2013, PMT applied to diatomic molecules](../presentations/KotaniKino2013PMTMolecule.pdf).
+   [1][KotaniKinoAkai2015, PMT formalism](https://github.com/ecalj/ecaljdoc/blob/main/presentations/KotaniKinoAkai2015FormulationPMT.pdf)
+   
+   [2][KotaniKino2013, PMT applied to diatomic molecules](https://github.com/ecalj/ecaljdoc/blob/main/presentations/KotaniKino2013PMTMolecule.pdf).
 
    Since we have automatic settings for basis-set parameters, we don't need to be bothered with the parameter settings. Just crystal structures (POSCAR) are needed for calculations. 
    <!-- In principle, it is possible to perform reasonable calculations just from crystal structures and very minimum setting.  -->
-    * Our method uses smooth Hankel functions described in [A][SmoothHankel paper ](../presentations/Bott1988.pdf), which was used in [B][nfp paper](../presentations/Bott1988.pdf). Our PMT is on top them.
+    * Original PMT was started at https://journals.aps.org/prb/abstract/10.1103/PhysRevB.81.125117
+    * PMT uses smooth Hankel functions described in [the smooth Hankel paper by E. Bott, M. Methfessel, W. Krabs, and P. C. Schmidt](https://github.com/ecalj/ecaljdoc/blob/main/presentations/Bott1988.pdf), which was used in [B][nfp paper by M. Methfessel and M. van Schilfgaarde, and R.A. Casali](https://github.com/ecalj/ecaljdoc/blob/main/presentations/nfp.pdf). Our PMT is on top them.
 
     In addition to PMT basis, we use local orbitals together.
 2. **PMT-QSGW method** 
@@ -37,17 +39,16 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
    `the Quasiparticle self-consistent GW method (QSGW) based on the PMT method`.
    After converged, we can easily make band plots without the Wanneir interpolation. This is because an interpolation scheme of self-energy is internally built in.
    We can handle even magnetic metals. Since we have implemented ecalj on GPU, we can handle ~40 atoms with four GPUs.
-   [3][Kotani2014,Formulation of PMT-QSGW method](../presentations/Kotani2014QSGWinPMT.pdf)
-   [4][D.Deguchi PMT-QSGW applied to a variety of insulators/semiconductors](../presentations/deguchi2016.pdf)
+   [3][Kotani2014, Formulation of PMT-QSGW method](https://github.com/ecalj/ecaljdoc/blob/main/presentations/Kotani2014QSGWinPMT.pdf)
+   [4][D.Deguchi PMT-QSGW applied to a variety of insulators/semiconductors](https://github.com/ecalj/ecaljdoc/blob/main/presentations/deguchi2016.pdf)
    [5][M.Obata GPU implementation](https://arxiv.org/abs/2506.03477), where we treat Type II GaSb/InAs (40 atoms) with four GPUs.
 
 3. **Dielectric functions and magnetic susceptibilities**
-    We can calculate GW-related quantities such as dielectric functions, spectrum function of the Green's functions, Magnetic fluctuation, and so on. 
+    We can calculate GW-related quantities such as dielectric functions, spectrum function of the Green's functions, Magnetic fluctuation, and so on. Since our QSGW can generate eigenfunctions and eigenvalues at any k points.
 
 4. **The Model Hamiltonian with Wannier functions** 
    We can generate the effective model (Maxloc Wannier and effective interaction between Wannier funcitons). 
-   This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. We are now replacing this with a new version MLO (Muffin-Tin-orbail-based localized orbital).
-
+   This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. We are now replacing this with a new version MLO (MuffinTinOrbail-based Localized Orbitals), where we can easily throw away (downfolding) the APW degree of freedom. We try to construct the effective Hamiltonian in https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.035141 via a mapping procedure.
 
 # Overview of QSGW 
 
@@ -62,7 +63,7 @@ As a rule of thumb, it takes about 10 hours for 20 atoms
 * We have [GPU acceleration for QSGW](https://arxiv.org/abs/2506.03477), which also describe basics of QSGW.  QSGW algorism fits to GPU computations very well. With four GPUs, we can compute systems with 40 atoms per cell. (As for lmf part, GPUs are not efficiently used yet.). Our PMT allows us to handle large vaccum region for slab model.
 * We can perform QSGW virtually without parameter settings by hands. Thus I think ecalj is one of the easiest to perform GW/QSGW. See band database in QSGW at https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md (this is a supplement of https://arxiv.org/abs/2507.19189).  This is away from complete database, but showing the ability of ecalj.
 
-![alt text](image-2.png) This is taken from  [4][D.Deguchi](../presentations/deguchi2016.pdf)
+![alt text](image-2.png) This is taken from  [4][D.Deguchi](https://github.com/ecalj/ecaljdoc/blob/main/presentations/deguchi2016.pdf)
 
 In comparison with LDA, we see differences in QSGW;
 * Band gap. QSGW tends to give slightly larger than experiments. It looks systematic as in the Figure above.
