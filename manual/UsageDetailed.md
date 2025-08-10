@@ -195,15 +195,10 @@ The sample (run job file) generates eps file showing fat band of O2 compon`ents.
  Run jobprocar. This gives *.eps file which shows Fat band picture.
  PROCAR (vasp format) is generated and analysed by a script BandWeight.py.
 
-# Spectrum of the Green's function
+## Spectrum of the Green's function
 (under construction ...)
 [spectrum of G](./spectrum.md)
 
-# Maxloc wannier
-Our own implementation of Wannier90 is included. It works with the command `genMLWF`, where we can run cRPA in it.
-Actually `~/ecalj/SRC/TestInstall/srvo3_crpa/` is a sample but too small computational sample.
-(We feel difficulty to use the idea of Wannier90 (outer window and so on) from the view of automaiton.
-So we are developing MLO.)
 
 ## LDA+U
 We have samples 
@@ -455,15 +450,15 @@ e.g. by
 
 is also useful.  
 
-## error messages and caution
+# error messages and caution
 
-### Bandplot for FSMOMMETHOD/=0
+## Bandplot for FSMOMMETHOD/=0
   Even when you use FSMMOMMETHOD/=0 in GWinput for gwsc,
   you need to set FSMOMMETHOD=0 (or comment it out) when you run job_band_nspin2.
   [If you run job_band_nspin2 with FSMOMMETHOD/=0, it make a shift (adding bias magnetic field).]
   Anyway confusing. If necessary, I have to make it straight.
 
-### For molecules, we may use --systype=molecule for ctrlgemM1.py.
+## For molecules, we may use --systype=molecule for ctrlgemM1.py.
   Then we have 
   >TETRA=0
   >N=-1 #Negative is the Fermi distribution function W= gives temperature.
@@ -471,12 +466,12 @@ is also useful.
   >In addiiton, FSMOM (n_up-n_down) is needed (FSMOMMETHOD=1)if we
   have magnetic moment.
 
-### core>evalence message.
+## core>evalence message.
   Ecore is grater than Evalence.
   For safe, we do not allow this.
   Compare ECORE file and valence levels, shown in log file or console output.
 
-### Back ground charge and fractional Z.
+## Back ground charge and fractional Z.
 You can use fractional numbers for ATOM_Z, and also can set valence charge by BZ_ZBAK (I removed BZ_VAL).
 You see console out put, e.g, 
 >Charges: valence 19.80000 cores 8.00000 nucleii -28.00000
@@ -490,24 +485,24 @@ NOTE: at the first iteration, Charges: shows such as
 because of the initial condition by superposition of atoms. It shows
 deviation seems nonzero. But charge should be conserved from the next iteration.
 
-### convergence problem.
+## convergence problem.
 We need to use smaller ITER b, such as 0.015, 0.01, 0.005. 
 
-### Use PZ or not.
+## Use PZ or not.
 If spillout of core is not so small (more then 0.05 or something.),
 it is better to use PZ(lo). Treat the core as valecne. Bi4d is such a case. Maybe use PZ=0,0,4.9
 
-### We use only CORE1 treatment only (exchange only core)
+## We use only CORE1 treatment only (exchange only core)
 See 10.1103/PhysRevB.76.165106 (Eq.35 and after).
 Now I usually not use CORE2 (CORE1 only).
 
-### a little unstable when metal GGA, especially when we have large empty regions. (still problematic?)
+## a little unstable when metal GGA, especially when we have large empty regions. (still problematic?)
 (negative density points appears: console output). I am not so sure about this is serious or not.
 
-### total enegry is not meaningful in QSGW mode
+## total enegry is not meaningful in QSGW mode
 Even gwsc, we see total energy in lmf cycle. But it might be taken just an indicator to the convergence.
 
-### Do we use VWN or GGA for QSGW? ===
+## Do we use VWN or GGA for QSGW? ===
 In principle, QSGW results should not depend on VWN or GGA.  But there is minor dependence, because
 1. frozen core density.
 2. core eigenfunctions.
@@ -517,15 +512,15 @@ In principle, QSGW results should not depend on VWN or GGA.  But there is minor 
 affect about 0.02eV as for band gap for GaAs.). In anyway, use VWN (HAM_XCFUN=1)
 as standard. And such technical things affects, 0.05 eV level of error for band gap.
 
-### numerical accuaray of QSGW band energies
+## numerical accuaray of QSGW band energies
 As for the band gaps 0.1 eV is a kind of limiting accuaray for usual semiconductors with 0~3 eV band gap materials.
 For Si or something simple, you may be able to have better accuracy. However, QSGW is on the so many parameters.
 So, just say ~0.1eV level of accuracy. Convergence check is expected for the technical developments in future.
 
-### TOTE files
+## TOTE files
 In gw_lmfh, `hqpe` gives TOTE.UP and QPU files (DN and QPD as well). They contains the same values.
 
-### The Fermi energies in GW
+## The Fermi energies in GW
 We use two kinds of Fermi energy $E_{\rm FEERMI}^{\rm smear}$ and $E_{\rm FEERMI}^{\rm tetra}$.
 This is because of numerical techniques.
 
@@ -535,21 +530,17 @@ The other is $E_{\rm FEERMI}^{\rm smear}$ for $ G \times W$ since we use smeared
 $E_{\rm FEERMI}^{\rm smear}$ is given at the beginning of $ G \times W$ calculations. 
 See lsx,lsc,lsxC (for mpirun, we have them in stdout.0000*).
 
-### one-show QSGW (not one-shot GW) =
-  one-shot QSGW can be useful in cases.
-  As it contains off-diagonal part, we can resolve band tanglement problem in Ge (no band gap).
-
-### Anisotropic Q0P 
+## Anisotropic Q0P 
    In cases, we are worrying about the anisotropy. The offset Gamma method uses the 1/10 of gamma cell.
    It seems not so bad, however, we may need to examine the anisotropy problem again in future.  
    It is problematic to use unbalanced k points for anisotropic cell. See Copmuter Physics Comm. 176(2007)1-13.
 
-### mixbeta and mixpriorit 
+## mixbeta and mixpriorit 
 If not stable convergence in gwsc, try to set
 mixbeta 0.5
 in GWinput.
 
-### Check Used MTOs
+## Check Used MTOs
  Near beginig of console output, what MTO you use is shown as: (GaAs case).
  ```
  sugcut:  make orbital-dependent reciprocal vector cutoffs for tol= 1.00E-06
@@ -569,6 +560,172 @@ in GWinput.
   As       1*   1.18  -2.00   6.720    1.26E-06    1471
   As       2    1.18  -2.00   7.140    1.37E-06    1837
  ```
+
+# one-show QSGW (not one-shot GW) 
+  one-shot QSGW can be useful in cases.
+  As it contains off-diagonal part, we can resolve band tanglement problem in Ge (no band gap).
+  one-shot GW is also used to calculate impact ionization rate.
+
+# Maxloc wannier. Maximally localized Wannier with effective interaction in CRPA.
+Our own implementation of Wannier90 is included. It works with the command `genMLWF`, where we can run cRPA in it.
+<!-- Actually `~/ecalj/SRC/TestInstall/srvo3_crpa/` is a sample but too small computational sample.
+(We feel difficulty to use the idea of Wannier90 (outer window and so on) from the view of automaiton.
+So we are developing MLO.) -->
+
+We can generate Wannier functions in the manner of Wannier90 by the script `genMLWF`. 
+It automatically performs cRPA calculation (formulation given by Juelich group) successively.
+`genMLWF` is the script to generate the Wanneir functions.
+In addition, it gives effective interaction $\langle ij|W|kl \rangle$ in CRPA.
+
+Required setting is written in the GWinput.
+We have examples in `ecalj/Samples/MLWF_samples` which contains `CuMLWFs, Cu, Fe, NiOMLWF, SrVO3` but some may be missing.
+
+## Run a sample at Samples/MLWF_samples/CuMLWFs
+See ./job file. Run this or run one by one as follows.
+At firts, run self-consistent calculation as
+```
+lmfa cu
+mpirun -np 8 lmf cu
+job_band cu -np 8
+```
+(it is possible to start from QSGW results).
+Then we run main script of maxloc wannier with effective interaction W as
+```
+genMLWF -np 8 cu
+```
+
+* The setting needed for the Wannir is 1. Orbital setting and window settings. These are
+    ```
+    <Worb> Site
+    1 Cu 5 6 7 8 9
+    </Worb>
+    wan_out_emin -10  !eV relative to Efermi
+    wan_out_emax -1   !eV relative to Efermi
+    ```
+    for Cu 3d. For the sample of NiO, we set 
+    ```
+    <Worb> Site
+    1 Niup   5 6 7 8 9
+    2 Nidn   5 6 7 8 9
+    !  3 O   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+    !  4 O   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+    </Worb>
+    wan_out_emin -4    !eV relative to Efermi
+    wan_out_emax  2    !eV relative to Efermi
+    ```
+    Here we specify seed funcitons for which we have Wannier functions. This specify we tread $3d$ bands for Ni.
+    We can set inner window as well if we set
+    ```
+    wan_in_ewin on
+    wan_in_emin  -4  !eV relative to Efermi
+    wan_in_emax   0  !eV relative to Efermi
+    ```
+
+   * Wannier is generated at echo 2|hmaxloc >lmaxloc2 (look into genMLWF).
+   At this point, you can make band plot to check whether your setting for
+   Wannier work well or not; the model-Hilbert space by band plot.
+   (we need syml.* file and run job_band to get original energy bands)
+   Then plot wannier band on top of it. See Samples/MLWF_samples/CuMLWFs/bandplot.MLWF.isp1.glt as an example.
+   If the plot is strange, you need to choose outer and inner windows for Wannier.                                                           
+   (Repeat echo 2| hmaxloc >lmaxloc2 until you have satisfactry fitting with changing the setting wannier part in GWinput ).
+
+## output    
+*** Band plot including Wannier band
+  See bandplot.MLWF.isp1.glt
+
+* Look into CuMLWFs/bandplot.MLWF.cu.glt
+    This is for interpolated band.
+    A line "bnds.maxloc.up" u ($5):($6+de) lt 3 w l ti "Wannier" is added to usual output of
+    bandplot.cu.isp* given by job_band.
+
+    ** NOTE: Efermi shift:
+    genMLWF requies bnds.${target} to read the Fermi energy.
+    To generate it, we need to run job_band in advance.    Or run, 
+    ```
+    echo 2 | hmaxloc  > lmaxloc2
+    ```
+    (need syml*); this can be runned after genMLWF.
+    (Or need to shift Ef by hand as follows in gnuplot script.)
+    ```
+    de = ((ef shown in "lmaxloc2") - (ef in llmf_ef(bnds.${target}))*13.605
+    plot \
+    "bnd1.dat" u 2:3 lt 1 pt 1 not w l,\
+    "bnd2.dat" u 2:3 lt 1 pt 1 not w l,\
+    "bnd3.dat" u 2:3 lt 1 pt 1 not w l,\
+    "bnd4.dat" u 2:3 lt 1 pt 1 not w l,\
+    "bnd5.dat" u 2:3 lt 1 pt 1 not w l,\
+    "bnds.maxloc.up" u ($5):($6+de) lt 3 w l ti "Wannier"
+    ```
+
+
+
+>xxx(2) Plot psi.xsf file. xxx 
+xxx Not working xxx I currently surpress wanplot, which plots MaxLoc Wannier functions in real space
+xxx So vis_* options for plot in GWinput is not working. 
+xxx (Skipped now) Wannier funciton plot
+xxx   Use wan.xsf by Xcrysden (skipped now)
+xxx   Range of plot looks not good;
+xxx   Especially, vis_wan_ubound, vis_wan_lbound should be not integer.
+xxx   Probably, need to improve/(bug fix) wanplot.F.
+
+
+* We get three files (see genMLWF) containing v and W-v information.
+        ```
+        grep "Wannier" lwmatK1 > Coulomb_v
+        grep "Wannier" lwmatK2 > Screening_W-v
+        grep "Wannier" lwmatK3 > Screening_W-v_crpa
+        ```
+    These are text files <ab|W|cd> element. a,b,c,d are index of Wannier functions (ask us if necessary).
+    Then we have Static_W.dat (RPA) and Static_U.dat (cRPA). These contains static U, U', J, and J' (\omega = 0). 
+    For example, 
+    ```
+    grep '    1    1    1    1    1'             Coulmb_v
+    grep '    1    1    1    1    1    0.000000' Screening_W-v.UP
+    grep '    1    1    1    1    1    0.000000' Screening_W-v.crpa
+    ```
+    shows
+    ```
+    Coulomb_v.UP:          Wannier ...  23.499183   -0.000000
+    Screening_W-v.UP:      Wannier ... -20.317956   -0.000000
+    Screening_W-v_crpa.UP: Wannier ... -20.188076   -0.000000
+    ```
+    This means
+    ```
+    <11|W|11>     =23.499183-20.317956
+    <11|U_CRPA|11>=23.499183-20.188076
+    ```
+    Note that this is by the test example CuMLWFs, not so reliable numerically.
+
+* With the command `grep Wan lwmatK*`, we can see (This case : Cu cases). Then compare these with Result.grepWanlwmatK
+   These are onsite effective interactions (diagonal part only shown).
+    ```
+    lwmatK1:  Wannier    1    1   24.644475    0.000000 eV
+    lwmatK1:  Wannier    1    2   24.644576    0.000000 eV
+    lwmatK1:  Wannier    1    3   25.471361    0.000000 eV
+    lwmatK1:  Wannier    1    4   24.644575    0.000000 eV
+    lwmatK1:  Wannier    1    5   25.470946    0.000000 eV
+    lwmatK2:  Wannier    1    1    0.000000 eV   -21.263759   -0.000000 eV
+    lwmatK2:  Wannier    1    2    0.000000 eV   -21.263839    0.000000 eV
+    lwmatK2:  Wannier    1    3    0.000000 eV   -21.931033   -0.000000 eV
+    lwmatK2:  Wannier    1    4    0.000000 eV   -21.263839   -0.000000 eV
+    lwmatK2:  Wannier    1    5    0.000000 eV   -21.930702   -0.000000 eV
+    ```
+    These are the diagonal elements $\langle ii|v,W-v|ii \rangle$, where $i=1,..5$ corresponding to the $3d$ orbitals (real harmonics).
+
+Some additional info in README_wannier.md
+Time consuming part (and also the advantage) is for effective interaction in RPA.
+Look into the shell script genMLWF; you can skip last part if you don't need the effective interaction.
+
+<!-- In addition, we have some settings (energy windows and so on).
+This is the example of the initial conditions for Cu case. 
+5 is the number of Wannier function. The most left one means $\phi$ index and the right one of it is $\dot\phi$ index. They are written in the {\bf @MNLA\_CPHI} file.
+
+Then we can run \exe{genMLWF}. 
+After it finished, we can analyze it results.
+(if you don't need Wannier funciton plot, 
+You can skip a line of wanplot in genMLWF. Then we  don't need to set
+\verb+vis_wan_*+ options.) -->
+
 
 ### History (not latest description)
 ![alt text](image-5.png)
