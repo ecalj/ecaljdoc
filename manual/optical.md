@@ -12,8 +12,10 @@ to compare experiments.
 Based on the no local-field correction equation $\epsilon({\bf q},\omega)=1-v({\bf q}) \chi_0({{\bf q},\omega})$, we can calculate interband and intraband contributions separately.
 The intraband contribution is the Drude weight at the limit ${\bf q} \to 0$.
 We use the command `epsPP0` now.
+We include spherical Bessel functions in the MPB to expand $\exp(i {\bf q r})$.
 
-We can include local-field corrections (in fact, we do include the local-field correction is QSGW iteration), but computationally expensive and not open to users currently.
+We can include local-field corrections with `eps_lmfh` (in fact, we do include the local-field correction is QSGW iteration), but computationally expensive and not open to users currently.
+
 
 ## Computational steps
 
@@ -34,6 +36,12 @@ gnuplot -p epsall.glt
 Note that we usually need many k points if you like to have 0.1 level of error for 
 dielectric constants (at the limit of ${\bf q}=\omega =0$)
 (e.g, reasonable results for GaAs may require `n1n2n3 20 20 20` in GWinput.)
+
+* NOTE: to calculate $\epsilon({\bf q},\omega)$ without LFC accurately,
+the best basis set for the expansion of the Coulomb matrix within MT
+is apparently not the product basis, but the Bessel functions
+corresponding to the plane waves $\exp(i{\bf q r})$. We include such a basis in this mode. 
+(However, our experience shows that the changes are little even with the usual product basis).
 
 ### step1: `lmf`収束計算行う。
 `sigm`ファイルがある場合は, QSGW計算による固有値固有関数からの誘電関数を計算することができる。
@@ -140,19 +148,55 @@ gnuplot -p epsall.glt
 1~3行目にq点座標、4行目にエネルギー(Ry単位)、5・6行目が誘電関数の実部・虚部、7・8行目が誘電関数の逆数の実部・虚部
 が書かれています。
 
----
-
-** （改良計画）誘電関数計算にはバンド吸収端で(E-E0)**.5でキレイに立ち上がらない(GaAsなどの場合）、
-という数値計算上の問題があります。メッシュを細かく取るときれいにできることは示したことがあります。
-変な内挿法よりも必要なことだけ細かく取るという技法が有効だと思います。汎用化しないといけないです。
-
-**（改良計画）q=0でのinterbandの寄与は<u|u>行列を使えば先に1/q^2の割り算ができるので
-もっと直接的にできるはずです。
 
 ---
 
+** （改良計画）誘電関数計算にはバンド吸収端で(E-E0)**.5でキレイに立ち上がらない(GaAsなどの場合）、という数値計算上の問題があります。メッシュを細かく取るときれいにできることは示したことがあります。変な内挿法よりも必要なことだけ細かく取るという技法が有効だと思います。汎用化しないといけないです。
+Test at 2016: we need to have correct edge $\propto \sqrt{\omega-E_0}$. To do so, we need to move to new method as
+![new eps](../data/abosorb_preport_tkotani2016Jul5.pptx.pdf)
 
-(Here we keep old documents, but commented out...)
+**（改良計画）q=0でのinterbandの寄与は<u|u>行列を使えば先に1/q^2の割り算ができるのでもっと直接的にできるはずです。
+
+** （修正するべき）局所場補正
+Local field correction with `eps_lmfh`
+To include eps with LFC, do `eps_lmfh`. Expensive.
+lcutmx=2 seems to be good enough to get 0.5 percent error (maybe better than this).
+Further we can use smaller QpGcut_cou like 2.2 or so, with rather smaller product basis (up to p timed d, not including f).
+But we need checks and may be modification of `eps_lmfh`.
+
+** スピンゆらぎを計算するにはモデルを経由するべき
+  
+** 要チェック(古いノート): We can use small enough delta. Use small enough delta (=-1e-8 a.u.) for spin wave modes (also you can use it for dielectric function and GW).  This can be meaningful because pole is too smeared if you use larger delta.
+
+## old convergence test (2010)
+* Convergence test for number of k point(specified by n1n2n3) test at 2010. 
+   Roughly speaking, 20x20x20 is required for not-so-bad results for Fe and Ni.
+   It is better to do 30x30x30 to see convergence check.
+   However, in the case of ZB-MnAs (maybe because of simple structure around Ef), it requires less q points.
+
+   Old figuresof epsilon for GaAs (2010).
+   fig001: n1n2n3 convergence for Chi_RegQbz = on  case. (mesh including Gamma)
+   ![fig001](./gas_fig001.pdf)
+   fig002: n1n2n3 convergence for Chi_RegQbz = off case. (mesh not including Gamma)
+   ![fig002](./gas_fig002.pdf)
+   fig003: Alouanis'(from Arnaud)  vs. ``Chi_RegQbz = on'' vs. ``Chi_RegQbz = off''
+   As you see, the threshold of the Red line (20x20x20 Chi_RegQbz=on) and Alouani's 
+   are almost the same, but the red line is too oscilating at the low energy part.
+   On the other hand, ``Chi_RegQbz = off'' in Green broken line is not so satisfactory
+   at the low energy part. 
+   ![fig003](./gas_fig003.pdf)
+
+* Old unpublished result for spin wave of ZB MnAs in QSGW as
+![zbmnas](./ZBmnasw1.pdf)
+
+   <!-- As you see, k points convergence looks a little better in Chi_RegQbz=off
+   (mesh not including gamma). However a little ploblem is that its thereshold around 
+   0.5eV is too high and slowly changing. -->
+
+
+   <!-- [fig.gas_eps_kconf.pdf] shows the convergence behevior of epsilon for  -->
+
+
 <!-- ### step:3 epsPP_lmfh , eps_lmfh
 
 eps計算を行うときは、epsPP_lmfh(局所場補正なし)とeps_lmfh(局所場補正あり)のどちらかを使います。

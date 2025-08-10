@@ -196,7 +196,8 @@ The sample (run job file) generates eps file showing fat band of O2 compon`ents.
  PROCAR (vasp format) is generated and analysed by a script BandWeight.py.
 
 # Spectrum of the Green's function
-(not yet...)
+(under construction ...)
+[spectrum of G](./spectrum.md)
 
 # Maxloc wannier
 Our own implementation of Wannier90 is included. It works with the command `genMLWF`, where we can run cRPA in it.
@@ -358,7 +359,7 @@ Another way:
 is to compare two QPU files which contains QP energies.
 (note: QP energies shown are calculated just at the begininig of iteration).
 
-For insulater, (I think), comparing band gap for each iteration 
+For insulators, (I think), comparing band gap for each iteration 
 is good enough to check onvergence. But for metal, it is better to plot energy bands
 for some of final iterations, and overlapped(`cd QSGW.*run` and run `job_band`).
 

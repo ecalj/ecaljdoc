@@ -766,6 +766,46 @@ The table reflects how well each of the basis orbitals is converged in a PW expa
   20 -14561.131170    0.000000
 ```
 
+# Local orbitals
+  In principle, we can use setting in ctrlgenM1.py. It is possible to change local-orbital setting if you are experts to touch ctrl.
+
+  For lo, we have to set SPEC_ATOM_PZ as well as SPEC_ATOM_P.
+  Do "lmfa |grep conf" to check that we set MTO +lo correctly.
+
+  * continious principle quantum number
+   lmf (originally due to ASA in Stuttgart) uses a special terminology "continious principle quantum number for each l", which is just relatated to the logalismic derivative of radial functions for each $l$ at MT boundary. For example,  
+      ```
+      P= n.5 for l=0 of free electron (flat potential) because phi=r^0,
+      P= n.25 for l=1 because phi=r^1; 
+      P= n.147584 for l=2 because phi=r^2
+      ```
+      (Integer part `n` can be changed).  Its fractioanl part 0.5-atan(1/phi dphi/dr) is closer to unity for core like orbital, but closer to zero for extended orbitals.
+
+*  Examples of choice:
+  Ga p: in this case, choice 0 or choice 2 as follows are recommended.
+      We usually use lo for semi-core, or virtually unoccupied level.
+      ```
+     (0)no lo (4p as valence is default treatment without lo.)
+        3p core, 4p valence, no lo: default.
+        Then we have choice that lo is set to be for 3p,4p,5p.
+     (1)3p lo ---> 4p val (when 3p is treated as valence)
+        3d semi core, 4d valence  
+        Set PZ=0,3.9 
+        (P is not requied to set. *.9 for core like state. It is just an initial condition.)
+     (2)5p lo ---> 4p val (PZ>P). this is not usual setting.
+        Set PZ=0,5.5 
+        The fractinal part of 5.5 is just simply given.
+      ```
+   Ga d: (in this case, choice 0 or choice 1 is recommended).
+      ```
+   (0)no lo (3d core, 4d valecne, no lo: default.)
+         Then we have choice that lo is set to be for 3d,4d,5d.
+   (1) 3d lo ---> 4d val  (when 3d is treated as valence)
+         Set PZ=0,0,3.9  (P is not required to set)
+   (2) 5d lo ---> 4d val  (PZ>P). This is possible but unusual.
+         Set PZ=0,0,5.5
+      ```
+
 
 ---
 # old notes 

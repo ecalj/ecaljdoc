@@ -98,14 +98,17 @@ some finite esmr to make calculations converged.
 波動関数のIPW基底のカットオフ~~エネルギー: 単位 Ryd~~。 `lmf`計算で用いるPMT手法とは波動関数の基底関数が異なることに注意。原子間領域の波動関数はIPWで展開し直して記述される。IPWとはinterstitial plane wave.
 - **type**: float
 - **default** : 4.0
-
-波動関数のIPWのカットオフctrl内のpwemaxとも関係する。pwemaxとしては2,3を試すことが多い(単位Ryd)。
 |q+G|<QpGcut_psi 単位 1/a.u.
 個数はqg4gwの結果（lqg4gw)にかかれている。
+エネルギー(Ry)にするには**2する。
+
+波動関数のIPWのカットオフctrl内のpwemaxとも関係する。pwemaxとしては2,3を試すことが多い
+(こちらの単位は**2のエネルギーカットオフになっていて単位Ryd)。
 
 ### `QpGcut_cou`
 積基底のIPW部分のカットオフ~~エネルギー: 単位 Ryd~~ 
 |q+G|<QpGcut_cou 単位 1/a.u.
+エネルギー(Ry)にするには**2する。
 - **type**: float
 - **default** : 3.0
 
@@ -117,7 +120,7 @@ some finite esmr to make calculations converged.
 - **default** : 3.0
 
 
-## `HistBin` if `High resolution energy mesh near Ef for metal` 
+## Change `HistBin` for high resolution energy mesh near Ef for metal 
 This defines histogram bins to accumulate weight (imaginary part) of the polarization functions.
 
 For metal, it might be better to test
@@ -127,19 +130,11 @@ HistBin_ratio 1.03 ! 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=r
 ```
 m_freq.f90のgetfreqでこのメッシュを作っている。
 
-* HistBin_dw and HistBin_ratio specify real space bins which we accumulate imaginary part
-weight of polarization functions. The bins are (see frhis in ecalj/fpgw/gwsc/m_freq.F)
-$\omega_i = b ∗ (exp(a ∗ (i − 1)) − 1) $
-where $[\omega_i, \omega_{i+1}]$ $(i = 1, 2, ...,nwhis+1)$ is the i-th bin. HistBin_dw is bin width at ω = 0.
-The ratio ω(i + 1)/ω(i) for large ω is exp(a)=HistBin_ratio. This choice of getting coarser
-at high energy is because we think W (ω) around ω ∼ 0 gives most important contribution
-to the GW approximation. If histogram bins are too wide, dielectric function can be less
-accurate, but results may be not so much affected.
-In GW calculation, the Plasmon pole is important. It is determined not by the Drude weight;
-it usually gives small contribution to the Plasmon pole (for example, Si is described well by
-a Plasmon pole model, but Si has no Fermi surface). We expect that the GW results are not
-so sensitive to the choice of HistBin_dw, HistBin_ratio usually. We may use fine mesh
-when we plot quantities such as W (ω) near ω = 0.
+* HistBin_dw and HistBin_ratio specify real space bins which we accumulate imaginary part weight of polarization functions. The bins are (see frhis in m_freq.f90) 
+$\omega_i = {{dw}} ∗ (\exp({\rm ratio} ∗ (i − 1)) − 1) $
+where $[\omega_i, \omega_{i+1}]$ $(i = 1, 2, ...,\verb#nwhis#+1)$ is the i-th bin. HistBin_dw is bin width at ω = 0.
+The ratio ω(i + 1)/ω(i) for large ω is exp(a)=HistBin_ratio. This choice of getting coarser at high energy is because we think W (ω) around ω ∼ 0 gives most important contribution to the GW approximation. If histogram bins are too wide, dielectric function can be less accurate, but results may be not so much affected.
+In GW calculation, the Plasmon pole is important. It is determined not by the Drude weight; it usually gives small contribution to the Plasmon pole (for example, Si is described well by a Plasmon pole model, but Si has no Fermi surface). We expect that the GW results are not so sensitive to the choice of HistBin_dw, HistBin_ratio usually. We may use fine mesh when we plot quantities such as W (ω) near ω = 0.
 <!-- The ecalj gives ¯W (ω = 0) ∼ 0 for metal; where ¯W (ω) is the effective interaction averaged in
 the Γ-cell [?]. And ¯W (ω get closer to v for larger ω. -->
 

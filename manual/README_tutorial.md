@@ -15,13 +15,11 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 
 ## Features of ecalj package
 
-1. **All electron full-potential PMT method**
-   
+1. **All electron full-potential PMT method** 
    The PMT method means; a mixed basis method of two kinds of augmented waves, that is, APW+MTO.
-   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. We found that MTOs and APWs are very comlementary, corresponding to the localized and the extented natures of eigenfunctions. That is, very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $ a.u.; this implies only reaching to nearest atoms) together with APWs (cutoff is $\approx 3$ Ry) works well to get reasonable convergences. We can perform atomic-position relaxation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well.
+   In other words, the PMT method= the linearized (APW+MTO) method, which is unique except the [Questaal](https://www.questaal.org/) having the same origin with ecalj. We found that MTOs and APWs are very comlementary, corresponding to the localized and the extented natures of eigenfunctions. That is, very localized MTOs (damping factor $\exp(-\kappa r)$ where $\kappa \sim 1 $ bohr$^{-1}$; this implies only reaching to nearest atoms) together with APWs (cutoff is $\approx 3$ Ry) works well to get reasonable convergences. We can perform atomic-position relaxation at GGA/LDA level. Because of including APWs, we can describe the scattering states very well. 
   ![alt text](image-1.png)(This fig is taken from [nfp-manual by M. Methfessel and M. van Schilfgaarde](../presentations/nfpmanual.pdf))
-   
-   The current PMT formulation is given in
+   Our current PMT formulation is given in
 
    [1][KotaniKinoAkai2015, PMT formalism](https://github.com/ecalj/ecaljdoc/blob/main/presentations/KotaniKinoAkai2015FormulationPMT.pdf)
    
@@ -31,24 +29,31 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
    <!-- In principle, it is possible to perform reasonable calculations just from crystal structures and very minimum setting.  -->
     * Original PMT was started at https://journals.aps.org/prb/abstract/10.1103/PhysRevB.81.125117
     * PMT uses smooth Hankel functions described in [the smooth Hankel paper by E. Bott, M. Methfessel, W. Krabs, and P. C. Schmidt](https://github.com/ecalj/ecaljdoc/blob/main/presentations/Bott1988.pdf), which was used in [B][nfp paper by M. Methfessel and M. van Schilfgaarde, and R.A. Casali](https://github.com/ecalj/ecaljdoc/blob/main/presentations/nfp.pdf). Our PMT is on top them.
+   *  In addition to PMT basis, we use local orbitals together.
+   * The cutoff $\approx 3$ Ry may sound surprisingly small. However, note that high energy part of the plane wave methods are consumed only for the core like shape of eigenfunctions with negative curvatures of radial functions. Furthermore, the plane waves have difficulties not satisfying the periodic gauge https://arxiv.org/pdf/2010.03959. On the other hand, localized basis methods such as LMTO and Gaussians have difficulties to handle vacuum regions.
 
-    In addition to PMT basis, we use local orbitals together.
 2. **PMT-QSGW method** 
    
-   The PMT-QSGW means 
-   `the Quasiparticle self-consistent GW method (QSGW) based on the PMT method`.
-   After converged, we can easily make band plots without the Wanneir interpolation. This is because an interpolation scheme of self-energy is internally built in.
-   We can handle even magnetic metals. Since we have implemented ecalj on GPU, we can handle ~40 atoms with four GPUs.
+   The PMT-QSGW means `the Quasiparticle self-consistent GW method (QSGW) based on the PMT method`. The development of [3] is the key to perform QSGW on the PMT. We can handle even magnetic metals. Since we have implemented ecalj on GPU, we can handle ~40 atoms with four GPUs.
    [3][Kotani2014, Formulation of PMT-QSGW method](https://github.com/ecalj/ecaljdoc/blob/main/presentations/Kotani2014QSGWinPMT.pdf)
    [4][D.Deguchi PMT-QSGW applied to a variety of insulators/semiconductors](https://github.com/ecalj/ecaljdoc/blob/main/presentations/deguchi2016.pdf)
    [5][M.Obata GPU implementation](https://arxiv.org/abs/2506.03477), where we treat Type II GaSb/InAs (40 atoms) with four GPUs.
+   We can easily make band plots without the Wanneir kinds of interpolations. This is because an interpolation scheme of self-energy is internally built in.
+   This is very essential to calculate physical quantities from eigenfunctions on top of the QSGW ground states.
+
+   Since we treat all the electrons, we are not bothered with the ambiguities of the pseudopotentials.
 
 3. **Dielectric functions and magnetic susceptibilities**
     We can calculate GW-related quantities such as dielectric functions, spectrum function of the Green's functions, Magnetic fluctuation, and so on. Since our QSGW can generate eigenfunctions and eigenvalues at any k points.
 
 4. **The Model Hamiltonian with Wannier functions** 
    We can generate the effective model (Maxloc Wannier and effective interaction between Wannier funcitons). 
-   This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. We are now replacing this with a new version MLO (MuffinTinOrbail-based Localized Orbitals), where we can easily throw away (downfolding) the APW degree of freedom. We try to construct the effective Hamiltonian in https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.035141 via a mapping procedure.
+   This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. 
+   Here is a latest paper to using this, https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.035141.
+   * We are now replacing MLWF with MLO (MuffinTinOrbail-based Localized Orbitals), where we can easily throw away (downfolding) the APW degree of freedom. 
+
+5. **Singleton pattern in fortran**
+   The main part of our codes is in fortran. Our codes have the object-oriented structures respecting the singlton design pattern. We think this is a step to replace our fortran codes with those in modern languages such as JAX/PyTorch. Inevitably, we still have legacy codes but encapsulated as possible, and going to be replaced.
 
 # Overview of QSGW 
 
@@ -470,7 +475,7 @@ A gnuplot script can be created. Edit it if necessary. If you edit syml.ba2pdo2c
 * The following picture is the LDA bands for the default calculation of ba2pdo2cl2 (the names of the symmetric points can be confirmed with BZ.html. In addition, look into `syml.foobar`). 0 eV is the Fermi energy. Since this is metallic, we see no band gap.
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/8169cff0-78e6-ea50-0084-66a4cefc4cda.png).
 
-* The defaults are fine except for the k-mesh setting. For example, it is better to increase the k mesh for Fe. In general, for semiconductors, 4 4 4 for Si is a reasonable level, 6 6 6 is a level that can be used for a paper, and 8 8 8 is a level for checking accuracy. For metals such as Fe, 8 8 8 is a reasonable level.
+
 
 Here we are talking about band energies.
 
@@ -510,11 +515,14 @@ mkGWinput ctrl.mp-2534
 ```
 Then copy and edit GWimput.tmp to GWinput.
 
-In `GWinput`, n1n2n3 should be smaller than nk1 nk2 nk3 in ctrl usually,
-in order to reduce computational time (1/2 or 2/3 of ctrl, for example)
-If n1n2n3 6 6 6 for Si, it is reasonable. Except k points, not need to modify so much (ask us). `GWinput` is explained [here](./gwinput.md). Input system is different from ctrl.
+In `GWinput`, n1n2n3 should be smaller than nk1 nk2 nk3 in ctrl usually, in order to reduce computational time (1/2 or 2/3 of ctrl, for example)
+If n1n2n3 6 6 6 for Si, it is good. Except k points, not need to modify so much (ask us). `GWinput` is explained [here](./gwinput.md). Input system is different from ctrl.
+Here is a convergence behavior of the band gap for GaAs  taken from Ref.[3],
+![convGaAs](./gaasnk.pdf) 
+From this picture, I may say 4 4 4 is not so bad if we assume ~0.1eV accuracy. 6 6 6 is good. More than 8 8 8 is for numerical check(not fruitful for practical applications).
 
-### flow of QSGW calculation with the script gwsc
+
+### Flow of QSGW calculation with the script gwsc
 We run the QSGW calculations with gwsc. For semiconductors, several QSGW iterations are fine, close enough to final results.
 QSGW is to obtain band structures (or one-body Hamiltonian), the total energy is not yet.
 
@@ -591,7 +599,7 @@ This is without GPU. We see one QSGW iteration requires 24 minutes (start timing
 Since I had 5th-QSGW iteration finished (checked  by the existence of QPU.5run), it start from 6th iteration.
 
 
-#### a case of ba2pdo2cl2.
+#### a case study of ba2pdo2cl2.
 Run
 ```
 mkGWinput ba2pdo2cl2
