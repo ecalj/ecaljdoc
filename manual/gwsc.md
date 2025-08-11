@@ -477,7 +477,5 @@ Then any product of combinations `occ` $\times$ `unocc` = $\{ \phi_{4s},\phi_{4p
 
 
 # MEMO
-These documents should 
-* [ecaljnote](./ecaljnote.pdf) contains old memo. This should be revised. MaxLocWannier, local orbital, dielectric functions.
-* [ecaljdetails](../ecaljdetails/ecaljdetails.pdf) Details of ecalj algorithm. This should be revised.
 * We need to explain how to set Gamma-cell averaged $\tilde{W}({\bf q}=0,\omega)$.
+* [ecaljdetails](https://ecalj.github.io/ecaljdoc/ecaljdetails/ecaljdetails.pdf) Details of ecalj algorithm. This should be revised.
