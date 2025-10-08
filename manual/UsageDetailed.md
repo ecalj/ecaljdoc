@@ -276,10 +276,12 @@ In cases, it is easy, but in cases not so easy. So, it is better to use your own
 
 ## 4f and 5f atoms
 We need special care to tread atoms where 4f and 5f are fractionally filled.
-We have not yet include following setting in ctrlgenM1.py as for 4f/5f atoms (2025-08-07).
+We modify ctrlgenM1.py for 4f atoms (2025-08-21, not for 5f yet).
+But only limie tests yet. Make sure by yourself.
 
 Here is the setting for RareEarth rocksalt nitrides ReN such as ErN.
-1. Set nsp=2, so=2 (since QSGW can not treat so=1 now). (If necessary set so=1 after QSGW).
+1. Set nsp=2, so=2 (since QSGW can not treat so=1 now). (If necessary set so=1 after gwsc finished).
+You may use ```~/ecalj/SRC/exec/ctrlgenM1.py gd2pdo4 --so=2 --nspin=2 ```. Or you can edit ctrl.foobar after generated.
 2. SYMGRP r4z. This is needed since we have lower symmetry rather than the lattice. It fixes the direction of spins and orbital moments.
 3. Our setting is
     ```
@@ -298,13 +300,16 @@ Here is the setting for RareEarth rocksalt nitrides ReN such as ErN.
     6 2  
     ```
     Here PZ is the principle quantum number of local orbitals. This sets 5p and 5f as local orbitals. Run `lmfa crn|grep conf` to check atomic configulation.
-    * IDU,UH,JH are the LDA+U parameters, only for initial condition. Since IDU is 10+2, we skip U effect when sigm exists.
+    * IDU,UH,JH are the LDA+U parameters. When IDU is 10+2, we skip U effect when sigm exists.
     * MMOM is the initial magnetic moments.
     * LMXA=6 to expand augmented waves is needed.
     * Make sure READP=T.
 
+```CAUTION LDA+U is used only for initial condition for QSGW when IDU>10. Thus QSGW results is not dependent on JH and UH.```
+
 With these settings, we can perform series of calculations finished for 4f ReN. 
 Input files are available from [here](../data/RENctrlGWinput.tar.gz). Ask us when you like to use them.
+
 
 
 ## QPU and QPD files

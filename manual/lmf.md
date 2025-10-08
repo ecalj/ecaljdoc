@@ -205,11 +205,12 @@ The following tokens are input for each site. See examples.
     Include APWs with energy E < PWEMAX (Ry) ctrlgenM1.py set pwemax=3
 ```    
 
-## READP option
-Recently, we found that READP=T works well to stabilize computations.
-With this setting, we fix the logarithmic derivative of radial functions for each $l$ as the value   contained in `atmpnu*` given by the spherical-atom calculation `lmfa`.  
-This is a replacement of the traditional procedure that radial functions for each $l$ are calculated at the center of gravity of PDOS. We think this makes things stabilized.
-`ctrlgenM1.py` automatically set `HAM_READP=T`.
+## PNUFIX option
+Recently, we found that PNUFIX=T works well to stabilize computations.
+With this setting, we fix the logarithmic derivative of radial functions for each $l$ as the value   contained in `atmpnu*` given by the spherical-atom calculation `lmfa` if we set READP=T.
+
+This is a replacement of the traditional procedure that radial functions for each $l$ are calculated at the center of gravity of PDOS. We think this makes things stabilized. However, in principle, PNUFIX=T can give better basis set from
+the view of self-consistency of determining the radial functions. As long as we tested, PNUFIX=F may give better results for La2CuO4.
 
 For the logarithmic derivative with the electron density, we solve radial Schrödinger equation to obtain radial functions $\phi_l$ and $\dot{\phi}_l$ for every step of iteration (then no `sigm` contribution included).
 
@@ -429,9 +430,37 @@ Note the sign of the charge. The number refers to the excess electron charge. to
 
      fp/test/test.fp crn
 
-Core holes are also useful as an approximate workaround in the LDA context to deal with (almost) nonbonding f electrons. In most 4f systems, the f states get shifted away from the Fermi level, even though the LDA typically is unable to do this (except for Gd), because it lacks a nonlocal exchange as in LDA+U. An approximate workaround is to treat the 4f electrons as core. For Gd in particular, the 7 majority states should be filled, while the 7 minority states empty. Thus a core hole of -7 is required, but it is necessary to further specify the spin polarization of the core. This is accomplished with a second argument. For the Gd case (4f core, -7 excess electrons, with the core magnetic moment +7), use
+### 4f frozen core
+Core holes are also useful as an approximate workaround in the LDA context to deal with (almost) nonbonding f electrons. In most 4f systems, the f states get shifted away from the Fermi level, even though the LDA typically is unable to do this (except for Gd), because it lacks a nonlocal exchange as in LDA+U. An approximate workaround is to treat the 4f electrons as core. For Gd in particular, the 7 majority states should be filled, while the 7 minority states empty. Thus a core hole of -7 is required, but it is necessary to further specify the spin polarization of the core. This is accomplished with a second argument. For the Gd case (4f core, -7 excess electrons, with the core magnetic moment momm +7), use
 
+    ATOM=Gd Z=64 R=2.66
+      PZ=0,5,0
+      P=0,0,0,5
+      EH=-1 -1 -1 -1  RSMH=1.33 1.33 1.33 1.33 
+      EH2=-2 -2 -2 -2  RSMH2=1.33 1.33 1.33 1.33 
+      KMXA={kmxa} LMXA=6 NMCORE=1
     C-HOLE=4f C-HQ=-7,7 
+
+Wth this setting, we have electrons.
+   Q(spin1) = 7 + C-HQ(1)/2 + C-HQ(2)/2 =7-7/2+7/2=0
+   Q(spin2) = 7 + C-HQ(1)/2 - C-HQ(2)/2=7-7/2-7/2 =0
+
+For paramagnetic case,
+
+    ATOM=Gd Z=64 R=2.66
+      PZ=0,5,0
+      P=0,0,0,5
+      EH=-1 -1 -1 -1  RSMH=1.33 1.33 1.33 1.33 
+      EH2=-2 -2 -2 -2  RSMH2=1.33 1.33 1.33 1.33 
+      KMXA={kmxa} LMXA=6 NMCORE=1
+      C-HOLE=4f C-HQ=-7,0
+
+Wth this setting, we have electrons.
+   Q(spin1) = 7 + C-HQ(1)/2 + C-HQ(2)/2 =7-7/2+7/2=0
+   Q(spin2) = 7 + C-HQ(1)/2 - C-HQ(2)/2=7-7/2-7/2 =0
+
+Check charge neutrality and occupancy.
+See the following explanation. With C-HOLE=4f C-HQ=-7,0 together with P=0,0,0,5 (then 4f is treated as core, 5f as valence) and PZ=
 
 
 ```
@@ -439,8 +468,8 @@ Core holes are also useful as an approximate workaround in the LDA context to de
     Channel for core hole
  SPEC_ATOM_C-HQ    opt    r8v      2,  2          default= -1 0
     Charge in core hole.  Optional 2nd entry is moment of core hole:
-   Q(spin1) = full + C-HQ(1)/2 + C-HQ(2)/2
-   Q(spin2) = full + C-HQ(1)/2 - C-HQ(2)/2
+   Q(spin1) = full core + C-HQ(1)/2 + C-HQ(2)/2
+   Q(spin2) = full core + C-HQ(1)/2 - C-HQ(2)/2
 
 C-HOLE and C-HQ= enable partial occupation of a particular core channel.
            See Partially occupied core holes for description and examples.

@@ -64,6 +64,7 @@ export default withMermaid({
           // { text: 'Structural optimization', link: '/manual/opts' },
           // { text: 'Quasi-particle\'s life time', link: '/manual/lifetime' },
           // { text: 'Spectrum function', link: '/manual/spec' },
+          { text: 'test system: testecalj', link: '/manual/test' },
           { text: 'ecalj auto', link: '/manual/auto' }
         ]
       },
