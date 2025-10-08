@@ -39,7 +39,7 @@ export default withMermaid({
     sidebar: [
       {
         items: [
-          { text: 'Main (containing links to all files in ecaljdoc)', link: '/manual/README_tutorial' },
+          { text: 'MainDocument', link: '/manual/README_tutorial' },
         ]
       },
       {
@@ -52,10 +52,10 @@ export default withMermaid({
       {
         text: 'Manual',
         items: [
-          { text: 'UsageDetailed ', link: '/manual/UsageDetailed' },
-          { text: 'lmf  part', link: '/manual/lmf' },
-          { text: 'gwsc part', link: '/manual/gwsc' },
+          { text: 'DFT  calculation : lmf part', link: '/manual/lmf' },
+          { text: 'QSGW calculation: gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
+          { text: 'UsageDetailed ', link: '/manual/UsageDetailed' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion plot', link: '/manual/band' },
           // { text: 'Spin-orbit interaction', link: '/manual/soi' },
@@ -64,7 +64,7 @@ export default withMermaid({
           // { text: 'Structural optimization', link: '/manual/opts' },
           // { text: 'Quasi-particle\'s life time', link: '/manual/lifetime' },
           // { text: 'Spectrum function', link: '/manual/spec' },
-          { text: 'test system: testecalj', link: '/manual/test' },
+          { text: 'developer', link: '/manual/developer' },
           { text: 'ecalj auto', link: '/manual/auto' }
         ]
       },
