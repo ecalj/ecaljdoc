@@ -4,19 +4,6 @@ This is for automatic calculations for many POSCAR files.
 `ecalj_atuo` was used for generating [ecaljdatabase](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos)
 
 
-xxxxx followings are still under construction xxxxx
-
-## dependency
-We need 
- - `>python3.9'
- - pandas
- - seekpath
- - spglib
-
-```bash
-pip install pandas seekpath spglib --user
-```
-
 
 ### python のImportError が発生する場合
 
@@ -31,7 +18,8 @@ ImportError: Unable to import required dependencies:
 pytz: No module named 'pytz'
 ```
 この場合pythonのversion upを試す。
-#### `mise` を使用する場合. 
+
+#### `mise` を使用する場合.　(pyenvでも同様です)
 以下を `~/.bashrc` に記載 (zsh の場合は 2行目のbash を zsh とする)
 ```bash
 type mise > /dev/null 2>&1 || curl https://mise.run | sh
