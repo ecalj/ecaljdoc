@@ -319,7 +319,9 @@ ctrlgenToml: done. ctrlG.mp-2534.toml has [io]/[struc]/[[site]]/[[spec]]/...
 **Recommended workflow**: run `ctrlgenToml.py <sname>` with **no other
 flags** to get the defaults, then **edit `ctrlG.<sname>.toml`
 directly** — the file is fully commented and TOML-typed, so editing
-keys in place is the cleanest path.  Optional CLI flags
+keys in place is the cleanest path. `PB.toml` is consumed only on the
+GW path and **does not normally need hand editing**; leave it as
+generated.  Optional CLI flags
 (`--nspin / --so / --xcfun / --nk1 / --insulator / --systype / --ssig
 / --mmom`) exist for scripting and are bake-in equivalents of the
 edits below; `ctrlgenToml.py --help` shows the full list.

@@ -86,6 +86,12 @@ to live in `GWinput`.  Per-atom product-basis tables (sname-free) sit in
 a sibling `PB.toml`.  Run `Legacy2toml.py <sname>` inside any old
 working directory to generate both files.
 
+> **`PB.toml` is for the GW path** (consumed by `hbasfp0` /
+> `hvccfp0` / etc. when generating the mixed product basis). It is
+> auto-emitted by `ctrlgenToml.py` (or `Legacy2toml.py`) and **does
+> not normally need hand editing** — when you tune a calculation,
+> edits go into `ctrlG.<sname>.toml`.
+
 ## File structure (sections)
 
 ```toml
