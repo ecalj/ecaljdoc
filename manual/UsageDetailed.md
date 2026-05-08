@@ -117,7 +117,7 @@ We can perform LDA/QSGW calculation with the AF symmetry (not for SOC=1).
 Only up spin are calculated. Then charge density and eigenvalues are
 symmetrized for the antiferro symmetry.
 
-See ~/ecalj/Samples/AFsymmetry.
+See ~/ecalj/Samples/Legacy/AFsymmetry.
 To set AF symmetry, We have to set a line in ctrl file as
 ```
 SYMGRPAF i:(1,1,1)  #Antiferro symmetry operation
@@ -151,7 +151,7 @@ We have a switch `HAM_SO` in the ctrl file
 * Currently, QSGW can not be performed with so=1. So we first have to run gwsc with
 so=0 or 2. After we get sigm file, we run lmf with --vso=1 (nit=1 can be fine) as a perturbation.
 
-* We can treat only colinear spins. Spin axis is along (0,0,1) as default. We can choose other direction with SOCAXIS. See ecalj/Samples/SOCAXIS. Not checked completely, but it seems work well.
+* We can treat only colinear spins. Spin axis is along (0,0,1) as default. We can choose other direction with SOCAXIS. See ecalj/Samples/Legacy/SOCAXIS. Not checked completely, but it seems work well.
 
 ### Band plot with spin orbit coupling.
 * method 1: only apply SOC for band plot
@@ -173,7 +173,7 @@ so=0 or 2. After we get sigm file, we run lmf with --vso=1 (nit=1 can be fine) a
   Then run `job_band mp-2534 -np 8 -vso=1 -vnspin=2`
 
 ## Forces and Atomic position relaxiation  
-See ecalj/Samples/LaGaO3_relax.
+See ecalj/Samples/Legacy/LaGaO3_relax.
 We have to set `DYN` category (only relaxiation). 
 We can set directions for relaxation with `SITE_ATOM_RELAX 0 0 1` or so.
 No cell optimizations.  
@@ -185,13 +185,13 @@ No cell optimizations.
     (I think some possible developments since atomic forces calculated well).
 
 ## Fermi surface 
-See a sample at ecalj/Samples/FermiSurface
+See a sample at ecalj/Samples/Legacy/FermiSurface
 Run `job_fermisurface cu -np 4 10 10 10` after ctrl.cu converged. This write down all band energies (around
 Ef) for 10x10x10 in BZ. Then we can view it with `xcrysden as xcrysden --bxsf fermiup.bxsf`
 With `–allband` option to `job_fermisurface`, we have all the bands. Then we can see iso-energy surface at any energy.
 
 ## PROCAR mode 
-See a sample at ecalj/Samples/MgO_PROCAR
+See a sample at ecalj/Samples/PROCAR/MgO_PROCAR (TOML-migrated)
 We can generate PROCAR file containing the size of eigenfuncitons**2. 
 The sample (run job file) generates eps file showing fat band of O2 compon`ents.
  Run jobprocar. This gives *.eps file which shows Fat band picture.
@@ -206,7 +206,7 @@ The sample (run job file) generates eps file showing fat band of O2 compon`ents.
 We have samples 
 * https://github.com/tkotani/ecalj/tree/master/Samples/GdNldau
 
-* ~/ecalj/Samples/ReNcub 
+* ~/ecalj/Samples/Legacy/ReNcub 
 
 *  IDU=, UH=, JH= specify parameters for LDA+U.  IDU=#,#,#,... specifies which l-channels are to have U and the type of LDA+U implementation.
           0 in a particular l-channel means no U is to be applied, 1 or 2 are for particular forms of LDA+U.  For example,
@@ -215,7 +215,7 @@ We have samples
 
 ## BoltTrap 
 --boltztrap option is to generate files required for boltztrap.
-See `~/ecalj/Samples/Boltztrap`
+See `~/ecalj/Samples/Legacy/BOLZTRAP`
 
 
 ## Dielectric function
@@ -224,10 +224,10 @@ Dielectric functions for Cu and GaAs. For Cu, we have intraband and interband co
 See [dielectric fuctnion](optical.md).
 
 ## Impact ionization rate
-`~/ecalj/Samples/IIR`
+`~/ecalj/Samples/Legacy/IIR`
 
 ## Spin fluctuation
-`~/ecalj/Samples/Magnon`
+`~/ecalj/Samples/Legacy/Magnon`
 It is via the MaxlocWannier. We are going to move to MLO instead. Here is a figure (this is on top of LDA) for the spin fluctuation of Fe in [Okumura2021](https://github.com/ecalj/ecaljdoc/blob/main/presentations/okumura2021.pdf).
 ![alt text](image-6.png)
 
@@ -252,16 +252,20 @@ These citations are required.
 2.Cite spglib that is essential for getsyml.
 
 ### ecalj/Samples/
-* MLO: new localized basis
-  Maximally localized Wannier function and cRPA interaction
-* MLWF_samples
-  Wannier function generator and cRPA 
-  wannier90 method implemented in ecalj and cRPA. 
-  (a cRPA method by Juelich group).
-  See Samples_MLWF/README.
-   ~/ecalj/README_wannier.md This is going to be replaced with README_MLO.md
-* mass_fit_test
-  Effective mass calculation. See README. probably not maitained\dots
+For the canonical layout and per-tree role table see the
+[Samples overview page](./samples) (or the upstream
+[Samples/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/README.md)).
+Highlights touched in this page:
+
+* `MLOsamples/` — new MTO Localized Orbital basis (Wannier replacement),
+  with on-site W via `job_mloW`. See the per-dir
+  [README](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README.md).
+* `Legacy/BK/MLWF_sampls/` — historical Wannier90-style implementation
+  (CuMLWFs, La2CuO4, NiOMLWF, SrVO3MLWF), cRPA via the Juelich group's
+  formulation. Kept under Legacy/ for reference; we are migrating users
+  toward `MLOsamples/` instead.
+* `Legacy/mass_fit_test/` — effective mass calculation (probably not
+  maintained).
 
 ## ecalj_auto
 This is a suit of python scripts to run thousands of gwsc calculations automatically.
@@ -277,13 +281,17 @@ In cases, it is easy, but in cases not so easy. So, it is better to use your own
 "Not stick to convergence so much. Just stick to Reproducibility."
 
 ## 4f and 5f atoms
-We need special care to tread atoms where 4f and 5f are fractionally filled.
-We modify ctrlgenM1.py for 4f atoms (2025-08-21, not for 5f yet).
-But only limie tests yet. Make sure by yourself.
+We need special care to treat atoms where 4f and 5f are fractionally filled.
+The atomlist defaults for 4f atoms were updated 2025-08-21 (5f not yet);
+the same defaults are picked up by `ctrlgenToml.py` (which extracts the
+atomlist from `ctrlgenM1.py` at runtime). Only limited tests yet —
+make sure by yourself.
 
 Here is the setting for RareEarth rocksalt nitrides ReN such as ErN.
-1. Set nsp=2, so=2 (since QSGW can not treat so=1 now). (If necessary set so=1 after gwsc finished).
-You may use ```~/ecalj/SRC/exec/ctrlgenM1.py gd2pdo4 --so=2 --nspin=2 ```. Or you can edit ctrl.foobar after generated.
+1. Set `[ham].nspin = 2`, `[ham].so = 2` (since QSGW cannot treat `so=1` now).
+   If necessary, set `so=1` after `gwsc` finished.
+You may use `ctrlgenToml.py gd2pdo4 --so=2 --nspin=2`, or simply edit
+`ctrlG.<sname>.toml` after generation.
 2. SYMGRP r4z. This is needed since we have lower symmetry rather than the lattice. It fixes the direction of spins and orbital moments.
 3. Our setting is
     ```
@@ -585,9 +593,9 @@ It automatically performs cRPA calculation (formulation given by Juelich group) 
 In addition, it gives effective interaction $\langle ij|W|kl \rangle$ in CRPA.
 
 Required settings live in the `[gw]` section of `ctrlG.<sname>.toml` (Wannier outer/inner windows, `wan_*` keys; legacy: `<MaxLoc>` block in `GWinput`).
-We have examples in `ecalj/Samples/MLWF_samples` which contains `CuMLWFs, Cu, Fe, NiOMLWF, SrVO3` but some may be missing.
+We have examples in `ecalj/Samples/Legacy/BK/MLWF_sampls/` (note the historical typo `sampls`), which contains `CuMLWFs, La2CuO4, NiOMLWF, SrVO3MLWF`.
 
-## Run a sample at Samples/MLWF_samples/CuMLWFs
+## Run a sample at Samples/Legacy/BK/MLWF_sampls/CuMLWFs
 See ./job file. Run this or run one by one as follows.
 At firts, run self-consistent calculation as
 ```
@@ -632,7 +640,7 @@ genMLWF -np 8 cu
    At this point, you can make band plot to check whether your setting for
    Wannier work well or not; the model-Hilbert space by band plot.
    (we need syml.* file and run job_band to get original energy bands)
-   Then plot wannier band on top of it. See Samples/MLWF_samples/CuMLWFs/bandplot.MLWF.isp1.glt as an example.
+   Then plot wannier band on top of it. See Samples/Legacy/BK/MLWF_sampls/CuMLWFs/bandplot.MLWF.isp1.glt as an example.
    If the plot is strange, you need to choose outer and inner windows for Wannier.                                                           
    (Repeat `echo 2 | hmaxloc > lmaxloc2` until you have satisfactory fitting, tweaking the `wan_*` keys in `[gw]` of `ctrlG.<sname>.toml`; legacy: the wannier block in `GWinput`).
 
