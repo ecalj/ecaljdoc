@@ -53,6 +53,7 @@ export default withMermaid({
         text: 'Manual',
         items: [
           { text: 'TOML migration (2026-05)', link: '/manual/toml_migration' },
+          { text: 'Samples (where what lives)', link: '/manual/samples' },
           { text: 'DFT  calculation : lmf part', link: '/manual/lmf' },
           { text: 'QSGW calculation: gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },

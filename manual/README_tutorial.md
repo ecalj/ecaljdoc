@@ -783,7 +783,7 @@ If MT radius are changed, start over from lmfa (remove atm* files)
 
 # jobmaterials.py: mini database for computational tests
 At ecalj/MATERIALS/, type `./jobmaterials.py`. It shows a help with a list of materials.
-It contains samples of simple materials. It performs LDA calculations and generates GWinput for materials.
+It contains samples of simple materials. It performs LDA calculations and generates GW driver settings (now in `[gw]` of `ctrlG.<sname>.toml`; legacy `GWinput` for un-migrated materials).
 (I think MATERIALS/ is not organaized well. We are going to clean up)
 * How to run 
   ```
@@ -807,8 +807,10 @@ Run Si for example:
   performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
   >job_materials.py works as follows for given names.
   Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
-  Step 2. Generate ctrl by ctrlgenM1.py
-  Step 3. Make directtory such as Si/ and copy ctrls.si ctrl.si and GWinput (this is for QSGW) 
+  Step 2. Generate ctrlG.<ext>.toml + PB.toml by ctrlgenToml.py
+          (legacy path: ctrlgenM1.py + Legacy2toml.py)
+  Step 3. Make directory such as Si/ and copy ctrls.si plus the generated TOML pair
+          (legacy: ctrls.si, ctrl.si, GWinput)
   Step 4. run lmfa and lmf
   We can skip step 4 with `--noexec`. 
   Run "job_materials --all --noexec" is an idea to generate all input files for materials in the database.  Watch no strange erros appear.

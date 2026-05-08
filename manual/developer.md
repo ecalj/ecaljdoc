@@ -14,7 +14,7 @@ SRC/exec
 * Install test described in InstallAll.py is performed at `ecalj/Samples/TestInstall`.
 * We can run testecalj as `>testecalj foobar`, where `foobar/` is the name of a test directory.
 `testecalj` creates `foobar_work/` directory and do test in it. 
-* `foobar/` should contain initial settings such as `ctrl,GWinput` and files to be compared. In addition, we have to write `test.py` which describe schedules to run programs and to compare files. `ecalj/Samples/TestInstall/foobar` contains samples of test directories.
+* `foobar/` should contain initial settings (`ctrlG.<sname>.toml` + `PB.toml`; legacy `ctrl,GWinput` for un-migrated dirs) and files to be compared. In addition, we have to write `test.py` which describe schedules to run programs and to compare files. `ecalj/Samples/TestInstall/foobar` contains samples of test directories.
 * For any test directories `foobar`, we can perform test by `testecalj foobar`. In fact, we can run test of `Fe_magnon` at `ecalj/Samples/Magnon` since we added `ecalj/Samples/Magnon/test.py`. 
 * We can write your own `test.py` easily. 
 

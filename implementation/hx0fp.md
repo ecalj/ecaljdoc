@@ -9,7 +9,7 @@
 ## 並列化
 以下のMPI並列化が実装されている。
  - $q$点: 第一還元ゾーン中のk点数。 offset Γ 処理を含む。
- - $k$点: 第一ゾーン中のk点数 `GWinput` の `n1n2n3` で指定した量
+ - $k$点: 第一ゾーン中のk点数 `[gw].n1n2n3` で指定した量 (legacy: `n1n2n3` in `GWinput`)
  - MPB: 積基底
 
 > [!important]

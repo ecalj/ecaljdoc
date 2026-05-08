@@ -29,20 +29,19 @@ gwsc -np 64 -np2 4 --gpu 2 inas2gasb2 > lgwsc
 
 `i1accs` はテストキュー(最大時間30分)ですので、プロダクトランでは`F1accs`等を使用してください。
 
-`GWinput` の部分的な抜粋
-```
-!GaussianFilterX0 0.0001 !(a.u.) Gaussian smearing for the polarization function x0. 
-                         ! This stabilize convergence for metallic systems
-                         ! This can be a default setting in the future
-KeepEigen .false.
-zmel_max_size 4
-MEMnmbatch 4
+`ctrlG.<sname>.toml` の `[gw]` セクション抜粋 (legacy: 同 keys を `GWinput` に書く)
+```toml
+[gw]
+# GaussianFilterX0 = 0.0001  # (a.u.) Gaussian smearing for x0; stabilises metals
+KeepEigen = false
+zmel_max_size = 4
+MEMnmbatch = 4
 ```
 
-* `KeepEigen` を `.false.` に設定します。
-* `zmel_max_size` を 4 に設定します。
-* `MEMnmbatch` を 4 に設定します。
-それぞれの意味は [GWinput](../manual/gwinput.md) を参照してください。
+* `[gw].KeepEigen = false`
+* `[gw].zmel_max_size = 4`
+* `[gw].MEMnmbatch = 4`
+それぞれの意味は [GWinput (legacy reference)](../manual/gwinput.md) または [lmf.md § Legacy ctrl ↔ TOML map](./lmf#legacy-ctrl-lt-sname-gt-toml-path-map) を参照してください。
 
 ### MPSの設定
 
@@ -85,18 +84,20 @@ gwsc -np 64 -np2 4 --gpu 1 $id > lgwsc
 
 1. The GPU version uses fewer MPI processes compared to the CPU version, so the available memory per MPI process is larger
    This allows for larger batch sizes in the calculation, potentially improving computation speed.
-   The variables controlling the batch size are `NEMnmbatch` and `zeml_max_size`, which are specified in `GWinput`.
+   The variables controlling the batch size are `MEMnmbatch` and `zmel_max_size` in the `[gw]` section of `ctrlG.<sname>.toml` (legacy: same keys in `GWinput`).
    For GPU calculations, set these values to around 4 (representing 4GB).
-   ```text GWinput
-   zmel_max_size 4
-   MEMnmbatch 4
+   ```toml
+   [gw]
+   zmel_max_size = 4
+   MEMnmbatch = 4
    ```
    > [!TIP]
    > If not set, the default values for CPU calculations will be used.
 
-2. When handling large systems, add the following to `GWinput` to prevent memory exhaustion:
-   ```
-   keepEigen .false.
+2. When handling large systems, add the following to `[gw]` (legacy: `GWinput`) to prevent memory exhaustion:
+   ```toml
+   [gw]
+   KeepEigen = false
    ```
 
 ## Notes

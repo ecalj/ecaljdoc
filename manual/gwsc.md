@@ -86,7 +86,7 @@ In principle, the number is determined by
 * QPU.[number]runをチェックして、number回のQSGWイテレーションが終了している、と認識する。
 (初期状態から実行したいときはすべての`*run*`ディレクトリ、ファイルを消すこと）。
 
-* QSGW.[number]runディレクトリには、QSGWのnumber回目の結果rst,sigm(加えてatmpnu,ctrl,GWinput)が格納されており、これを用いてバンドプロットなどができる。
+* QSGW.[number]runディレクトリには、QSGWのnumber回目の結果 `rst`, `sigm` (加えて `atmpnu`, `ctrlG.<sname>.toml`, `PB.toml`; legacy: `ctrl`, `GWinput`) が格納されており、これを用いてバンドプロットなどができる。
 
 
 
@@ -386,8 +386,15 @@ self-energy file in the expansion of eigenfunctions of $H^0$.
 
 
 # Product basis
-The product basis section in GWinput is given as follows. Recall that the product basis is made of the product basis within MT and the interstitial plane waves (IPWs).
-From the `<PRODUCT_BASIS>` table, we generate possible product basis of atomic functions within MTs.
+The product basis is now configured in two places:
+- cut-offs in `[product_basis]` of `ctrlG.<sname>.toml` (`pb_tolerance`, `pb_lcutmx`).
+- per-atom tables (`nlx`, `valence`, `core`) in the sibling **`PB.toml`** file (sname-free, shared per spec).
+
+The legacy form (kept here as historical reference) was a single
+`<PRODUCT_BASIS>` block in `GWinput`. From that block, ecalj
+generates the possible product basis of atomic functions within MTs;
+the product basis is the union of MT-local products and interstitial
+plane waves (IPWs).
 
 Product basis is originally given by F.Aryasetiawan and O.Gunnarsson at
 https://journals.aps.org/prb/abstract/10.1103/PhysRevB.49.16214

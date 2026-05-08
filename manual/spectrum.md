@@ -37,8 +37,9 @@ In addition, we need to set resolution of $\omega$.
   3     0.0000000000000000     0.0000000000000000     1.0000000000000000
 ```
 
-   To know allowed q points on regular mesh point, run the command "mkGWIN_lmf2", then
-   supply n1,n2,n3. The templete of GWinput.tmp contains all possible q points. Edit it.
+   To know allowed q points on regular mesh point, run `mkGWIN_lmf2`, then
+   supply n1,n2,n3. The generated `GWinput.tmp` contains all possible q points;
+   `Legacy2toml.py <sname>` then folds them into `[blocks].QPNT` of `ctrlG.<sname>.toml`.
   
 ~~NOTE:Anyq option can allow you to specify any q points by shifted mesh technique.
    (if necessary, but only for some special purpose).~~
@@ -75,7 +76,7 @@ In addition, we need to set resolution of $\omega$.
    omegamaxin=(2.0 Ry) means the range "-2 Ry to 2 Ry" for self-energy plot.
 
    Note that imaginary part of Sigma is given as the comvolution of ImW(omega) and the pole of Green's function
-   (esmr in GWinput gives energy smearing of the pole). Resolution for Im W (near omega=0) is by dw in GWinput.)
+   (`[gw].esmr` gives energy smearing of the pole; legacy: `esmr` in `GWinput`). Resolution for Im W (near omega=0) is set by `[gw].HistBin_dw` (legacy: `dw` in `GWinput`).
    I think that the reolution of self-energy is ~ 0.05 eV in the default setting.
    This is because {\tt dw} \sim {\tt esmr} \sim 0.05 eV. 
 
