@@ -7,6 +7,15 @@ ecaljdoc is a suit of documents of the [ecalj package](https://github.com/tkotan
 
 If you can join to edit ecaljdoc, ask to msobt at https://github.com/msobt.
 
+> 🤖 **Auto-edited sections (2026-05)** — the TOML-migration banners on
+> manual / install / implementation pages and the new
+> [`manual/toml_migration.md`](./manual/toml_migration.md) hub were
+> drafted by Claude (Opus 4.7) in a single Claude Code session
+> (commit `86e7646`). The factual structure (file roles, Legacy2toml.py
+> usage, migrated sample tree) reflects the actual ecalj state, but
+> commit hashes, line counts, and English wording may need a human
+> review pass. Treat with care; correct as you find issues.
+
 ---
 
 ### How to edit this document with vitepress

@@ -1,5 +1,14 @@
 # TOML migration (2026-05)
 
+> 🤖 **Auto-edited by Claude (Opus 4.7) — verify before relying on details.**
+> This page and the TOML-migration banners across ecaljdoc were drafted in
+> a single Claude Code session (commit `86e7646` on `main`). The shape is
+> right (file roles, conversion command, sample dirs, gotchas all reflect
+> the actual ecalj state at master `7ee2d7c13` / `c4bf09418` plus the
+> nvfortran cherry-pick `f693848ce`), but specific commit hashes, line
+> counts, and English wording may need a human pass. Flag anything that
+> reads off and either fix it directly or open an issue.
+
 As of **May 2026**, the Fortran binaries (`lmf`, `lmfa`, `lmchk`, `gwsc`,
 `hsfp0`, `eps_lmfh`, `epsPP_lmfh`, `epsPP0`, `mlo`, ...) read **structured
 TOML only**. Legacy `ctrl.<sname>` and `GWinput` text files are no longer
