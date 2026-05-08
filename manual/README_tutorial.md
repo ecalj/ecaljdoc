@@ -271,98 +271,110 @@ to reproduce results by VASP or in MP from your POSCAR file.
     - you can use any name for sites such as [Niup or something](./UsageDetailed.md#antiferro-symmetry-without-soc), in such a case you have to set SPEC section in addition. [Non integer number of Z is allowed.](./UsageDetailed.md#background-charge-and-fractional-z). Learn afterward.
     - In old ctrls, you may see NL,NBAS,NSPEC, which are not necessary now.
 
-## Step 2. Get ctrl from ctrls
-ctrl is the basic input file for ecalj. We generate template of ctrl with ctrlgenM1.py from ctrls.
-ctrl has user-defined extension as `ctrl.foobar`.
+## Step 2. Get `ctrlG.<sname>.toml` from ctrls
 
-Minimum explanations, which we expect to read by users, are embedded in the generated ctrl file.
-<!-- Number of k points (nk1 nk2 nk3), nspin, so (spin orbit switch), xc type(xcfun), APW cutoff (pwemax), are only what we need to tweak usually. -->
-
-When we run lmf, we can add command line option such as -vnspin=2. Then `%const foobarx=1` defined in the ctrl file is overridden (referred with {foobarx}). save.* file shows values of foobarx you used.
-
-It is possible to enforce antiferro symmetry (except so=1 case).
-We only need ctrl file in the following calculations (while some tmp* tmp2* and so on are generated).
-
-<!-- ctrlgenM1.pyの内部ではlmfa,lmchk(原子球サイズ決定）などを呼んでいる。
-これ以後の計算にはctrl.foobarのみ残しておけば良い（ムダファイルが大量にできているのは消して良い）.  -->
+`ctrlG.<sname>.toml` plus `PB.toml` is the input pair the Fortran
+binaries (`lmf`, `lmfa`, `lmchk`, `gwsc`, ...) actually read since
+2026-05.  Generate them straight from the lightweight
+`ctrls.<sname>` (the structure-only seed produced by `vasp2ctrl` in
+Step 1) with **`ctrlgenToml.py`**:
 
 ```bash
-ctrlgenM1.py mp-2534
+ctrlgenToml.py mp-2534
 ```
-If no problem, you see
+
+This single command:
+
+1. fills `[io] / [struc] / [[site]] / [[spec]]` from the periodic-table
+   defaults (the same `atomlist` table that `ctrlgenM1.py` uses);
+2. internally runs `lmfa → lmf --jobgw=0 → gwinit` to populate
+   `[gw] / [product_basis] / [blocks]` and the per-atom tables in
+   `PB.toml`;
+3. writes `ctrlG.<sname>.toml` and `PB.toml` and stops.
+
+Successful end-of-run looks like:
+
+```text
+ctrlgenToml: wrote ctrlG.mp-2534.toml (2 spec, 2 sites)
+ctrlgenToml: running lmfa -> lmf --jobgw=0 -> gwinit  to fill GW sections
+ctrlgenToml: done. ctrlG.mp-2534.toml has [io]/[struc]/[[site]]/[[spec]]/...
+             plus [gw]/[product_basis]/[blocks].  PB.toml has nlx/valence/core.
 ```
-...
-=== End of ctrlgenM1.py. OK! A template of ctrl file, ctrlgenM1.ctrl.mp-2534, is generated.
+
+Useful flags:
+
+```bash
+ctrlgenToml.py mp-2534 \
+    --nspin=2 --so=1 --xcfun=pbe \
+    --nk1=12 --nk2=12 --nk3=12 \
+    --insulator                   # disable metal-mode tetra/broadening defaults
+ctrlgenToml.py xxx --systype=molecule   # molecules: tetra=false, FSMOM bias
+ctrlgenToml.py xxx --ssig=0.8          # QSGW80 (default ssig=1.0 = full QSGW)
+ctrlgenToml.py xxx --mmom='MMOM=0,0,2.5'  # initial magnetic moments
 ```
-Here `ctrlgenM1.py` internally calls `lmf` and `lmchk`, which generate irrelevant files which are automatically deleted.
-'SiteInfo.lmchk and PlatQlat.chk' are explained later on (these are easily reproduced by ctrl).
 
-Then copy as
+Run `ctrlgenToml.py --help` for the full list.
+
+After this step, edit `ctrlG.<sname>.toml` directly if you need to
+change anything — the file is fully commented and TOML-typed.  Common
+edits:
+
+1. `[bz].nkabc` — k-mesh (LDA).
+2. `[ham].nspin` — 2 for magnetic, 1 nonmagnetic.
+3. `[ham].so` — 0 / 1 (full L·S) / 2 (Lz·Sz only); needs `nspin = 2`.
+   `so=1` does not yet support QSGW; for QSGW + SOC, run with `so=0`
+   or `so=2` to obtain `sigm.<sname>`, then set `so=1`.
+4. `[ham].xcfun` — 1 = VWN, 2 = Barth-Hedin (default), 103 = PBE-GGA.
+5. `[ham].scaledsigma` — QSGW mixing. `1.0` = full QSGW, `0.8` = QSGW80.
+   `(scaledsigma) × (V_xc^QSGW − V_xc^LDA)` is added to the lmf
+   Hamiltonian whenever a `sigm.<sname>` file is present.
+6. `[gw].n1n2n3` — GW k-mesh; smaller than `[bz].nkabc` (1/2 or 2/3).
+7. LDA+U: add `idu / uh / jh` arrays inside `[[spec]]`; see the
+   [LDA+U section in `lmf.md`](./lmf).
+
+For the run-time `-v` syntax, see [TOML migration](./toml_migration):
+
+```bash
+# OLD (legacy ctrl + %const)
+lmf si -vnk=8 -vmetal=3 -vnspin=2
+
+# NEW (TOML path; processed in-memory, no on-disk rewrite)
+lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3 -v[ham.nspin]=2
 ```
-cp ctrlgenM1.ctrl.mp-2534 ctrl.mp-2534
-```
-and edit `ctrl.foobar` if necessary. 
 
-How to edit? Explanations are embedded in ctrl.foobar (please let me know wrong descriptions). Possible points to rewrite in ctrl.foobar:
-1. Number of k points (nk1,nk2,nk3).
-2. nsp=2 if magnetic
-3. SpinOrbitCoupling: so=0 (none), so=1 (LdotS), 2 (LzSz). nsp=2 is required for so=1,2. so=1 does not yet support QSGW. SOC axis can also be freely selected, but currently (0,0,1) default and (1,1,0) are supported (m_augmbl.f90). If you want to set SO=1 in QSGW, currently, run QSGW calculation with so=0 or so=2 to obtain ssig file, then set so=1
-4. xcfun (choice of LDA exchange correlation term). Only =1:BH, =2:VWN, =103:PBE-GGA.
-5. LDA+U settings (not explained yet).
-6. ssig=1.0 (If you choose QSGW80, use ssig=0.8) is for QSGW calculations.
-$V^{\rm xc QSGW}-V^{\rm xc LDA}$ is stored in a file `sigm.foobar`. We add ssig $\times (V^{\rm xc QSGW}-V^{\rm xc LDA})$ to the potential in the lmf calculation as long as `sigm.foobar` file is available in the same directory.
+* `lmchk --pr60 mp-2534` allows you to check the recognized symmetries.
 
-* `lmchk --pr60 foobar` allows you to check the recognized symmetries by `lmf`. Turning off --pr60 or reducing 60 will reduce the verbosity of output.
+At this point, you can visually check:
 
-At this point, you can visually check the following check files.
-* SiteInfo.chk
-MT radius Atomic positions
-* PlatQlat.chk
-Primitive lattice vector (plat) Primitive reciprocal lattice vector (qlat)
+* `SiteInfo.lmchk` — MT radii, atomic positions
+* `PlatQlat.chk` — primitive lattice vectors (plat) and reciprocal (qlat)
 
-[Here we explain details of ctrl file](./lmf.md).
+[Detailed reference for every key in `ctrlG.<sname>.toml`](./lmf).
 
- **Hereafter, we only use `ctrl.foobar` (`ctrls.foobar` is used hereafter.). We can delete other files.**
+> **`ctrlgenToml.py` ↔ `ctrlgenM1.py` (legacy)** — `ctrlgenToml.py`
+> shares the periodic-table defaults with `ctrlgenM1.py` (atomlist
+> extracted at runtime), so both produce equivalent physics.  The
+> legacy two-step path
+> `ctrlgenM1.py <ext> → ctrlgenM1.ctrl.<ext> → cp to ctrl.<ext> → Legacy2toml.py <ext>`
+> is preserved for migrating old directories that already have
+> hand-edited `ctrl.<ext>` (or `ctrl.<ext>` + `GWinput`) decks.  See
+> Step 2-Migration below.
 
-### Step 2.5. Convert legacy `ctrl.foobar` to TOML
+### Step 2-Migration. Existing `ctrl.<sname>` (and optional `GWinput`)
 
-Since 2026-05 the Fortran binaries (`lmf`, `lmfa`, `lmchk`, `gwsc`, ...)
-read **`ctrlG.<sname>.toml` + `PB.toml` only** — the legacy `ctrl.<sname>`
-text format is no longer parsed.  After `ctrlgenM1.py` produces
-`ctrl.mp-2534`, run:
+If you start from an old working directory that already has a
+hand-edited `ctrl.<sname>` (and possibly `GWinput`), don't rebuild
+from `ctrls`; convert in place:
 
 ```bash
 Legacy2toml.py mp-2534
 ```
 
-This emits two files:
-
-- `ctrlG.mp-2534.toml` — merged ctrl + (later) GW driver sections + product-basis cut-offs
-- `PB.toml` — per-atom product-basis tables (sname-free, shared per spec)
-
-The conversion is idempotent and prints `[INFO] / [WARN] / [ERROR]`
-diagnostics for any `%const` / `-v` overrides that won't survive the
-conversion as-is.  See [TOML migration](./toml_migration) for the full
-guide and the legacy-↔-TOML key map.
-
-`Legacy2toml.py` lives in `~/bin/` (installed by `InstallAll.py`).
-The same script is run **once per directory**; later edits go into the
-generated `ctrlG.<sname>.toml` directly (not back into the legacy
-`ctrl.<sname>`).  Run-time overrides also use a new path syntax:
-
-```bash
-# OLD
-lmf si -vnk=8 -vmetal=3 -vnspin=2
-
-# NEW (TOML-aware, processed in-memory; no on-disk rewrite)
-lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3 -v[ham.nspin]=2
-```
-
-For a worked-through `ctrlG.<sname>.toml` example with inline comments,
-see [`lmf.md` § ctrlG.&lt;sname&gt;.toml](./lmf#ctrlg-lt-sname-gt-toml-current-input-format-2026-05).
-
-Hereafter `lmf si`, `lmfa si`, `gwsc si` etc. all read
-`ctrlG.si.toml` + `PB.toml` automatically.
+This walks `ctrl.<sname>` and (if present) `GWinput` and emits
+`ctrlG.<sname>.toml` + `PB.toml`.  It is idempotent and prints
+`[INFO] / [WARN] / [ERROR]` diagnostics for any `%const` / `-v`
+overrides that won't survive as-is.  See
+[TOML migration](./toml_migration) for the full key map.
 
 ### Install VESTA 
 It is convenient to see crystal structures with VESTA.
