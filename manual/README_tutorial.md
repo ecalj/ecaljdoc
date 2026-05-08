@@ -807,8 +807,8 @@ Run Si for example:
   performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
   >job_materials.py works as follows for given names.
   Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
-  Step 2. Generate ctrlG.<ext>.toml + PB.toml by ctrlgenToml.py
-          (legacy path: ctrlgenM1.py + Legacy2toml.py)
+  Step 2. Generate `ctrlG.<ext>.toml` + `PB.toml` by `ctrlgenToml.py`
+          (legacy path: `ctrlgenM1.py` + `Legacy2toml.py`)
   Step 3. Make directory such as Si/ and copy ctrls.si plus the generated TOML pair
           (legacy: ctrls.si, ctrl.si, GWinput)
   Step 4. run lmfa and lmf
