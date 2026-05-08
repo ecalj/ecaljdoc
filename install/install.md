@@ -208,12 +208,16 @@ For GPU, use `--fc nvfortran` together with `--gpu`.
 
 
 
-at ecalj/SRC/TestInstall/. (testecalj.py is the script for test)
+Tests live at `ecalj/Samples/TestInstall/`; the test driver is the
+`testecalj` script under `ecalj/SRC/exec/` (installed into `BINDIR`
+alongside the binaries).
 
 
 ## Install ecalj
 
-`InstallAll.py` compiles and installs ecalj, then runs install tests at `ecalj/SRC/TestInstall/` (see `testecalj.py`).
+`InstallAll.py` compiles and installs ecalj, then runs install tests at
+`ecalj/Samples/TestInstall/` (driver: `testecalj`; comparison helper:
+`SRC/exec/comp.py`).
 If successful, you will see 'OK! ALL PASSED!' at the end. The process may take 3 ~ 10 minutes.
 
 To install ecalj, first check the help:
@@ -236,7 +240,7 @@ For GPU builds, use:
 
 To start from scratch, add `--clean`.
 
-This will compile the Fortran source, link, copy all programs and scripts to your bin, and run the minimum install tests at `ecalj/SRC/TestInstall/` (about ~ 5 minutes).
+This will compile the Fortran source, link, copy all programs and scripts to your bin, and run the minimum install tests at `ecalj/Samples/TestInstall/` (about ~ 5 minutes).
 
 *Tip:* Check `./InstallAll.py` for details on where binaries are installed (default: `BINDIR=~/bin`). Tools like `getsyml`, `viewvesta`, and `vasp2ctrl` are softlinked.
 
@@ -263,15 +267,20 @@ user    19m38.952s
 sys     3m38.583s
 ```
 
-You can also run individual tests at `ecalj/SRC/TestInstall/` with:
+You can also run individual tests at `ecalj/Samples/TestInstall/` with:
 
 ```bash
-./testecalj.py si_gwsc
+cd ecalj/Samples/TestInstall
+testecalj si_gwsc -np 8
 ```
 
 * Each test has its own directory (e.g., `si_gwsc`).
-* Each test generates `ecalj/SRC/TestInstall/work/si_gwsc`, runs computation, and compares results with reference data in `ecalj/SRC/TestInstall/si_gwsc`.
-* Tests are simple and described in `testecalj.py`. It is easy to add your own test.
+* `testecalj` creates a sibling `si_gwsc_work/` and runs the
+  computation there, then compares results with the reference data in
+  `ecalj/Samples/TestInstall/si_gwsc/`.
+* The test logic is in each directory's `test.py` (small file).
+  Comparison helpers live in `ecalj/SRC/exec/comp.py`. It is easy to
+  add your own test.
 
 If installation fails, you may need to restart from clean. Delete `CMakeFiles` and `CMakeCache.txt` at `ecalj/SRC/exec/`. Sometimes, old `*.mod` files under `SRC/` cause issues. Usually, running `./InstallAll.py --clean` is enough to fix this.
 
@@ -294,7 +303,7 @@ PATH="~/bin/:$PATH"
 
 
 
-## Install VEST and getsyml
+## Install VESTA and getsyml
 
 It is convenient to view structures with VESTA.
 (Example: I installed `VESTA-gtk3.tar.bz2` (ver. 3.5.8, built on Aug 11 2022, 23.8MB) on Ubuntu 24.)
@@ -311,7 +320,7 @@ to check the structure in the viewer. In `/StructureTool`, we have converters:
 In addition, you may need to install `getsyml.py` to obtain symmetry lines for band plots.
 Generated `syml.*` files are used for band plots in ecalj.
 As long as you have `spglib` and `seekpath`, you usually do not need extra steps.
-For more details, see the memo: [./GetSyml/README.org](./GetSyml/README.org).
+For more details, see the upstream memo: [ecalj/GetSyml/README.org](https://github.com/tkotani/ecalj/blob/master/GetSyml/README.org).
 
 
 
@@ -344,33 +353,46 @@ For more details, see the memo: [./GetSyml/README.org](./GetSyml/README.org).
 
 * Compiler bug: Sometimes, compilers have trouble with the `-O2` optimization. You can often avoid such bugs with lower optimization options (`-O1` or `-O0`), depending on the source files, as described in `CMakeLists.txt`. Usually, people do not use `-O3`. You may set such conditional compilation settings. See `CMakeLists.txt`.
 
-* Source codes, tests, and make system are under `SRC/`:
+* Source codes and the make system are under `SRC/`; test cases moved
+  to `Samples/`:
 
   ```text
-  SRC/
-  ├── TestInstall : Root of install test
-  ├── exec        : CMakeLists.txt and scripts
-  ├── main        : All main *.f90
-  └── subroutines : All subroutines *.f90
+  ecalj/
+  ├── SRC/
+  │   ├── exec        : CMakeLists.txt, build scripts, testecalj driver, comp.py
+  │   ├── main        : All main *.f90
+  │   ├── subroutines : All subroutines *.f90
+  │   └── external    : bundled third-party (toml-f, ...)
+  └── Samples/
+      ├── TestInstall : Root of install tests (testecalj --all)
+      ├── EPS / PROCAR / MLOsamples : modernized topical tests
+      └── Legacy/     : pre-2026-05 directories awaiting Legacy2toml.py
   ```
 
-  All Fortran codes are in `main/` and `subroutines/`.
-  `CMakeLists.txt` generates the Makefile with cmake.
+  All Fortran codes are in `SRC/main/` and `SRC/subroutines/`.
+  `SRC/exec/CMakeLists.txt` generates the Makefile via cmake.
+  (Historical breadcrumb: `SRC/TestInstall_is_moved_to_under_ecaljSamples`
+  marks the old TestInstall location.)
 
-* Test system: The install test system is at `ecalj/SRC/TestInstall/`.
+* Test system: The install test suite lives at `ecalj/Samples/TestInstall/`.
 
-  Look into `test.py` and `testecalj.py`. These control all the tests. It is not difficult to add your own test to `testecalj.py`:
+  Each sub-directory has its own `test.py` (the per-test schedule).
+  The shared driver is `ecalj/SRC/exec/testecalj` (installed as
+  `testecalj` in `BINDIR`); shared comparison helpers are in
+  `ecalj/SRC/exec/comp.py`. It is not difficult to add your own test:
 
   * Compute something at first.
-  * Store inputs and minimum results in a directory.
-  * Describe the comparison check in `testecalj.py`.
+  * Store inputs and minimum results in a new directory under
+    `Samples/TestInstall/` (or any other `Samples/` subtree).
+  * Describe the comparison check in that directory's `test.py`.
 
-  To test all binaries:
+  To run install tests:
 
   ```bash
-  ./test.py                    # all tests
-  ./test.py gwall              # tests only GW part
-  ./test.py si_gwsc nio_gwsc   # test si_gwsc and nio_gwsc only
+  cd ecalj/Samples/TestInstall
+  testecalj --all -np 8                # all install tests
+  testecalj --gwall -np 8               # GW-only subset
+  testecalj si_gwsc nio_gwsc -np 8      # specific tests
   ```
 
 * Note: On Ubuntu 22, I observed that gfortran + openmpi sometimes failed. Use mpich if you encounter issues. (Current status unknown.)
