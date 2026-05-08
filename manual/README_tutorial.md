@@ -301,23 +301,15 @@ ctrlgenToml: done. ctrlG.mp-2534.toml has [io]/[struc]/[[site]]/[[spec]]/...
              plus [gw]/[product_basis]/[blocks].  PB.toml has nlx/valence/core.
 ```
 
-Useful flags:
+**Recommended workflow**: run `ctrlgenToml.py <sname>` with **no other
+flags** to get the defaults, then **edit `ctrlG.<sname>.toml`
+directly** — the file is fully commented and TOML-typed, so editing
+keys in place is the cleanest path.  Optional CLI flags
+(`--nspin / --so / --xcfun / --nk1 / --insulator / --systype / --ssig
+/ --mmom`) exist for scripting and are bake-in equivalents of the
+edits below; `ctrlgenToml.py --help` shows the full list.
 
-```bash
-ctrlgenToml.py mp-2534 \
-    --nspin=2 --so=1 --xcfun=pbe \
-    --nk1=12 --nk2=12 --nk3=12 \
-    --insulator                   # disable metal-mode tetra/broadening defaults
-ctrlgenToml.py xxx --systype=molecule   # molecules: tetra=false, FSMOM bias
-ctrlgenToml.py xxx --ssig=0.8          # QSGW80 (default ssig=1.0 = full QSGW)
-ctrlgenToml.py xxx --mmom='MMOM=0,0,2.5'  # initial magnetic moments
-```
-
-Run `ctrlgenToml.py --help` for the full list.
-
-After this step, edit `ctrlG.<sname>.toml` directly if you need to
-change anything — the file is fully commented and TOML-typed.  Common
-edits:
+Common edits in `ctrlG.<sname>.toml`:
 
 1. `[bz].nkabc` — k-mesh (LDA).
 2. `[ham].nspin` — 2 for magnetic, 1 nonmagnetic.
