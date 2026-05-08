@@ -104,13 +104,126 @@ symgrp = "find"          # space-group spec: 'find' = auto-detect
 [blocks]  QPNT, QforEPS, Worb (multi-line strings, GW-side blocks)
 ```
 
-A walked-through example is
-[`Samples/EPS/EPS_Cu/ctrlG.cu.toml`](https://github.com/ecalj/ecalj/blob/master/Samples/EPS/EPS_Cu/ctrlG.cu.toml)
-— inline comments per key explain the role.  Other migrated samples:
-[Cu DFT](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/Cu/ctrlG.cu.toml),
-[GaAs](https://github.com/ecalj/ecalj/blob/master/Samples/EPS/EPS_GaAs/ctrlG.gaas.toml),
-[Fe (MLO+SOC)](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/FeSoc/ctrlG.fe.toml),
-[Si QSGW](https://github.com/ecalj/ecalj/blob/master/Samples/TestInstall/si_gwsc/ctrlG.si.toml).
+## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
+
+The full `ctrlG.cu.toml` from `Samples/EPS/EPS_Cu/` is shown below. Inline
+`#` comments document each key's role; copy-paste the file as a starting
+point for FCC monatomic metals and adjust [`spec`], [`bz`], [`ham`] to
+your case.
+
+```toml
+# Top-level scalars
+symgrp = "find"   # 'find' = auto-detect space group from lattice + species
+
+[io]
+verbos = 35       # 31 default, 35 verbose, 41+ debug
+tim    = [0, 0]
+
+[struc]
+nspec = 1
+nbas  = 1
+alat  = 6.798     # lattice constant (a.u.)
+plat  = [[0.0, 0.5, 0.5],   # primitive vectors in units of alat
+         [0.5, 0.0, 0.5],
+         [0.5, 0.5, 0.0]]
+
+[[site]]
+atom = "Cu"
+pos  = [0.0, 0.0, 0.0]
+
+[[spec]]
+atom   = "Cu"
+z      = 29
+r      = 2.33    # MT radius (a.u.)
+rsmh   = [1.17, 1.17, 1.17, 1.17]   # smoothing radii per l
+eh     = [-1.0, -1.0, -1.0, -1.0]   # tail energies
+rsmh2  = [1.17, 1.17, 1.17]         # second basis group
+eh2    = [-2.0, -2.0, -2.0]
+lmx    = 3       # basis l-cutoff
+lmxa   = 4       # augmentation l-cutoff
+nmcore = 1       # 1: spin-averaged core; 0: spin-polarized core
+kmxa   = 5       # radial expansion order at tail sites
+
+[bz]
+nkabc  = [12, 12, 12]   # k-mesh divisions; 1 entry => isotropic
+metal  = 3              # 0 insulator, 3 tetra+broadening (safe metal)
+savdos = true           # write dos.tot.* file
+npts   = 2001
+dosmax = 1.5
+
+[iter]
+nit   = 30        # max self-consistency iterations
+mix   = "A2"      # B3 = Broyden hist=3 (default); A2 = Anderson hist=2
+conv  = 1e-05     # max dE between iterations (Ry)
+convc = 1e-05     # max d(rho_out - rho_in) (Ry)
+b     = 0.2       # mixing ratio
+
+[ham]
+nspin       = 1   # 1 nonmag, 2 spin-polarized (then spec.mmom seeds)
+rel         = true
+so          = 0   # 0 none, 1 L.S, 2 Lz.Sz
+gmax        = 12.0   # real-space mesh G-cutoff (Ry); alt: ftmesh
+frzwf       = false
+xcfun       = 1   # 1=VWN, 2=Barth-Hedin, 103=PBE-GGA
+forces      = 0
+scaledsigma = 1.0   # QSGW mixing: 1.0 full, 0.8 = QSGW80
+oveps       = 0.0
+pwmode      = 1   # 0=MTO 1=PMT 2=APW 11=PMT(|q+G|, default) 12=LAPW
+pwemax      = 3.0  # APW cutoff (Ry)
+
+# === GW driver (used by lmf --jobgw=N and gwsc) ===
+[gw]
+n1n2n3        = [10, 10, 10]   # GW BZ mesh (typically smaller than [bz].nkabc)
+QpGcut_psi    = 3.0     # |q+G| cutoff for eigenfunctions
+QpGcut_cou    = 2.0     # |q+G| cutoff for Coulomb / W
+unit_2pioa    = false   # false: a.u.;  true: 2*pi/alat
+HistBin_dw    = 1e-05   # bin width on real-axis at omega=0
+HistBin_ratio = 1.03
+iSigMode      = 3       # self-energy mode (3 = standard QSGW)
+niw           = 10      # # of imag-axis frequencies
+delta         = -1e-06
+deltaw        = 0.02
+esmr          = 0.003   # hsfp0 smearing
+GaussSmear    = true
+
+[product_basis]
+pb_tolerance = [0.001]  # drop near-linear-dep products (default 1e-3)
+pb_lcutmx    = [4]      # max l-cutoff per atom
+
+# Per-atom product-basis tables (nlx / valence / core) live in PB.toml.
+
+# === GW additional blocks (legacy GWinput tags become multi-line strings) ===
+[blocks]
+QforEPS = """
+ 0 0 0.00050
+ 0 0 0.00100
+ 0 0 0.00200
+"""
+
+Worb = """
+!  1 Cu   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+"""
+```
+
+That's the entire input.  `[blocks]` carries the legacy `<...>...</...>`
+GWinput tag content as multi-line TOML strings; the body is parsed
+opaquely (per-block) by the GW driver.
+
+### Per-physics deltas (from the Cu starting point)
+
+- **Spin-polarized metal** (Fe, Ni, FeCo): set `[ham].nspin = 2` and
+  add `mmom = [0, 0, 2.5]` (or per-l guess) to each `[[spec]]`.
+- **SOC** (`HAM_SO`): set `[ham].so = 1` (full L·S) or `2` (Lz·Sz only),
+  with `[ham].nspin = 2`.  See `Samples/MLOsamples/FeSoc/`.
+- **Insulator / semiconductor** (Si, GaAs): `[bz].metal = 0` and
+  `[bz].tetra = true`; smaller `[bz].nkabc`; `[ham].pwemax` ~3 is enough.
+- **LDA+U**: add `idu = [0, 0, 2, 2]`, `uh = [0, 0, 0.1, 0.632]`,
+  `jh = [0, 0, 0, 0.055]` to `[[spec]]`.  `dmatu.<sname>` is read
+  separately if present.
+- **Atomic-position relaxation**: `[dyn].mode = 4` (CG) or `6` (Broyden),
+  set `[[site]].relax = [1, 1, 1]` per atom.
+- **GW BZ mesh**: keep `[gw].n1n2n3` ≤ `[bz].nkabc` (often 1/2 or 2/3 of
+  it) — `n1n2n3` dominates GW wall-time.
 
 ## Run-time `-v` overrides
 
