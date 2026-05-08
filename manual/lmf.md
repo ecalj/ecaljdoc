@@ -77,21 +77,119 @@ We have some kinds of options for electron density plot, boltztrap and so on.
 ** Main Source** : [`SRC/main/lmf.f90`](https://github.com/tkotani/ecalj)
 
 
-# ctrl  
+# ctrlG.&lt;sname&gt;.toml — current input format (2026-05+)
+
+`lmf`, `lmfa`, `lmchk` read **TOML only** since 2026-05.  The single file
+`ctrlG.<sname>.toml` carries everything that used to live in
+`ctrl.<sname>` plus the GW driver and product-basis sections that used
+to live in `GWinput`.  Per-atom product-basis tables (sname-free) sit in
+a sibling `PB.toml`.  Run `Legacy2toml.py <sname>` inside any old
+working directory to generate both files.
+
+## File structure (sections)
+
+```toml
+# Top-level scalars
+symgrp = "find"          # space-group spec: 'find' = auto-detect
+
+[io]      verbos / tim
+[struc]   alat / plat / nspec / nbas
+[[site]]  atom / pos / xpos / af / relax       (one table per atom)
+[[spec]]  atom / z / r / rsmh / eh / lmx / ...  (one table per species)
+[bz]      nkabc / metal / tetra / npts / ...
+[iter]    nit / mix / b / conv / convc / umix / tolu
+[ham]     nspin / rel / so / xcfun / gmax / pwmode / pwemax / oveps / ...
+[gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
+[product_basis]   pb_tolerance / pb_lcutmx
+[blocks]  QPNT, QforEPS, Worb (multi-line strings, GW-side blocks)
+```
+
+A walked-through example is
+[`Samples/EPS/EPS_Cu/ctrlG.cu.toml`](https://github.com/ecalj/ecalj/blob/master/Samples/EPS/EPS_Cu/ctrlG.cu.toml)
+— inline comments per key explain the role.  Other migrated samples:
+[Cu DFT](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/Cu/ctrlG.cu.toml),
+[GaAs](https://github.com/ecalj/ecalj/blob/master/Samples/EPS/EPS_GaAs/ctrlG.gaas.toml),
+[Fe (MLO+SOC)](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/FeSoc/ctrlG.fe.toml),
+[Si QSGW](https://github.com/ecalj/ecalj/blob/master/Samples/TestInstall/si_gwsc/ctrlG.si.toml).
+
+## Run-time `-v` overrides
+
+The legacy `-v<NAME>=<VAL>` (where `<NAME>` was a `%const` symbol baked
+into `ctrl.<sname>`) is replaced by **bracketed dotted-path syntax**
+processed in-memory by `m_toml_override.f90`:
+
+```bash
+# OLD (legacy ctrl + %const)
+lmf si -vnk=8 -vmetal=3 -vnspin=2 -vso=0
+
+# NEW (ctrlG.toml + path syntax)
+lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3 -v[ham.nspin]=2 -v[ham.so]=0
+```
+
+The bracketed key is the dotted TOML path (`[section.key]` or
+`[section.subkey]`); the right-hand side parses as TOML
+(`[8,8,8]` for an integer vector, `1` for an int, `1.0` for a float,
+`"r4z r3d r2x"` for a string).  No on-disk rewrite of the .toml file
+takes place.
+
+## Legacy `ctrl.<sname>` ↔ TOML path map
+
+Most legacy `Category_Token` keys map 1:1 onto `[section.key]` after
+lower-casing.  A few are renamed or restructured:
+
+| legacy `Category_Token` | TOML location | note |
+|---|---|---|
+| `STRUC_ALAT` / `STRUC_PLAT` | `[struc].alat` / `.plat` | |
+| `SITE_ATOM=`, `POS=`, `XPOS=` | `[[site]] atom = ...; pos = [...]` (or `xpos`) | one `[[site]]` table per atom |
+| `SPEC_ATOM=`, `Z=`, `R=`, `RSMH=`, `EH=`, ... | `[[spec]] atom = ...; z = ...; r = ...; rsmh = [...]` | one `[[spec]]` table per species; `R/W=` and `R/A=` kept as `"r/a"` quoted-key |
+| `BZ_NKABC` / `BZ_METAL` / `BZ_TETRA` | `[bz].nkabc` / `.metal` / `.tetra` | |
+| `HAM_NSPIN` / `HAM_SO` / `HAM_XCFUN` / `HAM_GMAX` / `HAM_PWMODE` / `HAM_PWEMAX` | `[ham].nspin` etc. | |
+| `HAM_FORCES` / `HAM_OVEPS` / `HAM_FRZWF` / `HAM_REL` | `[ham].forces` etc. | |
+| `HAM_ScaledSigma` | `[ham].scaledsigma` | lowercase |
+| `HAM_READP` / `HAM_PNUFIX` / `HAM_V0FIX` | `[ham].readp` etc. | |
+| `ITER_NIT` / `ITER_MIX` / `ITER_CONV` / `ITER_CONVC` / `ITER_UMIX` / `ITER_TOLU` | `[iter].nit` / `.mix` / ... | |
+| `SYMGRP` / `SYMGRPAF` | top-level `symgrp = "..."` (and `symgrp_af`) | not nested in a section |
+| `EWALD_TOL` | `[ewald].tol` | rarely touched |
+| `DYN_MODE` / `DYN_NIT` / `DYN_HESS` / ... | `[dyn].mode` etc. | |
+| `IO_VERBOS` / `IO_TIM` | `[io].verbos` / `.tim` | |
+| `<Worb>...</Worb>` block | `[blocks].Worb = """ ... """` | multi-line string |
+| `<QforEPS>...</QforEPS>` block | `[blocks].QforEPS = """ ... """` | |
+| `n1n2n3` (GWinput) | `[gw].n1n2n3 = [k1,k2,k3]` | int vector |
+| `HistBin_dw` / `HistBin_ratio` / `niw` / `delta` / `esmr` / `GaussSmear` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names, lowercased |
+| product-basis cut-offs (`tolerance`, `lcutmx` from `<PRODUCT_BASIS>`) | `[product_basis].pb_tolerance` / `.pb_lcutmx` | |
+| product-basis per-atom tables (`nlx`, `valence`, `core`) | **`PB.toml`** (separate file) | sname-free |
+
+The full schema lives in
+[`SRC/exec/ctrl_schema.py`](https://github.com/ecalj/ecalj/blob/master/SRC/exec/ctrl_schema.py)
+(the conversion source of truth).  Annotations / inline comments are
+applied by
+[`SRC/exec/toml_comments.py`](https://github.com/ecalj/ecalj/blob/master/SRC/exec/toml_comments.py).
+
+---
+
+# ctrl.&lt;sname&gt; — legacy reference (kept for migration)
+
+> The remainder of this page describes the **legacy** `ctrl.<sname>`
+> text format.  It is no longer parsed by Fortran but is useful for
+> understanding what each TOML key maps to, and for hand-converting old
+> input decks before running `Legacy2toml.py`.  See [Tutorial](./README_tutorial)
+> for an end-to-end walkthrough.
 
 ctrl is the basic input file. See [Tutorial](../manual/README_tutorial.md).
-ctrl contains inputs to control calculations by lmf,lmfa, and lmchk. 
+ctrl contains inputs to control calculations by lmf,lmfa, and lmchk.
 Check self-documented ctrl generated by ctrlgenM1.py.
 
 Note:
- 1. ctrl has `Category_Token` structures. 
+ 1. ctrl has `Category_Token` structures.
  2. A line beginning with `#' is treated as a comment and is ignored.
  3. A line beginning with a `%const' is to define variables used in ctrl file.
 
-> <small>When we run fortran programs (lmf, lmfa, and lmchk),
+> <small>(Historical) When we run fortran programs (lmf, lmfa, and lmchk),
 we perform ecalj/SRC/exec/ctrl2ctrlp.py (at your BINDIR) called from the fortran program for
 converting ctrl.foobar to ctrlp.foobar. See ~/ecalj/SRC/main/lmf.f90 for example.
-Then we read ctrlp.foobar by SRC/subroutines/m_lmfinit.f90.</small>
+Then we read ctrlp.foobar by SRC/subroutines/m_lmfinit.f90. — As of 2026-05 this
+preprocessing path is bypassed; the Fortran reads `ctrlG.<sname>.toml` directly via
+`m_ctrl_toml_loader.f90`.</small>
 
 <!-- ```
 INFO: Ubuntu 20.04.4 LTS \n \l
