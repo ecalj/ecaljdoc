@@ -115,34 +115,38 @@ to get the full spin susceptibility. -->
 # Files used in gwsc
 Temporary files are with `__*`. Thus we can delete __* (or use `cleargw`) after you finish `gwsc/epsPP0` and so on.
 
-To repeat a small test for gwsc
+To repeat a small test for gwsc:
+
+```bash
+cd ~/ecalj/Samples/TestInstall
+testecalj si_gwsc -np 8
 ```
-./testecalj.py si_gwsc
-```
-at ~/ecalj/SRC/TestInstall. This is what contained in InstallTest. Test is runnning at work/si_gwsc/.
-After copy things from si_gwsc to work/si_gwsc. You can run followings one by one if you like.
-Or `ls -rlt` roughly show which generates which files.
+
+This is one of the install tests. `testecalj` creates
+`si_gwsc_work/` next to `si_gwsc/`, copies inputs in, and runs there.
+After that, `ls -rlt si_gwsc_work/` roughly shows which step generates
+which files.
 
 ```
 ===== Ititial band structure ====== 
 --> No sigm. LDA caculation for eigenfunctions 
-0:00:00.990833   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/lmfa si     >llmfa
-0:00:03.067381   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/lmf  si     >llmf_lda
+0:00:00.990833   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/lmfa si     >llmfa
+0:00:03.067381   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/lmf  si     >llmf_lda
 ===== QSGW iteration start iter 1 ===
-0:00:06.584919   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/lmf si     --jobgw=0 >llmfgw00
-0:00:08.953914   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/qg4gw    --job=1 > lqg4gw
-0:00:11.026268   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/lmf si     --jobgw=1 >llmfgw01
-0:00:14.276866   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/heftet --job=1    > leftet
-0:00:16.342115   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/hbasfp0 --job=3    >lbasC
-0:00:18.457527   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/hvccfp0 --job=3    > lvccC
-0:00:20.400344   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/hsfp0_sc --job=3    >lsxC
-0:00:22.459518   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/hbasfp0 --job=0    > lbas
-0:00:24.614140   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/hvccfp0 --job=0    > lvcc
-0:00:26.884440   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/hsfp0_sc --job=1    >lsx
-0:00:28.964117   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/hrcxq   > lrcxq
-0:00:31.358625   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/hsfp0_sc --job=2    > lsc
-0:00:33.682640   mpirun --bind-to core --map-by core -np 1 /home/takao/ecalj/SRC/TestInstall/bin/hqpe_sc    > lqpe
-0:00:35.517672   mpirun --bind-to core --map-by core -np 4 /home/takao/ecalj/SRC/TestInstall/bin/lmf si     >llmf
+0:00:06.584919   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/lmf si     --jobgw=0 >llmfgw00
+0:00:08.953914   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/qg4gw    --job=1 > lqg4gw
+0:00:11.026268   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/lmf si     --jobgw=1 >llmfgw01
+0:00:14.276866   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/heftet --job=1    > leftet
+0:00:16.342115   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/hbasfp0 --job=3    >lbasC
+0:00:18.457527   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hvccfp0 --job=3    > lvccC
+0:00:20.400344   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hsfp0_sc --job=3    >lsxC
+0:00:22.459518   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/hbasfp0 --job=0    > lbas
+0:00:24.614140   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hvccfp0 --job=0    > lvcc
+0:00:26.884440   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hsfp0_sc --job=1    >lsx
+0:00:28.964117   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hrcxq   > lrcxq
+0:00:31.358625   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hsfp0_sc --job=2    > lsc
+0:00:33.682640   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/hqpe_sc    > lqpe
+0:00:35.517672   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/lmf si     >llmf
 ===== QSGW iteration end   iter 1 ===
 ```
 
