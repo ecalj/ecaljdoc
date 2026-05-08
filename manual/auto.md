@@ -1,7 +1,13 @@
-# ecalj/ecal_auto
+# ecalj/ecalj_auto
 
-This is for automatic calculations for many POSCAR files.
-`ecalj_atuo` was used for generating [ecaljdatabase](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos)
+This is for automatic batch calculations across many POSCAR files.
+`ecalj_auto` was used for generating [ecaljdatabase](https://github.com/tkotani/DOSnpSupplement/blob/main/bandpng.md#band-structure--total-dos).
+
+For the GW1500 production run details and slot scheduler, see:
+- [ecalj_auto/README.md](https://github.com/ecalj/ecalj/blob/master/ecalj_auto/README.md) — main usage guide
+- [ecalj_auto/README_slot_scheduler.md](https://github.com/ecalj/ecalj/blob/master/ecalj_auto/README_slot_scheduler.md) — TOML + hgw_combined + scheduler architecture (2026-05)
+
+> ⚠️ **TOML migration (2026-05)** — `ecalj_auto` now ships `ctrlG.<sname>.toml` per generated job (no legacy `ctrl,GWinput` write-out). Templates: `jobtemplate{,.kugui,.ohtaka,.ucgw}` for SLURM/PBS dispatch. See [TOML migration](./toml_migration).
 
 
 

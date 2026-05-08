@@ -1,6 +1,8 @@
 # `lmf,lmfa,lmchk`
 
-We need ctrl file ctrl.foobar for inputs.
+> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlG.<sname>.toml` + `PB.toml`** only. The `ctrl.foobar` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/ecalj/ecalj/blob/master/Samples/README.md).
+
+We need an input file `ctrlG.<sname>.toml` (legacy: `ctrl.foobar`).
 
 ## lmfa: spherical atom calculations
 Example:` 

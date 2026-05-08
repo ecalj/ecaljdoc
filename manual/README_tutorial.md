@@ -1,6 +1,8 @@
 # ecalj MainDocument
 **This is MainDocument of ecaljdoc. All files are linked from this file.**
 
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlG.<sname>.toml` + `PB.toml` only. Examples below referring to `ctrl.foobar` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/ecalj/ecalj/blob/master/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
+
 * Here we give [GetStarted](#getstarted), together with install and overview of QSGW.
 * We have [UsageDetails](./UsageDetailed.md) in another file.
 * [Qiita Japanese](https://qiita.com/takaokotani/items/9bdf5f1551000771dc48) may be a help, but most of all are shown here.

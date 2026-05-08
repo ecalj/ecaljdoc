@@ -1,5 +1,7 @@
 # 自己エネルギー計算の実装について
 
+> ⚠️ **TOML migration (2026-05)** — `hsfp0_sc` / `hsfp0` now read `ctrlG.<sname>.toml` + `PB.toml` only. See [TOML migration](../manual/toml_migration).
+
 ## 実行プログラム
 - `hsfp0_sc` : QSGW計算で使用。$W$はエルミート化される。off-diagonal を含めた自己エネルギーを計算する。
 - `hsfp0` : スペクトル関数, 準粒子寿命計算で使用。$W$はエルミート化されず、自己エネルギーの対角成分(複素数)のみを計算。

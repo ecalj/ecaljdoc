@@ -10,6 +10,9 @@ hero:
       text: Tutorial
       link: /manual/README_tutorial
     - theme: alt
+      text: TOML migration (2026-05)
+      link: /manual/toml_migration
+    - theme: alt
       text: Theory
       link: /theory/gw
     - theme: alt

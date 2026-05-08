@@ -1,5 +1,7 @@
 # For developer
 
+> ⚠️ **TOML migration (2026-05)** — Test directories now ship `ctrlG.<sname>.toml` + `PB.toml` as the canonical inputs (see migrated [Samples/EPS/](https://github.com/ecalj/ecalj/tree/master/Samples/EPS), [Samples/PROCAR/](https://github.com/ecalj/ecalj/tree/master/Samples/PROCAR), [Samples/MLOsamples/](https://github.com/ecalj/ecalj/tree/master/Samples/MLOsamples), [Samples/TestInstall/](https://github.com/ecalj/ecalj/tree/master/Samples/TestInstall)). Legacy `ctrl,GWinput`-only directories live under [Samples/Legacy/](https://github.com/ecalj/ecalj/tree/master/Samples/Legacy) until converted with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration).
+
 ## Test system `testecalj` (2025-10-8).
 
 Our new test system is made from two files 

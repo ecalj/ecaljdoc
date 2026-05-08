@@ -1,5 +1,7 @@
 # ecalj GPU version の使い方
 
+> ⚠️ **TOML migration (2026-05)** — GPU 版 `gwsc` も `ctrlG.<sname>.toml` + `PB.toml` を読みます。Legacy `ctrl.<sname>` / `GWinput` directory は `Legacy2toml.py <sname>` で変換してから実行してください。See [TOML migration](./toml_migration).
+
 ecalj ではGPUによるQSGW計算が可能です。
 * GPUは自己エネルギーおよび遮蔽クーロン相互作用の計算に使用されます。
 * 現状では`lmf` (DFT計算) はCPUで実行されます。

@@ -52,6 +52,7 @@ export default withMermaid({
       {
         text: 'Manual',
         items: [
+          { text: 'TOML migration (2026-05)', link: '/manual/toml_migration' },
           { text: 'DFT  calculation : lmf part', link: '/manual/lmf' },
           { text: 'QSGW calculation: gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
@@ -69,10 +70,11 @@ export default withMermaid({
         ]
       },
       {
-        text: 'Input files',
+        text: 'Input files (TOML, 2026-05+)',
         items: [
-          { text: 'ctrl.foobar', link: '/manual/lmf' },
-          { text: 'GWinput', link: '/manual/gwinput' },
+          { text: 'ctrlG.<sname>.toml + PB.toml', link: '/manual/toml_migration' },
+          { text: 'ctrl.foobar (legacy)', link: '/manual/lmf' },
+          { text: 'GWinput (legacy)', link: '/manual/gwinput' },
           { text: 'syml.foobar', link: '/manual/syml' }
         ]
       },
