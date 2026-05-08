@@ -13,7 +13,7 @@
     [1] ecalj package available from https://github.com/tkotani/ecalj/.
 
 ## Install
-To install ecalj, look into [install](../install/install.md), as well as [install for ISSP](../install/install.md)
+To install ecalj, look into [install](../install/install.md), as well as [install for ISSP](../install/installISSP.md).
 
 ## Features of ecalj package
 
@@ -438,7 +438,7 @@ to see the structure in VESTA. To show ctrl.si, we use a converted at  /Structur
    Core configulation and charges are shown as well. Q=0 means satisfying charge neutrality. 
    * lmfa calculates spherical atoms (virtually $r \to \infty$), and calculate logarithmic derivatives at MT boundaries, stored into `atmpnu.*`. 
    * The initial electron density for lmf is given as the superposition of the spherically symmetric atomic densities given by lmfa. 
-   * When [READP=T](./lmf.md#readp-option) (ctrlgenM1.py set READP=T ), we use the logarithmic derivative of the radial wave function at MT boundaries fixed.
+   * When [`[ham].readp = true`](./lmf.md#readp-option) (set by `ctrlgenToml.py` by default; legacy `READP=T` was the same), we keep the logarithmic derivative of the radial wave function at MT boundaries fixed.
 
 2. After `lmfa`, we run LDA calculation as:
 

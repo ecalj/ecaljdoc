@@ -76,15 +76,24 @@ On the slurm case: e.g., ISSP system B, Othtaka
         command1 = ['mpiexec', '--bind-to none', '-np', self.ncore, self.epath/'lmf', self.num] + self.option_lmf
 ```
 
-### qsub 関係
-ジョブの投入コマンドをサーバの使用に合わせて変更する．デフォルトは`qsub` であり, 以下のスクリプトに記載されている．
-~/ecalj/ecalj_auto/auto/joball.py L126
+### ジョブ投入関係
+ジョブ投入コマンドはサーバに合わせて変更する．現在のデフォルトは
+**バックグラウンドの `bash`** で, 以下のスクリプトに記載されている．
+`~/ecalj/ecalj_auto/auto/Job.py`:
 
-```python ~/ecalj/ecalj_auto/auto/joball.py L126
+```python
+            os.system(f'bash {jobx} &')
+```
+
+(2025 後期に `qsub` から `bash` 起動へ migrate された。SLURM/PBS
+で投入したい場合は対象行を以下に書き換える。)
+
+#### qsub の場合 (PBS):
+```python
             os.system(f'qsub {jobx}')
 ```
-#### SLURM の場合: 例 ISSP system B
-はqsub をsbatchに変更する
+
+#### SLURM の場合 (例 ISSP system B):
 ```python
             os.system(f'sbatch {jobx}')
 ```
