@@ -216,10 +216,10 @@ SITE
     ATOM=Ga POS=0.0 0.0 0.0
     ATOM=As POS=0.25 0.25 0.25
 ```
-ctrls.srtio3: 
+ctrls.srtio3:
 ```
 %const au=0.529177
-%const d0= a0=2*1.95/au v=a0^3 a1=v^(1/3)
+%const a0=2*1.95/au v=a0^3 a1=v^(1/3)
 STRUC ALAT={a1}
    PLAT=1 0 0 0 1 0 0 0 1
 SITE
@@ -229,6 +229,21 @@ SITE
    ATOM=O POS= 0 1/2 0
    ATOM=O POS= 0 0 1/2
 ```
+
+`%const` lines define run-time variables expanded by `ctrlgenToml.py`
+(and the legacy `ctrlgenM1.py`).  Multiple definitions on one line are
+fine, math operators (`+ - * / ** ^`) and `sin / cos / log / sqrt / pi`
+are evaluated, and earlier defines are visible to later ones (so
+`a0=2*1.95/au` works because `au` was defined on the previous
+`%const` line).  `1/3` is float division (Python 3), so
+`v^(1/3) ≡ v**(1/3)` is the cube root.
+
+> **Gotcha** — do **not** use empty-value placeholders like
+> `%const x= y=...`.  An entry with no right-hand side merges with
+> the next token and silently breaks the rest of the line (so `y`,
+> `z`, ... never get defined).  Either drop the empty entry or assign
+> a real value (`%const x=0 y=...`).
+
 The default names of atomic species are shown by `ctrlgenM1.py --showatomlist`.
 Instead of such default symbols, we can use your own symbol as
 ```
