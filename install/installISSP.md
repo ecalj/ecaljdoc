@@ -96,7 +96,7 @@ Elapsed time for testecalj.py: 409 seconds
 テスト中は
 
 ```bash
-tail -f ecalj/SRC/TestInstall/summary.txt
+tail -f ecalj/Samples/TestInstall/summary.txt
 ```
 
 で進行状況を確認できます。最後に`PASSED! srvo3_crpa/Screening_W-v_crpa.h`と表示され、FAILやエラーがなければOKです。
@@ -105,7 +105,7 @@ nvfortranでもテストはCPU実行です。
 
 ### 5. GPU計算テスト
 
-`ecalj/Samples/Samples_ISSP/inas2gasb2_kugui` に移動して、
+`ecalj/Samples/Legacy/Samples_ISSP/inas2gasb2_kugui` に移動して、
 
 ```bash
 qsub job_kugui.sh
@@ -145,13 +145,13 @@ sbatch jobinstall_ohtaka.sh
 
 です。この段階で最後に`OK! ALL PASSED!`が見れない場合はインストールできていません。
 
-それを確認後、計算テストは `ecalj/Samples_ISSP/inas2gasb2` にて
+それを確認後、計算テストは `ecalj/Samples/Legacy/Samples_ISSP/inas2gasb2_ohtaka` にて
 
 ```bash
 sbatch job_ohtaka.sh
 ```
 
-を行ってください。GPUテストは `inas2gasb2_ohtaka` にあります。
+を行ってください。GPU テスト用ディレクトリも同 `Samples/Legacy/Samples_ISSP/` 配下にあります (`inas4gasb4_kugui`, `inas4gasb4_ohtaka` も参照)。
 
 
 kuguiではmpirunのかわりにsrunがつかわれるなどのためgwscなどを走らせるときにこれが必要です。

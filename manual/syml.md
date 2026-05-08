@@ -11,8 +11,8 @@ At ecalj/GetSyml, we have getsyml.py, which is based on the
 seekpath at https://github.com/giovannipizzi/seekpath/
 and spglib at https://anaconda.org/conda-forge/spglib
 
-### Usage: 
-We make softlink getsyml to ecalj/SRC/GetSyml/getsyml.py during the install by InstallAll.py.
+### Usage:
+We make a softlink `getsyml` to `ecalj/GetSyml/getsyml.py` during the install by `InstallAll.py`.
 Run 
 ```
 getsyml nio

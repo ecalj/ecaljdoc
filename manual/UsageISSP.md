@@ -49,7 +49,7 @@ If you run out of memory, reduce the number of cores per node to ensure enough m
 
 ### modification of ecalj code for Ohtaka (just for developer)
 At ohtaka it uses `srun` instead of `mpirun`. 
-The difference is written in `SRC/exec/MachineDependency.py`.
+The difference is written in `SRC/exec/MachineDependence.py`.
 
 <!-- Replace the `ecalj` directory path with your own.
 ```
