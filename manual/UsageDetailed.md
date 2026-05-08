@@ -204,7 +204,7 @@ The sample (run job file) generates eps file showing fat band of O2 compon`ents.
 
 ## LDA+U
 We have samples 
-* https://github.com/tkotani/ecalj/tree/master/Samples/GdNldau
+* https://github.com/ecalj/ecalj/tree/master/Samples/Legacy/GdNldau
 
 * ~/ecalj/Samples/Legacy/ReNcub 
 

@@ -39,13 +39,13 @@ cold  nbmax -->nmmax
 # Space group rotation of ecalj
 
 * basic routines for spherical harmonics rotation.
-/home/takao/ecalj/SRC/subroutines/rdpp.F:      call rotcg(nl-1,symope,ngrp,cgr)
-/home/takao/ecalj/SRC/subroutines/rotcg.F:     call rotdlmm(symops, ng, 2*lmxax+1,dlmm)
+/home/takao/ecalj/SRC/subroutines/rdpp.f90:      call rotcg(nl-1,symope,ngrp,cgr)
+/home/takao/ecalj/SRC/subroutines/rotcg.f90:     call rotdlmm(symops, ng, 2*lmxax+1,dlmm)
 rotcg --> rotdlmm      (rotation matrix of Ylm)
 m_zmel->rdpp --> rotcg (rotated CG coefficients)
 
 * eigenfunction rotation on the PMT basis
-/home/takao/ecalj/SRC/main/hsfp0.sc.m.F:   call rotwvigg(igrp,q(:,iqxx),q(:,iqxx),nhdim,
+ecalj/SRC/main/hsfp0_sc.f90:   call rotwvigg(igrp, q(:,iqxx), q(:,iqxx), nhdim, ...)
 
 * m_zmel matrix elements
   mt part  readcphif       -> readeigen ->rotmto
@@ -53,23 +53,23 @@ m_zmel->rdpp --> rotcg (rotated CG coefficients)
   mptauf_zmel, ppbafp_v2->cgr --->ppbir
     * eigenfunction (MT+IPW expansion) rotation
   readeigen->rotipw,rotmto
- /home/takao/ecalj/SRC/subroutines/readeigen.F: call rotipw(qtt(:,iqq),
- /home/takao/ecalj/SRC/subroutines/readeigen.F: call rotmto(qtt(:,iqq),cphifr,ldim2,nband,
+ /home/takao/ecalj/SRC/subroutines/readeigen.f90: call rotipw(qtt(:,iqq),
+ /home/takao/ecalj/SRC/subroutines/readeigen.f90: call rotmto(qtt(:,iqq),cphifr,ldim2,nband,
     * gvector rotation  rotgvec
- /home/takao/ecalj/SRC/subroutines/ppbafp.fal.F:   call rotgvec(symope, 1, ngc, ngcs, qbas, ngvecc,
+ (the historical `ppbafp.fal.F` was merged into `ecalj/SRC/subroutines/m_zmel.f90`; rotgvec is invoked from there now.)
 
-(wannier-based matrix element are implemented in wannier/wmatK_mpi.F(in principle, only readeigenW, cphieigW
-are different)
+(Wannier-based matrix elements are implemented in `SRC/subroutines/hwmatK_MPI.f90`
+— in principle only `readeigenW` and `cphieigW` differ from the standard path.)
 
 * MPB rotation. symmetrization of x0
 x0kf->rotMPB2->rotmto2,rotipw2
-/home/takao/ecalj/SRC/subroutines/x0kf_v4h.F:      call rotMPB2(nbloch,ngb,q,ig,itimer,ginv,zrotm)
-/home/takao/ecalj/SRC/subroutines/m_rotMPB.F:      call rotmto2(qin,nbloch,ngbb,
-/home/takao/ecalj/SRC/subroutines/m_rotMPB.F:      call rotipw2(qin,qout,ngcx,ngbb,
-/home/takao/ecalj/SRC/subroutines/m_rotMPB.F:      call rotdlmm(symops,ngrp,nl,dlmm)
+/home/takao/ecalj/SRC/subroutines/x0kf_v4h.f90:      call rotMPB2(nbloch,ngb,q,ig,itimer,ginv,zrotm)
+/home/takao/ecalj/SRC/subroutines/m_rotMPB.f90:      call rotmto2(qin,nbloch,ngbb,
+/home/takao/ecalj/SRC/subroutines/m_rotMPB.f90:      call rotipw2(qin,qout,ngcx,ngbb,
+/home/takao/ecalj/SRC/subroutines/m_rotMPB.f90:      call rotdlmm(symops,ngrp,nl,dlmm)
 
 * Self-energy Sigma rotation. Read sigm.* which is expanded by MTO basis only (neglecting IPW components)
-/home/takao/ecalj/SRC/subroutines/rdsigm2.F:   call rotsig(qin,q1,ndimh,napw_in,ldim,hq,gfbz(i1,i2,i3,:,:),ierr,iaf)
+/home/takao/ecalj/SRC/subroutines/rdsigm2.f90:   call rotsig(qin,q1,ndimh,napw_in,ldim,hq,gfbz(i1,i2,i3,:,:),ierr,iaf)
 
 
 
@@ -79,26 +79,26 @@ x0kf->rotMPB2->rotmto2,rotipw2
 ---------------------------
 Old codes
 
-/home/takao/ecalj/SRC/subroutines/m_hamindex.F:    call rotdlmm(symops,ngrp, nl, dlmm)
-/home/takao/ecalj/SRC/subroutines/m_hamindex.F:    call rotdlmm(symops,ngrp, nl, dlmm)
-/home/takao/ecalj/SRC/subroutines/m_q0p.F:     call rotcg(lmxax,(/1d0,0d0,0d0,0d0,1d0,0d0,0d0,0d0,1d0/),1,cg)
-/home/takao/ecalj/SRC/subroutines/mptauof.F:   call rotcg(lmxax,(/1d0,0d0,0d0,0d0,1d0,0d0,0d
-/home/takao/ecalj/SRC/wanniergw/hpsig.F:         call rotcg(nl-1,symope,ngrpx,cg)
-/home/takao/ecalj/SRC/wanniergw/hpsig_MPI.F:      call rotcg(nl-1,symope,ngrpx,cg)
-/home/takao/ecalj/SRC/wanniergw/huumat.F:        call rotcg(nl-1,symope,ngrpx,cg)
-/home/takao/ecalj/SRC/wanniergw/huumat_MPI.F:     call rotcg(nl-1,symope,ngrpx,cg)
-/home/takao/ecalj/SRC/wanniergw/hwmatK.F:c        call rotgvec(symgg(:,:,irot), nqibz, 
-/home/takao/ecalj/SRC/wanniergw/hwmatK_MPI.F:c    call rotgvec(symgg(:,:,irot), nqibz, 
+/home/takao/ecalj/SRC/subroutines/m_hamindex.f90:    call rotdlmm(symops,ngrp, nl, dlmm)
+/home/takao/ecalj/SRC/subroutines/m_hamindex.f90:    call rotdlmm(symops,ngrp, nl, dlmm)
+/home/takao/ecalj/SRC/subroutines/m_q0p.f90:     call rotcg(lmxax,(/1d0,0d0,0d0,0d0,1d0,0d0,0d0,0d0,1d0/),1,cg)
+/home/takao/ecalj/SRC/subroutines/mptauof.f90:   call rotcg(lmxax,(/1d0,0d0,0d0,0d0,1d0,0d0,0d
+/home/takao/ecalj/SRC/wanniergw/hpsig.f90:         call rotcg(nl-1,symope,ngrpx,cg)
+/home/takao/ecalj/SRC/wanniergw/hpsig_MPI.f90:      call rotcg(nl-1,symope,ngrpx,cg)
+/home/takao/ecalj/SRC/wanniergw/huumat.f90:        call rotcg(nl-1,symope,ngrpx,cg)
+/home/takao/ecalj/SRC/wanniergw/huumat_MPI.f90:     call rotcg(nl-1,symope,ngrpx,cg)
+/home/takao/ecalj/SRC/wanniergw/hwmatK.f90:c        call rotgvec(symgg(:,:,irot), nqibz, 
+/home/takao/ecalj/SRC/wanniergw/hwmatK_MPI.f90:c    call rotgvec(symgg(:,:,irot), nqibz, 
 
 
-/home/takao/ecalj/SRC/subroutines/a2rotm.F:      call rotma(phi,theta,angle,rotj)
-/home/takao/ecalj/SRC/subroutines/chkdmu.F:      call rotycs(-1,vorb,nbas,nsp,lmaxu,sspec,ssite,lldau)
-/home/takao/ecalj/SRC/subroutines/sudmtu.F:      call rotycs(2*idvsh-1,dmatu,nbas,nsp,lmaxu,sspec,ssite,lldau)
-/home/takao/ecalj/SRC/subroutines/mkplat.F:        call rotmat(-1,.false.,nrot(m),mat,vecg)
-/home/takao/ecalj/SRC/subroutines/rothrm.F:        call rothrm(2,ndimh,iprmb,rotm,1,nbas,ndimh,uz,uz)
-/home/takao/ecalj/SRC/subroutines/rothrm.F:        call rothph(02,qpr,delT,ndimh,iprmb,1,nbas,ndimh,sq1)
-/home/takao/ecalj/SRC/subroutines/rsmsym.F:          call rotpnt(v,rv,g(1,ig))
-/home/takao/ecalj/SRC/subroutines/symdmu.F:        call rotspu(0,1,1,eula,1,u(1,1,ig))
-/home/takao/ecalj/SRC/subroutines/symiax.F:          call rotpnt(v,rv,g(1,ig))
-/home/takao/ecalj/SRC/wanniergw/hmaxloc.F:      call rot_hmnk(umnk,eunk,
+/home/takao/ecalj/SRC/subroutines/a2rotm.f90:      call rotma(phi,theta,angle,rotj)
+/home/takao/ecalj/SRC/subroutines/chkdmu.f90:      call rotycs(-1,vorb,nbas,nsp,lmaxu,sspec,ssite,lldau)
+/home/takao/ecalj/SRC/subroutines/sudmtu.f90:      call rotycs(2*idvsh-1,dmatu,nbas,nsp,lmaxu,sspec,ssite,lldau)
+/home/takao/ecalj/SRC/subroutines/mkplat.f90:        call rotmat(-1,.false.,nrot(m),mat,vecg)
+/home/takao/ecalj/SRC/subroutines/rothrm.f90:        call rothrm(2,ndimh,iprmb,rotm,1,nbas,ndimh,uz,uz)
+/home/takao/ecalj/SRC/subroutines/rothrm.f90:        call rothph(02,qpr,delT,ndimh,iprmb,1,nbas,ndimh,sq1)
+/home/takao/ecalj/SRC/subroutines/rsmsym.f90:          call rotpnt(v,rv,g(1,ig))
+/home/takao/ecalj/SRC/subroutines/symdmu.f90:        call rotspu(0,1,1,eula,1,u(1,1,ig))
+/home/takao/ecalj/SRC/subroutines/symiax.f90:          call rotpnt(v,rv,g(1,ig))
+/home/takao/ecalj/SRC/wanniergw/hmaxloc.f90:      call rot_hmnk(umnk,eunk,
 ```

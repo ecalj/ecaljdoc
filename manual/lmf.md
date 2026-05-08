@@ -863,7 +863,7 @@ The syntax for Anderson mixing is `MIX=A3 b=.2` for example. You can use 'A5' or
 
 
 ## Parameters for relaxiation of atomic positions
-Try Samples/LaGaO3_relax. See SITE_RELAX as well. 
+Try `Samples/Legacy/LaGaO3_relax`. See SITE_RELAX (TOML: `[[site]].relax`) as well. 
 ```    
  DYN_MODE          opt    i4       1,  1          default= 0
     0: no relaxation  
