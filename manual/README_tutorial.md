@@ -244,7 +244,7 @@ are evaluated, and earlier defines are visible to later ones (so
 > `z`, ... never get defined).  Either drop the empty entry or assign
 > a real value (`%const x=0 y=...`).
 
-The default names of atomic species are shown by `ctrlgenM1.py --showatomlist`.
+The default names of atomic species are shown by `ctrlgenToml.py --showatomlist`.
 Instead of such default symbols, we can use your own symbol as
 ```
 SITE
