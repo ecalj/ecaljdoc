@@ -338,13 +338,25 @@ ctrlgenToml: done. ctrlG.mp-2534.toml has [io]/[struc]/[[site]]/[[spec]]/...
 
 **Recommended workflow**: run `ctrlgenToml.py <sname>` with **no other
 flags** to get the defaults, then **edit `ctrlG.<sname>.toml`
-directly** — the file is fully commented and TOML-typed, so editing
-keys in place is the cleanest path. `PB.toml` is consumed only on the
-GW path and **does not normally need hand editing**; leave it as
-generated.  Optional CLI flags
-(`--nspin / --so / --xcfun / --nk1 / --insulator / --systype / --ssig
-/ --mmom`) exist for scripting and are bake-in equivalents of the
-edits below; `ctrlgenToml.py --help` shows the full list.
+afterwards** — the file is fully commented and TOML-typed, so
+in-place edits in your editor are the natural path. **The CLI flags
+listed by `ctrlgenToml.py --help` are bake-in equivalents of those
+edits, not requirements.** They are useful when scripting / batch-
+generating many materials, but for normal interactive use leave them
+off and edit the generated `ctrlG.<sname>.toml` keys directly.
+
+`PB.toml` is consumed only on the GW path and **does not normally
+need hand editing**; leave it as generated.
+
+Pure DFT / no-GW directory? Add `--skipgw`:
+
+```bash
+ctrlgenToml.py <sname> --skipgw   # ctrlG.<sname>.toml without [gw]/[product_basis]/[blocks];
+                                  # no PB.toml written.
+```
+
+You can re-run `ctrlgenToml.py <sname>` later (without `--skipgw`)
+to add the GW sections back in when you decide to use them.
 
 Common edits in `ctrlG.<sname>.toml`:
 
