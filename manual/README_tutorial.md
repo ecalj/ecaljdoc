@@ -12,6 +12,20 @@
  [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html).  For publications, we hope to make a citation as;
     [1] ecalj package available from https://github.com/tkotani/ecalj/.
 
+## AI agent
+
+We use [Claude Code](https://claude.com/claude-code) to install
+and use ecalj.  For cluster workflows (`qsub` / `sbatch` / `bash`
+launchers), Claude Code handles job submission and monitors the
+running jobs (tail logs, react to errors, restart on failure, etc.)
+without you having to babysit the queue.
+
+The TOML-aware doc and tooling — `ctrlgenToml.py`, `Legacy2toml.py`,
+`testecalj`, the `ctrlG.<sname>.toml` schema annotations, much of
+`ecalj_auto`'s slot scheduler — are co-developed with Claude Code in
+the same way; many of the doc pages here also carry an explicit
+"auto-edited by Claude" disclosure where appropriate.
+
 ## Install
 To install ecalj, look into [install](../install/install.md), as well as [install for ISSP](../install/installISSP.md).
 
