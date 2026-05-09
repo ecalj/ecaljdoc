@@ -398,6 +398,14 @@ lmf si -vnk=8 -vmetal=3 -vnspin=2
 lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3 -v[ham.nspin]=2
 ```
 
+> ⚠️ **CAUTION** — `-v` *used to* override a `%const NAME=...` symbol
+> declared inside the legacy `ctrl.<sname>` (`{NAME}` then expanded
+> wherever it was referenced). Under TOML, **`-v` points directly at
+> a TOML path** (`-v[section.key]=val`); there is no `%const`
+> indirection. So habits like `-vmetal=3` silently do nothing —
+> use `-v[bz.metal]=3`. See the
+> [CAUTION block on toml_migration](./toml_migration#run-time-v-overrides).
+
 * `lmchk --pr60 mp-2534` allows you to check the recognized symmetries.
 
 At this point, you can visually check:

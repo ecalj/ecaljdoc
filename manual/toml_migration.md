@@ -83,6 +83,34 @@ lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3
 The bracketed key is the dotted TOML path (`[section.key]`); the value
 parses as TOML too (`[8,8,8]` for an integer vector).
 
+> ⚠️ **CAUTION — the meaning of `-v` changed.**
+> Originally, `-v<NAME>=<VAL>` overrode a `%const NAME=...` symbol
+> defined inside the legacy `ctrl.<sname>` (the value then propagated
+> wherever `{NAME}` was referenced). Under TOML, **`-v` no longer
+> looks up a user-defined `%const`** — it points **directly at a TOML
+> path** (`-v[section.key]=val`). The two syntaxes look similar but
+> mean different things:
+>
+> - `-vnk=8` (legacy) — set the `%const nk=...` token, which the
+>   ctrl body then expanded as `{nk}` into wherever `nk` was used.
+>   Symbol resolution depended on what `%const`s the ctrl actually
+>   declared.
+> - `-v[bz.nkabc]=[8,8,8]` (TOML) — directly set the value at TOML
+>   path `[bz].nkabc` in `ctrlG.<sname>.toml` for this run, in
+>   memory. No `%const` indirection; no on-disk rewrite. The path
+>   must match a real key in the schema.
+>
+> Practical consequences:
+>
+> - Habits like `-vmetal=3` silently do nothing under TOML mode
+>   (the symbol `metal` is not a TOML path).  Use
+>   `-v[bz.metal]=3` instead.
+> - `-vnspin=2 -vso=0` likewise has no effect; use
+>   `-v[ham.nspin]=2 -v[ham.so]=0`.
+> - `Legacy2toml.py` prints `[INFO] / [WARN] / [ERROR]` diagnostics
+>   for any `%const` overrides it encounters during conversion to
+>   help spot silent breakages.
+
 ## Migrated samples (use these as templates)
 
 The following directories under `ecalj/Samples/` are fully TOML-migrated
