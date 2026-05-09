@@ -33,8 +33,18 @@ must be converted before any binary is invoked.
 > **`--skipgw`** to `ctrlgenToml.py` — that skips the
 > `lmfa → lmf --jobgw=0 → gwinit` sub-step, omits
 > `[gw]` / `[product_basis]` / `[blocks]` from the output, and does
-> not write `PB.toml`. You can re-run `ctrlgenToml.py <ext>` later
-> (without `--skipgw`) to add the GW sections back in.
+> not write `PB.toml`.
+>
+> **Adding GW sections later (preserving your hand-edits):** use
+> `ctrlgenToml.py <ext> --addgw`. This appends `[gw]` /
+> `[product_basis]` / `[blocks]` and writes `PB.toml` **without
+> regenerating the ctrl-side keys** — your edits to `[bz]`, `[ham]`,
+> `[[spec]]` etc. are preserved as is. It refuses to run if `[gw]`
+> is already present (to avoid silent duplication). Do **not** plain
+> re-run `ctrlgenToml.py <ext>` for this purpose: the default flow
+> overwrites the whole `ctrlG.<ext>.toml` from `ctrls.<ext>` (the
+> previous file is moved to `ctrlG.<ext>.toml.bakup`, one-generation
+> backup only).
 
 `<sname>` is the user-defined material extension (e.g. `si`, `cu`, `gaas`,
 `fe`, ...). One working directory normally has exactly one

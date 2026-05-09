@@ -355,8 +355,23 @@ ctrlgenToml.py <sname> --skipgw   # ctrlG.<sname>.toml without [gw]/[product_bas
                                   # no PB.toml written.
 ```
 
-You can re-run `ctrlgenToml.py <sname>` later (without `--skipgw`)
-to add the GW sections back in when you decide to use them.
+To add the GW sections later **without losing the ctrl-side edits
+you have made in the meantime**, use `--addgw`:
+
+```bash
+ctrlgenToml.py <sname> --addgw    # appends [gw]/[product_basis]/[blocks]
+                                  # and writes PB.toml in place;
+                                  # ctrl-side keys ([bz], [ham], [[spec]], ...)
+                                  # are preserved verbatim.
+```
+
+`--addgw` refuses to run if `[gw]` is already present (to avoid
+silent duplication). **Do not** plain re-run `ctrlgenToml.py <sname>`
+for this purpose: the default flow overwrites the whole
+`ctrlG.<sname>.toml` from `ctrls.<sname>` (the previous file is
+moved to `ctrlG.<sname>.toml.bakup`, one-generation backup only —
+your edits would be in there but you'd have to merge them back by
+hand).
 
 Common edits in `ctrlG.<sname>.toml`:
 
