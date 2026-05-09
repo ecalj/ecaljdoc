@@ -130,6 +130,15 @@ MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余
 Here we explain DFT/QSGW calculations with ecalj. Then we explain how to make band plots. For simplicity, we treat paramagetic cases (nsp=1), no 4f, no SOC.
 We explain things step by step.
 
+> **Worked example** — every step below uses **GaAs** as the running
+> example. A minimal seed (`ctrls.gaas` + the generated
+> `ctrlG.gaas.toml` + `PB.toml`) lives at
+> [`Samples/GetStarted/GaAs/`](https://github.com/ecalj/ecalj/tree/master/Samples/GetStarted/GaAs).
+> Copy that directory to a fresh work area and follow Steps 1-6
+> below. See its
+> [README](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/GaAs/README.md)
+> for the one-shot reproduction script.
+
 Further details are explained at [UsageDetailed](./UsageDetailed.md)
 
 ## Step 0. Get POSCAR
@@ -206,7 +215,9 @@ SITE
      ATOM=As POS=     1.17375100000       0.82996725000       2.03299675000 
 ```
 Indentation is needed to show blocks of categories, STRUC and SITE.
-Another example of ctrls.GaAs
+Another example of `ctrls.gaas` (the worked-example seed shipped at
+[`Samples/GetStarted/GaAs/ctrls.gaas`](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/GaAs/ctrls.gaas)):
+
 ```
 %const bohr=0.529177 a=5.65325/bohr
 STRUC
@@ -299,6 +310,13 @@ seed produced by `vasp2ctrl` in Step 1) with **`ctrlgenToml.py`**:
 ```bash
 ctrlgenToml.py mp-2534
 ```
+
+(Or, for the GaAs worked example shipped at
+[`Samples/GetStarted/GaAs/`](https://github.com/ecalj/ecalj/tree/master/Samples/GetStarted/GaAs):
+`ctrlgenToml.py gaas` — produces the
+[`ctrlG.gaas.toml`](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/GaAs/ctrlG.gaas.toml)
++ [`PB.toml`](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/GaAs/PB.toml)
+that ship in that directory.)
 
 This single command:
 

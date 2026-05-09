@@ -11,6 +11,7 @@ sub-tree.
 ```
 ecalj/Samples/
 ├── README.md          (https://github.com/ecalj/ecalj/blob/master/Samples/README.md)
+├── GetStarted/        minimal seeds for the README_tutorial walk-through
 ├── EPS/               TOML-migrated, testecalj-runnable
 ├── MLOsamples/        TOML-migrated, testecalj-runnable
 ├── PROCAR/            TOML-migrated, testecalj-runnable
@@ -28,6 +29,7 @@ flow.
 
 | dir | physics / role | per-dir README | doc page |
 |---|---|---|---|
+| **GetStarted/GaAs** | minimal worked example for the [tutorial](./README_tutorial#getstarted) — GaAs zinc-blende, 2 atoms, ships `ctrls.gaas` + `ctrlG.gaas.toml` + `PB.toml` | [GetStarted/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/README.md) / [GaAs README](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/GaAs/README.md) | [./README_tutorial](./README_tutorial) |
 | **EPS/EPS_Cu** | dielectric ε(q,ω), epsPP0, FCC metal | (this page below) | [Dielectric function § epsPP0](./optical) |
 | **EPS/EPS_GaAs** | ε(q,ω), GaAs zinc-blende semiconductor | — | [./optical](./optical) |
 | **EPS/EPS_Ag** | ε(q,ω), Ag (FCC, no LFC) | — | [./optical](./optical) |
