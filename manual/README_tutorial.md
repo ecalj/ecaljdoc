@@ -290,9 +290,11 @@ to reproduce results by VASP or in MP from your POSCAR file.
 
 `ctrlG.<sname>.toml` plus `PB.toml` is the input pair the Fortran
 binaries (`lmf`, `lmfa`, `lmchk`, `gwsc`, ...) actually read since
-2026-05.  Generate them straight from the lightweight
-`ctrls.<sname>` (the structure-only seed produced by `vasp2ctrl` in
-Step 1) with **`ctrlgenToml.py`**:
+2026-05. **`PB.toml`, which we do not edit usually, is for product
+basis setting only in GW** — auto-emitted by the generator below;
+hand edits live in `ctrlG.<sname>.toml`. Generate both files
+straight from the lightweight `ctrls.<sname>` (the structure-only
+seed produced by `vasp2ctrl` in Step 1) with **`ctrlgenToml.py`**:
 
 ```bash
 ctrlgenToml.py mp-2534
