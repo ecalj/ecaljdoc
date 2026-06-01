@@ -641,7 +641,7 @@ For bandplot,
 ```
 job_band mp-2534 -np 8 [options]
 ```
-At the end of job_band, you can add options for lmf as -vso=1 -vnspin=2.
+At the end of job_band, you can add TOML overrides for lmf as `-v[ham.so]=1 -v[ham.nspin]=2`.
 (these are for SOC as perturbation)
 We use gnuplot for band plot bandplot.isp1.glt.
 
@@ -732,7 +732,9 @@ In this calculation we run `gwsc -np 8 1 si`, where 1 is the number of QSGW iter
 If you repeat gwsc, we have additional QSGW iterations on top the previous calculations.
 
 #### a case of La2CuO4
-For La2CuO4, I had 
+For La2CuO4, I had (verbatim log from 2025-06; the legacy `-vssig=0.8`
+form recorded below is no longer parsed — today the same override is
+`-v[ham.scaledsigma]=0.8`):
 ```
 2025-06-27 19:09:01.465241   mpirun -np 1 echo --- Start gwsc ---
 --- Start gwsc ---

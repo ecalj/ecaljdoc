@@ -42,7 +42,7 @@ This is a case we have ctrl.si.
 * quit option at some point. `--quit=band`, `--quit=ldau`... We need to do 'grep cmdopt SRC/*/*.f90|grep quit' to know details.
 * `--tdos`
 total dos calculation. But we usually use `job_tdos'
-* `-vfoobar=xxx` : This overides `%const foobar=yyy` defined in ctrl (foobar is used as {foobar} in ctrl file). This is shown in save file explained below.
+* `-v[<toml-path>]=<value>` : Runtime override of a key in `ctrlG.<sname>.toml`. The path uses dotted TOML syntax (e.g. `-v[bz.nkabc]=[8,8,8]`, `-v[ham.scaledsigma]=0.8`, `-v[spec.1.r]=2.5` for the 1st `[[spec]]`). Substituted into the in-memory TOML before parsing; the file on disk is untouched. Each applied override is logged on rank 0. The legacy `-vfoobar=val` form (ctrl `%const` substitution) no longer has a parser and is silently ignored.
 
 We have some kinds of options for electron density plot, boltztrap and so on.
 (not yet described).
@@ -909,7 +909,9 @@ usage:  lmf [--OPTION] [-var-assign] [extension]
  --pr=#1        Set the verbosity (stack) to values #1
  --time=#1[,#2] Print timing info to # levels (#1=summary; #2=on-the-fly)
 
- -vnam=expr     Define numerical variable "nam"; set to result of 'expr'
+ -v[<path>]=val Override TOML key at run time (e.g. -v[bz.nkabc]=[8,8,8],
+                 -v[ham.scaledsigma]=0.8, -v[spec.1.r]=2.5).
+                 Legacy -vnam=expr (ctrl %const) is no longer parsed.
   --jobgw=1 or 2       lmf-MPIK works as the GW driver (previous lmfgw-MPIK)
   --quit=band, 
     Quit after band 

@@ -73,7 +73,7 @@ from `-v<NAME>=<VAL>` to bracketed TOML-path syntax processed in-memory
 by `m_toml_override.f90` (no on-disk rewrite):
 
 ```bash
-# OLD (still works only for legacy ctrl, not for ctrlG.toml)
+# OLD (no longer parsed — silently ignored)
 lmf si -vnk=8 -vmetal=3
 
 # NEW
@@ -86,27 +86,20 @@ parses as TOML too (`[8,8,8]` for an integer vector).
 > ⚠️ **CAUTION — the meaning of `-v` changed.**
 > Originally, `-v<NAME>=<VAL>` overrode a `%const NAME=...` symbol
 > defined inside the legacy `ctrl.<sname>` (the value then propagated
-> wherever `{NAME}` was referenced). Under TOML, **`-v` no longer
-> looks up a user-defined `%const`** — it points **directly at a TOML
-> path** (`-v[section.key]=val`). The two syntaxes look similar but
-> mean different things:
+> wherever `{NAME}` was referenced). The legacy `-v<NAME>=<VAL>`
+> parser is gone; only the bracketed form `-v[<toml-path>]=<value>`
+> is recognized (handled in `m_toml_override.f90`).
 >
-> - `-vnk=8` (legacy) — set the `%const nk=...` token, which the
->   ctrl body then expanded as `{nk}` into wherever `nk` was used.
->   Symbol resolution depended on what `%const`s the ctrl actually
->   declared.
-> - `-v[bz.nkabc]=[8,8,8]` (TOML) — directly set the value at TOML
+> - `-v[bz.nkabc]=[8,8,8]` (current) — directly set the value at TOML
 >   path `[bz].nkabc` in `ctrlG.<sname>.toml` for this run, in
 >   memory. No `%const` indirection; no on-disk rewrite. The path
->   must match a real key in the schema.
+>   must match a real key in the schema. Each applied override is
+>   logged on rank 0 so it appears in `llmf` etc.
 >
 > Practical consequences:
 >
-> - Habits like `-vmetal=3` silently do nothing under TOML mode
->   (the symbol `metal` is not a TOML path).  Use
->   `-v[bz.metal]=3` instead.
-> - `-vnspin=2 -vso=0` likewise has no effect; use
->   `-v[ham.nspin]=2 -v[ham.so]=0`.
+> - Habits like `-vmetal=3`, `-vnspin=2 -vso=0` silently do nothing
+>   (no parser). Use `-v[bz.metal]=3`, `-v[ham.nspin]=2 -v[ham.so]=0`.
 > - `Legacy2toml.py` prints `[INFO] / [WARN] / [ERROR]` diagnostics
 >   for any `%const` overrides it encounters during conversion to
 >   help spot silent breakages.
@@ -151,8 +144,8 @@ SLURM/PBS clusters.
 
 ## Common gotchas
 
-- **`-v` form mismatch** — `lmf` will silently ignore `-vnspin=2 -vso=0`
-  under TOML mode; use `-v[ham.nspin]=2 -v[ham.so]=0`.
+- **`-v` form mismatch** — `lmf` silently ignores legacy `-vnspin=2 -vso=0`
+  (no parser). Use `-v[ham.nspin]=2 -v[ham.so]=0`.
 - **Stale `Worb` blocks** — `gwinput2toml.py` (the GWinput leg of
   `Legacy2toml.py`) used to last-write-wins on duplicate `<Worb>` blocks;
   now keeps the first.

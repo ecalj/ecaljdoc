@@ -10,7 +10,7 @@ From console output, we can check convergence behevior, band energies, Fermi ene
 ## save.foobar
 * save.foobar records starting history invoking lmf,lmchk, and lmfa. In addition, it give  total energies, a line
 per iteration of lmf. At each line,'i: intermediate, c: converged, x:iteration max without converged'.
-* In addition, -vfoobar=xxx is recorded (overriding variables in ctrl).
+* In addition, `-v[<toml-path>]=<value>` overrides (e.g. `-v[ham.scaledsigma]=0.8`) are recorded. The legacy `-vfoobar=xxx` form (ctrl `%const` substitution) is no longer parsed.
 
 * Two total energies Kohn-Sham and Harris-Folker is given---[both should be virtually the same](lmf.md#q-should-the-harris-foulkes-and-hohenberg-kohn-sham-functionals-agree-at-self-consistency). 
 But some differences for bigger systems. Take one of them.
@@ -149,28 +149,28 @@ We have a switch `HAM_SO` in the ctrl file
 * For LDA/GGA, set nspin=2 and so=1. Then we can perform calculations including SOC. so=1 is for soc included (so=2 is for LzSz mode neglecting LxSz+LySy.
 * In the case of semiconductors such as GaAs, we need to include so=1 to see the band structure at the top of valence.
 * Currently, QSGW can not be performed with so=1. So we first have to run gwsc with
-so=0 or 2. After we get sigm file, we run lmf with --vso=1 (nit=1 can be fine) as a perturbation.
+so=0 or 2. After we get sigm file, we run lmf with `-v[ham.so]=1` (nit=1 can be fine) as a perturbation.
 
 * We can treat only colinear spins. Spin axis is along (0,0,1) as default. We can choose other direction with SOCAXIS. See ecalj/Samples/Legacy/SOCAXIS. Not checked completely, but it seems work well.
 
 ### Band plot with spin orbit coupling.
 * method 1: only apply SOC for band plot
   ```bash
-  job_band mp-2534 -np 8 -vso=1 -vnspin=2
+  job_band mp-2534 -np 8 -v[ham.so]=1 -v[ham.nspin]=2
   ```
   Caution: when you set nspin=2, the size of rst is twiced. No way to move it back to rst for nspin=1. So you may need to keep rst.
 
 * method 2. single iteration and SO=1
   ```bash
-  mpirun -np 8 lmf -vso=1 -vnspin=2 -vnit=1
+  mpirun -np 8 lmf -v[ham.so]=1 -v[ham.nspin]=2 -v[iter.nit]=1
   ```
-  Then we have revised rst.foobar. Then run `job_band mp-2534 -np 8 -vso=1 -vnspin=2`.
+  Then we have revised rst.foobar. Then run `job_band mp-2534 -np 8 -v[ham.so]=1 -v[ham.nspin]=2`.
 
 * method 3. full iteration SO=1
   ```bash
-  mpirun -np 8 lmf -vso=1 -vnspin=2 -vnit=1
+  mpirun -np 8 lmf -v[ham.so]=1 -v[ham.nspin]=2 -v[iter.nit]=1
   ```
-  Then run `job_band mp-2534 -np 8 -vso=1 -vnspin=2`
+  Then run `job_band mp-2534 -np 8 -v[ham.so]=1 -v[ham.nspin]=2`
 
 ## Forces and Atomic position relaxiation  
 See ecalj/Samples/Legacy/LaGaO3_relax.
@@ -392,21 +392,21 @@ Another way is `grep rms lqpe*`. This gives rmsdel. Diffence of self-energy
   make band plot.  After, you have rst and sigm files determined self-consistently
   Run 
   ```
-  job_band gaas -np 4 -vssig=0.80 
+  job_band gaas -np 4 -v[ham.scaledsigma]=0.80
   ```
-  (Confirm ssig is defined and cited as `ScaledSigma={ssig}` in the ctrl file). This gives a result of QSGW80nosc in the TableII.
+  This overrides `[ham] scaledsigma` in `ctrlG.gaas.toml` at run time, giving the QSGW80nosc result in Table II.
 
 #### 2. QSGW80(Nosc)+SO 
    80%QSGW+20%LDA with SO=1 (L.S method).
    If you like to include L.S method 
 
 ```
-mpirun lmf gaas -np 4 -vssig=0.80 -vso=1 -vnspin=2
+mpirun lmf gaas -np 4 -v[ham.scaledsigma]=0.80 -v[ham.so]=1 -v[ham.nspin]=2
 ```
 This procedure makes self-consistency with keeping the sigm file. This may/(or may not) required. If you expect large obital moment this procedure may be needed.
 
 ```
-job_band gaas -np 4 -vssig=0.80 -vso=1 -vnspin=2
+job_band gaas -np 4 -v[ham.scaledsigma]=0.80 -v[ham.so]=1 -v[ham.nspin]=2
 ```
 NOTE: nspin=2 is required for so=1. rst and sigm are expanded for npsin=2 (you can not run with nspin=1, after rst and sigm are expanded).
   
