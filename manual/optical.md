@@ -1,6 +1,6 @@
 # Dielectric function: epsPP0 
 
-> ⚠️ **TOML migration (2026-05)** — `epsPP0`, `eps_lmfh`, `epsPP_lmfh` and friends now read `ctrlG.<sname>.toml` + `PB.toml`. Convert legacy `ctrl.<sname>` / `GWinput` directories with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration) and worked examples in [Samples/EPS/](https://github.com/ecalj/ecalj/blob/master/Samples/EPS) — `EPS_Cu`, `EPS_GaAs`, `EPS_Ag`.
+> ⚠️ **TOML migration (2026-05)** — `epsPP0`, `eps_lmfh`, `epsPP_lmfh` and friends now read `ctrlG.<sname>.toml` + `PB.toml`. Convert legacy `ctrl.<sname>` / `GWinput` directories with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration) and worked examples in [Samples/EPS/](https://github.com/tkotani/ecalj/blob/master/Samples/EPS) — `EPS_Cu`, `EPS_GaAs`, `EPS_Ag`.
 
 epsPP0(2025-5-8 version)
 

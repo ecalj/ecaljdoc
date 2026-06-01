@@ -1,6 +1,6 @@
 # Samples — what's where in `ecalj/Samples/`
 
-This page is a thin index over the [`ecalj/Samples/`](https://github.com/ecalj/ecalj/tree/master/Samples)
+This page is a thin index over the [`ecalj/Samples/`](https://github.com/tkotani/ecalj/tree/master/Samples)
 tree.  Each row points at the per-directory README that owns the
 authoritative description; the role / what-to-start-with column is
 meant to help you pick the right entry point without opening every
@@ -10,7 +10,7 @@ sub-tree.
 
 ```
 ecalj/Samples/
-├── README.md          (https://github.com/ecalj/ecalj/blob/master/Samples/README.md)
+├── README.md          (https://github.com/tkotani/ecalj/blob/master/Samples/README.md)
 ├── GetStarted/        minimal seeds for the README_tutorial walk-through
 ├── EPS/               TOML-migrated, testecalj-runnable
 ├── MLOsamples/        TOML-migrated, testecalj-runnable
@@ -29,18 +29,18 @@ flow.
 
 | dir | physics / role | per-dir README | doc page |
 |---|---|---|---|
-| **GetStarted/GaAs** | minimal worked example for the [tutorial](./README_tutorial#getstarted) — GaAs zinc-blende, 2 atoms, ships `ctrls.gaas` + `ctrlG.gaas.toml` + `PB.toml` | [GetStarted/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/README.md) / [GaAs README](https://github.com/ecalj/ecalj/blob/master/Samples/GetStarted/GaAs/README.md) | [./README_tutorial](./README_tutorial) |
-| **EPS/EPS_Cu** | dielectric ε(q,ω), epsPP0, FCC metal | (this page below) | [Dielectric function § epsPP0](./optical) |
-| **EPS/EPS_GaAs** | ε(q,ω), GaAs zinc-blende semiconductor | — | [./optical](./optical) |
-| **EPS/EPS_Ag** | ε(q,ω), Ag (FCC, no LFC) | — | [./optical](./optical) |
-| **MLOsamples/** (17 dirs) | MTO Localized Orbitals (Wannier replacement); SOC variants; on-site W via `job_mloW` | [MLOsamples/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README.md) | [README_SOC.md](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README_SOC.md) |
-| **PROCAR/MgO_PROCAR** | fat-band weight; O-2p projection on MgO bands | (in test.py) | (this page below) |
-| **PROCAR/Ni2MnGa_L21_PROCAR** | per-atom fat band; FM Heusler; ships converged `rst.ni2mnga` | (in test.py) | (this page below) |
+| **GetStarted/GaAs** | minimal worked example for the [tutorial](./README_tutorial#getstarted) — GaAs zinc-blende, 2 atoms, ships `ctrls.gaas` + `ctrlG.gaas.toml` + `PB.toml` | [GetStarted/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/README.md) / [GaAs README](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/README.md) | [./README_tutorial](./README_tutorial) |
+| **EPS/EPS_Cu** | dielectric ε(q,ω), epsPP0, FCC metal | [EPS_Cu/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS/EPS_Cu) (no README; see test.py) | [Dielectric function § epsPP0](./optical) |
+| **EPS/EPS_GaAs** | ε(q,ω), GaAs zinc-blende semiconductor | [EPS_GaAs/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS/EPS_GaAs) (no README; see test.py) | [./optical](./optical) |
+| **EPS/EPS_Ag** | ε(q,ω), Ag (FCC, no LFC) | [EPS_Ag/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS/EPS_Ag) (no README; see test.py) | [./optical](./optical) |
+| **MLOsamples/** (17 dirs) | MTO Localized Orbitals (Wannier replacement); SOC variants; on-site W via `job_mloW` | [MLOsamples/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md) | [README_SOC.md](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README_SOC.md) |
+| **PROCAR/MgO_PROCAR** | fat-band weight; O-2p projection on MgO bands | [MgO_PROCAR/](https://github.com/tkotani/ecalj/tree/master/Samples/PROCAR/MgO_PROCAR) (no README; see test.py) | [./UsageDetailed § PROCAR mode](./UsageDetailed#procar-mode) |
+| **PROCAR/Ni2MnGa_L21_PROCAR** | per-atom fat band; FM Heusler; ships converged `rst.ni2mnga` | [Ni2MnGa_L21_PROCAR/](https://github.com/tkotani/ecalj/tree/master/Samples/PROCAR/Ni2MnGa_L21_PROCAR) (no README; see test.py) | [./UsageDetailed § PROCAR mode](./UsageDetailed#procar-mode) |
 | **TestInstall/** (23 dirs) | install validation: ground-state, GW (`gwsc`), eps (`eps_lmfh`, `epsPP_lmfh`), ChiPM, cRPA | (per dir; driven by `testecalj --all`) | [./gwsc](./gwsc), [./optical](./optical) |
 
 ### `Samples/MLOsamples/` quick map (17 testecalj cases)
 
-The dedicated [MLOsamples/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README.md)
+The dedicated [MLOsamples/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md)
 table has roles + reference data per case.  Highlights:
 
 - `Si666gwsc`, `GaAsSoc`, `FeSoc`, `FeMgOSoc` — SOC-as-perturbation tests
@@ -49,7 +49,7 @@ table has roles + reference data per case.  Highlights:
 - `Al2O3_Cr`, `GdCo5`, `GdION`, `NiO666lda`, `RuO2` — LDA+U / 4f / AFM
 - `Fe`'s test.py drives `job_mloW` and verifies on-site V, W−V vs
   inline reference values — see
-  [MLOsamples/README.md § Regression test (testecalj Fe)](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README.md#regression-test-testecalj-fe).
+  [MLOsamples/README.md § Regression test (testecalj Fe)](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md#regression-test-testecalj-fe).
 
 ### `Samples/TestInstall/` what each tests
 
@@ -83,7 +83,7 @@ divergence.  `testecalj EPS_Cu / EPS_GaAs / EPS_Ag -np 4` each yields
 
 ## Legacy/ — awaiting TOML migration
 
-[`Samples/Legacy/`](https://github.com/ecalj/ecalj/tree/master/Samples/Legacy)
+[`Samples/Legacy/`](https://github.com/tkotani/ecalj/tree/master/Samples/Legacy)
 holds 26 directories that still use legacy `ctrl.<sname>` + (sometimes)
 `GWinput`.  They are kept because the prose / setup is still useful
 as a teaching reference, but `lmf` / `gwsc` won't read them until
@@ -91,7 +91,7 @@ converted with `Legacy2toml.py <sname>`.
 
 Two of the 26 are testecalj-runnable once migrated; the rest are
 example/educational directories (no `test.py`).  See
-[`Samples/README.md`](https://github.com/ecalj/ecalj/blob/master/Samples/README.md)
+[`Samples/README.md`](https://github.com/tkotani/ecalj/blob/master/Samples/README.md)
 for the full table — this page does not duplicate it.
 
 ## Where each Samples-related description in ecaljdoc lives
@@ -106,7 +106,8 @@ page; this Samples page only points:
 | `GWinput` (historical legacy text format reference) | [./gwinput](./gwinput) |
 | QSGW with `gwsc` end-to-end | [./gwsc](./gwsc) |
 | Dielectric ε(q,ω) (`epsPP0`, `eps_lmfh`, `epsPP_lmfh`) | [./optical](./optical) |
-| MLO bands + on-site W (`job_mloW`) | [MLOsamples/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README.md) |
+| Fat-band weights / `PROCAR` (`MgO_PROCAR`, `Ni2MnGa_L21_PROCAR`) | [./UsageDetailed § PROCAR mode](./UsageDetailed#procar-mode) |
+| MLO bands + on-site W (`job_mloW`) | [MLOsamples/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md) |
 | `ecalj_auto` batch runner | [./auto](./auto) |
 | End-to-end tutorial (POSCAR → QSGW) | [./README_tutorial](./README_tutorial) |
 

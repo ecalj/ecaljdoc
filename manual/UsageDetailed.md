@@ -204,7 +204,7 @@ The sample (run job file) generates eps file showing fat band of O2 compon`ents.
 
 ## LDA+U
 We have samples 
-* https://github.com/ecalj/ecalj/tree/master/Samples/Legacy/GdNldau
+* https://github.com/tkotani/ecalj/tree/master/Samples/Legacy/GdNldau
 
 * ~/ecalj/Samples/Legacy/ReNcub 
 
@@ -254,12 +254,12 @@ These citations are required.
 ### ecalj/Samples/
 For the canonical layout and per-tree role table see the
 [Samples overview page](./samples) (or the upstream
-[Samples/README.md](https://github.com/ecalj/ecalj/blob/master/Samples/README.md)).
+[Samples/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/README.md)).
 Highlights touched in this page:
 
 * `MLOsamples/` — new MTO Localized Orbital basis (Wannier replacement),
   with on-site W via `job_mloW`. See the per-dir
-  [README](https://github.com/ecalj/ecalj/blob/master/Samples/MLOsamples/README.md).
+  [README](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md).
 * `Legacy/BK/MLWF_sampls/` — historical Wannier90-style implementation
   (CuMLWFs, La2CuO4, NiOMLWF, SrVO3MLWF), cRPA via the Juelich group's
   formulation. Kept under Legacy/ for reference; we are migrating users
