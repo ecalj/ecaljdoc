@@ -1,6 +1,6 @@
 # gwsc: a script to run QSGW calculation
 
-> ⚠️ **TOML migration (2026-05)** — `gwsc` now reads `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. The legacy `GWinput` text file referenced below is auto-converted by `Legacy2toml.py <sname>` (run once per directory). See [TOML migration](./toml_migration) and the migrated [Samples/TestInstall/*_gwsc/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall) directories as templates.
+> ⚠️ **TOML migration (2026-05)** — `gwsc` now reads `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. The legacy `GWinput` text file referenced below is auto-converted by `Legacy2toml.py <sname>` (run once per directory). See [TOML migration](./toml_migration) and the migrated [Samples/TestInstall/*_gwsc/](https://github.com/tkotani/ecalj/tree/main/Samples/TestInstall) directories as templates.
 
 gwscがQSGW計算実行スクリプトである。
 QSGW計算は，複数のfortran実行ファイルを呼び出して実行される．

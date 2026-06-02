@@ -4,9 +4,9 @@
 
 The Fortran binaries accept four token forms. Anything else aborts at
 startup with a one-line hint. All parsing lives in
-[`SRC/subroutines/m_cmdopt_registry.f90`](https://github.com/tkotani/ecalj/blob/master/SRC/subroutines/m_cmdopt_registry.f90)
+[`SRC/subroutines/m_cmdopt_registry.f90`](https://github.com/tkotani/ecalj/blob/main/SRC/subroutines/m_cmdopt_registry.f90)
 (option table + typo / retired-syntax check) and
-[`SRC/subroutines/m_toml_override.f90`](https://github.com/tkotani/ecalj/blob/master/SRC/subroutines/m_toml_override.f90)
+[`SRC/subroutines/m_toml_override.f90`](https://github.com/tkotani/ecalj/blob/main/SRC/subroutines/m_toml_override.f90)
 (TOML override application).
 
 | Form | Meaning | Where it goes |

@@ -1,7 +1,7 @@
 # ecalj MainDocument
 **This is MainDocument of ecaljdoc. All files are linked from this file.**
 
-> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Examples below referring to `ctrl.<sname>` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Examples below referring to `ctrl.<sname>` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
 
 * Here we give [GetStarted](#getstarted), together with install and overview of QSGW.
 * We have [UsageDetails](./UsageDetailed.md) in another file.
@@ -147,10 +147,10 @@ We explain things step by step.
 > **Worked example** — every step below uses **GaAs** as the running
 > example. A minimal seed (`ctrls.gaas` + the generated
 > `ctrlg.gaas.toml` + `PB.<sname>.toml`) lives at
-> [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/master/Samples/GetStarted/GaAs).
+> [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/main/Samples/GetStarted/GaAs).
 > Copy that directory to a fresh work area and follow Steps 1-6
 > below. See its
-> [README](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/README.md)
+> [README](https://github.com/tkotani/ecalj/blob/main/Samples/GetStarted/GaAs/README.md)
 > for the one-shot reproduction script.
 
 Further details are explained at [UsageDetailed](./UsageDetailed.md)
@@ -230,7 +230,7 @@ SITE
 ```
 Indentation is needed to show blocks of categories, STRUC and SITE.
 Another example of `ctrls.gaas` (the worked-example seed shipped at
-[`Samples/GetStarted/GaAs/ctrls.gaas`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/ctrls.gaas)):
+[`Samples/GetStarted/GaAs/ctrls.gaas`](https://github.com/tkotani/ecalj/blob/main/Samples/GetStarted/GaAs/ctrls.gaas)):
 
 ```
 %const bohr=0.529177 a=5.65325/bohr
@@ -326,10 +326,10 @@ ctrlgenToml.py mp-2534
 ```
 
 (Or, for the GaAs worked example shipped at
-[`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/master/Samples/GetStarted/GaAs):
+[`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/main/Samples/GetStarted/GaAs):
 `ctrlgenToml.py gaas` — produces the
-[`ctrlg.gaas.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/ctrlg.gaas.toml)
-+ [`PB.gaas.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/PB.gaas.toml)
+[`ctrlg.gaas.toml`](https://github.com/tkotani/ecalj/blob/main/Samples/GetStarted/GaAs/ctrlg.gaas.toml)
++ [`PB.gaas.toml`](https://github.com/tkotani/ecalj/blob/main/Samples/GetStarted/GaAs/PB.gaas.toml)
 that ship in that directory.)
 
 This single command:

@@ -1,6 +1,6 @@
 # For developer
 
-> ⚠️ **TOML migration (2026-05)** — Test directories now ship `ctrlg.<sname>.toml` + `PB.<sname>.toml` as the canonical inputs (see migrated [Samples/EPS/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS), [Samples/PROCAR/](https://github.com/tkotani/ecalj/tree/master/Samples/PROCAR), [Samples/MLOsamples/](https://github.com/tkotani/ecalj/tree/master/Samples/MLOsamples), [Samples/TestInstall/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall)). Legacy `ctrl,GWinput`-only directories live under [Samples/Legacy/](https://github.com/tkotani/ecalj/tree/master/Samples/Legacy) until converted with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration).
+> ⚠️ **TOML migration (2026-05)** — Test directories now ship `ctrlg.<sname>.toml` + `PB.<sname>.toml` as the canonical inputs (see migrated [Samples/EPS/](https://github.com/tkotani/ecalj/tree/main/Samples/EPS), [Samples/PROCAR/](https://github.com/tkotani/ecalj/tree/main/Samples/PROCAR), [Samples/MLOsamples/](https://github.com/tkotani/ecalj/tree/main/Samples/MLOsamples), [Samples/TestInstall/](https://github.com/tkotani/ecalj/tree/main/Samples/TestInstall)). Legacy `ctrl,GWinput`-only directories live under [Samples/Legacy/](https://github.com/tkotani/ecalj/tree/main/Samples/Legacy) until converted with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration).
 
 ## Test system `testecalj` (2025-10-8).
 

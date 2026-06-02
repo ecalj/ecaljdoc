@@ -118,17 +118,17 @@ and pass `testecalj`:
 
 | dir | role |
 |---|---|
-| [Samples/MLOsamples/](https://github.com/tkotani/ecalj/tree/master/Samples/MLOsamples) | MuffinTin Localized Orbitals (Wannier replacement). 17 samples — see [MLOsamples/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md) |
-| [Samples/TestInstall/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall) | install validation suite. 23 samples driven by `testecalj --all` |
-| [Samples/EPS/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS) | dielectric function ε(q,ω) — `EPS_Cu`, `EPS_GaAs`, `EPS_Ag` (epsPP0) |
-| [Samples/PROCAR/](https://github.com/tkotani/ecalj/tree/master/Samples/PROCAR) | fat-band weight — `MgO_PROCAR`, `Ni2MnGa_L21_PROCAR` |
+| [Samples/MLOsamples/](https://github.com/tkotani/ecalj/tree/main/Samples/MLOsamples) | MuffinTin Localized Orbitals (Wannier replacement). 17 samples — see [MLOsamples/README.md](https://github.com/tkotani/ecalj/blob/main/Samples/MLOsamples/README.md) |
+| [Samples/TestInstall/](https://github.com/tkotani/ecalj/tree/main/Samples/TestInstall) | install validation suite. 23 samples driven by `testecalj --all` |
+| [Samples/EPS/](https://github.com/tkotani/ecalj/tree/main/Samples/EPS) | dielectric function ε(q,ω) — `EPS_Cu`, `EPS_GaAs`, `EPS_Ag` (epsPP0) |
+| [Samples/PROCAR/](https://github.com/tkotani/ecalj/tree/main/Samples/PROCAR) | fat-band weight — `MgO_PROCAR`, `Ni2MnGa_L21_PROCAR` |
 
 The catch-all index for the sample tree is
-[Samples/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/README.md).
+[Samples/README.md](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
 
 ## Legacy (awaiting migration)
 
-Everything else lives under [`Samples/Legacy/`](https://github.com/tkotani/ecalj/tree/master/Samples/Legacy)
+Everything else lives under [`Samples/Legacy/`](https://github.com/tkotani/ecalj/tree/main/Samples/Legacy)
 and still uses `ctrl.<sname>` + `GWinput`. To run any of those, first
 `Legacy2toml.py <sname>` inside a working copy of the directory, then
 proceed as usual. The Legacy/ subgroups include `Magnon/`,
@@ -136,15 +136,15 @@ proceed as usual. The Legacy/ subgroups include `Magnon/`,
 
 ## Result summaries (worked-out reference values)
 
-- [MLOsamples/README.md § Reference value: bcc Fe Fe-3d on-site W](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md#reference-value-bcc-fe-fe-3d-on-site-w-with---mlo_feb4) — bcc Fe Fe-3d on-site screened W ~1.5 eV (job_mloW reproduction, 2×2×2 vs 4×4×4 BZ)
-- [MLOsamples/README.md § Regression test (testecalj Fe)](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README.md#regression-test-testecalj-fe) — automated diagonal V/W-V check against inline reference values
-- [MLOsamples/README_SOC.md](https://github.com/tkotani/ecalj/blob/master/Samples/MLOsamples/README_SOC.md) — SOC-as-perturbation variant (`job_mlo_soc`)
+- [MLOsamples/README.md § Reference value: bcc Fe Fe-3d on-site W](https://github.com/tkotani/ecalj/blob/main/Samples/MLOsamples/README.md#reference-value-bcc-fe-fe-3d-on-site-w-with---mlo_feb4) — bcc Fe Fe-3d on-site screened W ~1.5 eV (job_mloW reproduction, 2×2×2 vs 4×4×4 BZ)
+- [MLOsamples/README.md § Regression test (testecalj Fe)](https://github.com/tkotani/ecalj/blob/main/Samples/MLOsamples/README.md#regression-test-testecalj-fe) — automated diagonal V/W-V check against inline reference values
+- [MLOsamples/README_SOC.md](https://github.com/tkotani/ecalj/blob/main/Samples/MLOsamples/README_SOC.md) — SOC-as-perturbation variant (`job_mlo_soc`)
 
 ## Auto-job runner (`ecalj_auto`)
 
 For batch QSGW / GW jobs across many materials, see
-[ecalj_auto/README.md](https://github.com/tkotani/ecalj/blob/master/ecalj_auto/README.md)
-and [ecalj_auto/README_slot_scheduler.md](https://github.com/tkotani/ecalj/blob/master/ecalj_auto/README_slot_scheduler.md).
+[ecalj_auto/README.md](https://github.com/tkotani/ecalj/blob/main/ecalj_auto/README.md)
+and [ecalj_auto/README_slot_scheduler.md](https://github.com/tkotani/ecalj/blob/main/ecalj_auto/README_slot_scheduler.md).
 The `auto/` driver consumes `ctrlg.<sname>.toml` directly (no legacy
 fallback) and dispatches to `jobtemplate.{kugui,ohtaka,ucgw,...}` for
 SLURM/PBS clusters.

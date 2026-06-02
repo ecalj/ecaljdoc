@@ -1,6 +1,6 @@
 # `lmf,lmfa,lmchk`
 
-> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlg.<sname>.toml` + `PB.<sname>.toml`** only. The `ctrl.<sname>` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md).
+> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlg.<sname>.toml` + `PB.<sname>.toml`** only. The `ctrl.<sname>` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
 
 We need an input file `ctrlg.<sname>.toml` (legacy: `ctrl.<sname>`).  
 `<sname>` is the **positional** argument passed to the binary
@@ -284,10 +284,10 @@ lower-casing.  A few are renamed or restructured:
 | product-basis per-atom tables (`nlx`, `valence`, `core`) | **`PB.<sname>.toml`** (separate file) | per-sname |
 
 The full schema lives in
-[`SRC/exec/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/master/SRC/exec/ctrl_schema.py)
+[`SRC/exec/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/ctrl_schema.py)
 (the conversion source of truth).  Annotations / inline comments are
 applied by
-[`SRC/exec/toml_comments.py`](https://github.com/tkotani/ecalj/blob/master/SRC/exec/toml_comments.py).
+[`SRC/exec/toml_comments.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/toml_comments.py).
 
 
 ---
