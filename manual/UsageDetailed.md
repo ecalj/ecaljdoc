@@ -654,7 +654,7 @@ genMLWF -np 8 cu
     bandplot.cu.isp* given by job_band.
 
     ** NOTE: Efermi shift:
-    genMLWF requies bnds.${target} to read the Fermi energy.
+    genMLWF requires `bnds.<sname>` to read the Fermi energy.
     To generate it, we need to run job_band in advance.    Or run, 
     ```
     echo 2 | hmaxloc  > lmaxloc2
@@ -662,7 +662,7 @@ genMLWF -np 8 cu
     (need syml*); this can be runned after genMLWF.
     (Or need to shift Ef by hand as follows in gnuplot script.)
     ```
-    de = ((ef shown in "lmaxloc2") - (ef in llmf_ef(bnds.${target}))*13.605
+    de = ((ef shown in "lmaxloc2") - (ef in llmf_ef(bnds.<sname>))*13.605
     plot \
     "bnd1.dat" u 2:3 lt 1 pt 1 not w l,\
     "bnd2.dat" u 2:3 lt 1 pt 1 not w l,\

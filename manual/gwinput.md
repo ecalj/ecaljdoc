@@ -7,9 +7,9 @@ GWinput sets the computatioanl conditions for  GW/QSGW calculations.
 ## mkGWinputによる自動生成
 - GWinput は 自動生成することができ、殆どのパラメータはデフォルト設定で使用できる。
 
-自動生成コマンド
+自動生成コマンド (`<sname>` は ctrl ファイル拡張子)
 ```bash
-mkGWinput $target 
+mkGWinput <sname>
 ```
 > [!INFO]
 > mkGWinput は`python` スクリプトだが内部でecalj packageに含まれている実行ファイルを実行する。
