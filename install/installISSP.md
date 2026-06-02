@@ -1,6 +1,14 @@
 
 # ISSPのkuguiとohtaka(GPU)でのインストール
 
+> 📝 **Note** — This is a memo to install ecalj to the machines in
+> ISSP@u-tokyo as of 2025. Module names, software versions, and
+> filesystem layouts on `kugui` / `ohtaka` change over time; if any
+> step fails, check the latest ISSP documentation
+> ([SCC のページ](https://www.issp.u-tokyo.ac.jp/supercom/)) and adjust
+> module versions / paths accordingly. The configuration below has
+> been verified to work for the author's typical workflow but is not
+> automatically updated when ISSP's environment changes.
 
 ## kuguiでのインストール
 

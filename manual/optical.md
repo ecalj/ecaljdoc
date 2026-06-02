@@ -161,8 +161,8 @@ gnuplot -p epsall.glt
 ---
 
 ** （改良計画）誘電関数計算にはバンド吸収端で(E-E0)**.5でキレイに立ち上がらない(GaAsなどの場合）、という数値計算上の問題があります。メッシュを細かく取るときれいにできることは示したことがあります。変な内挿法よりも必要なことだけ細かく取るという技法が有効だと思います。汎用化しないといけないです。
-Test at 2016: we need to have correct edge $\propto \sqrt{\omega-E_0}$. To do so, we need to move to new method as
-![new eps](../data/abosorb_preport_tkotani2016Jul5.pptx.pdf)
+Test at 2016: we need to have correct edge $\propto \sqrt{\omega-E_0}$. To do so, we need to move to new method as documented in the slide deck:
+[abosorb_preport_tkotani2016Jul5.pdf](../data/abosorb_preport_tkotani2016Jul5.pptx.pdf).
 
 **（改良計画）q=0でのinterbandの寄与は<u|u>行列を使えば先に1/q^2の割り算ができるのでもっと直接的にできるはずです。
 
@@ -185,18 +185,18 @@ But we need checks and may be modification of `eps_lmfh`.
 
    Old figuresof epsilon for GaAs (2010).
    fig001: n1n2n3 convergence for Chi_RegQbz = on  case. (mesh including Gamma)
-   ![fig001](./gas_fig001.pdf)
+   ![fig001](./gas_fig001.png)
    fig002: n1n2n3 convergence for Chi_RegQbz = off case. (mesh not including Gamma)
-   ![fig002](./gas_fig002.pdf)
+   ![fig002](./gas_fig002.png)
    fig003: Alouanis'(from Arnaud)  vs. ``Chi_RegQbz = on'' vs. ``Chi_RegQbz = off''
    As you see, the threshold of the Red line (20x20x20 Chi_RegQbz=on) and Alouani's 
    are almost the same, but the red line is too oscilating at the low energy part.
    On the other hand, ``Chi_RegQbz = off'' in Green broken line is not so satisfactory
    at the low energy part. 
-   ![fig003](./gas_fig003.pdf)
+   ![fig003](./gas_fig003.png)
 
 * Old unpublished result for spin wave of ZB MnAs in QSGW as
-![zbmnas](./ZBmnasw1.pdf)
+![zbmnas](./ZBmnasw1.png)
 
    <!-- As you see, k points convergence looks a little better in Chi_RegQbz=off
    (mesh not including gamma). However a little ploblem is that its thereshold around 

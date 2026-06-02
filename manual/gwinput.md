@@ -100,7 +100,7 @@ some finite esmr to make calculations converged.
 波動関数のIPW基底のカットオフ~~エネルギー: 単位 Ryd~~。 `lmf`計算で用いるPMT手法とは波動関数の基底関数が異なることに注意。原子間領域の波動関数はIPWで展開し直して記述される。IPWとはinterstitial plane wave.
 - **type**: float
 - **default** : 4.0
-|q+G|<QpGcut_psi 単位 1/a.u.
+`|q+G| < QpGcut_psi` 単位 1/a.u.
 個数はqg4gwの結果（lqg4gw)にかかれている。
 エネルギー(Ry)にするには**2する。
 
@@ -109,7 +109,7 @@ some finite esmr to make calculations converged.
 
 ### `QpGcut_cou`
 積基底のIPW部分のカットオフ~~エネルギー: 単位 Ryd~~ 
-|q+G|<QpGcut_cou 単位 1/a.u.
+`|q+G| < QpGcut_cou` 単位 1/a.u.
 エネルギー(Ry)にするには**2する。
 - **type**: float
 - **default** : 3.0
@@ -192,7 +192,7 @@ Whether q is in the unit of `2pi/alat` or in the unit of a.u.(=`bohr^{-1}`). I t
   lcutmx(atom) = maximum l-cutoff for the product basis.  =4 is required for atoms with valence d, like N
    4 4 4 2 2 2 
 ```
-in the section of GWinput. Atom ID is in SiteInfo.foobar. The ordring of SITE in ctrl (need check).
+in the section of GWinput. Atom ID is in `SiteInfo.<sname>`. The ordring of SITE in ctrl (need check).
 
 * NOTE: we need lcutmx =6 is requied for 4f/5f atoms, while 2 is enough for Oxygen (probably other species on the same row).
 

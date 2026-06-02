@@ -36,14 +36,14 @@ must be converted before any binary is invoked.
 > not write `PB.<sname>.toml`.
 >
 > **Adding GW sections later (preserving your hand-edits):** use
-> `ctrlgenToml.py <ext> --addgw`. This appends `[gw]` /
+> `ctrlgenToml.py <sname> --addgw`. This appends `[gw]` /
 > `[product_basis]` / `[blocks]` and writes `PB.<sname>.toml` **without
 > regenerating the ctrl-side keys** — your edits to `[bz]`, `[ham]`,
 > `[[spec]]` etc. are preserved as is. It refuses to run if `[gw]`
 > is already present (to avoid silent duplication). Do **not** plain
-> re-run `ctrlgenToml.py <ext>` for this purpose: the default flow
-> overwrites the whole `ctrlg.<ext>.toml` from `ctrls.<ext>` (the
-> previous file is moved to `ctrlg.<ext>.toml.bakup`, one-generation
+> re-run `ctrlgenToml.py <sname>` for this purpose: the default flow
+> overwrites the whole `ctrlg.<sname>.toml` from `ctrls.<sname>` (the
+> previous file is moved to `ctrlg.<sname>.toml.bakup`, one-generation
 > backup only).
 
 `<sname>` is the user-defined material extension (e.g. `si`, `cu`, `gaas`,

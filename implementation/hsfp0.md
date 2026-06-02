@@ -1,6 +1,6 @@
 # 自己エネルギー計算の実装について
 
-> ⚠️ **TOML migration (2026-05)** — `hsfp0_sc` / `hsfp0` now read `ctrlG.<sname>.toml` + `PB.toml` only. See [TOML migration](../manual/toml_migration).
+> ⚠️ **TOML migration (2026-05)** — `hsfp0_sc` / `hsfp0` now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. See [TOML migration](../manual/toml_migration).
 
 ## 実行プログラム
 - `hsfp0_sc` : QSGW計算で使用。$W$はエルミート化される。off-diagonal を含めた自己エネルギーを計算する。

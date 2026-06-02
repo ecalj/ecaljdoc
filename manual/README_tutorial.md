@@ -1,7 +1,7 @@
 # ecalj MainDocument
 **This is MainDocument of ecaljdoc. All files are linked from this file.**
 
-> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Examples below referring to `ctrl.foobar` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Examples below referring to `ctrl.<sname>` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
 
 * Here we give [GetStarted](#getstarted), together with install and overview of QSGW.
 * We have [UsageDetails](./UsageDetailed.md) in another file.
@@ -73,8 +73,8 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 
 # Overview of QSGW 
 
-* Band calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrl.foobar` ( `foobar` is user-defined). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously). 
-* A file `sigm.foobar` is the key for QSGW calculations. The file `sigm.foobar` contains the non-local potential $\Delta V_{\rm xc}=V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$. By adding this potential term to the usual LDA calculation performed by `lmf`, we can perform QSGW calculations. See figure below.
+* Band calculations (LDA level) are performed with the program `lmf`. The initial setting file is `ctrlg.<sname>.toml` (`<sname>` is the user-chosen material extension; legacy: `ctrl.<sname>`). Before running `lmf`, it is necessary to run `lmfa`, which is a spherically symmetric atom calculation to determine the initial conditions for the electron density (`lmfa` finishes instantaneously).
+* A file `sigm.<sname>` is the key for QSGW calculations. The file `sigm.<sname>` contains the non-local potential $\Delta V_{\rm xc}=V_{\rm xc}^{\rm QSGW}-V_{\rm xc}^{\rm LDA}$. By adding this potential term to the usual LDA calculation performed by `lmf`, we can perform QSGW calculations. See figure below.
 * Thus the problem is how to generate $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$. This is calculated from the self-energy  $\Sigma({\bf r},{\bf r}',\omega)$, which is calculated in the GW approximation. Roughly speaking, we obtain $V_{\rm xc}^{\rm QSGW}({\bf r},{\bf r}')$ with removing the omega-dependence in $\Sigma({\bf r},{\bf r}',\omega)$.
 * Therefore, the calculation of $V_{\rm xc}^{\rm QSGW}$ is the major part of the QSGW cycle, and is calculated in a double-structure loop. That is, there is an inner loop of `lmf`, and an outer loop to calculates $V_{\rm xc}^{\rm QSGW}$ using the eigenfunctions given by `lmf`. This outer loop can be executed with a python script called gwsc (which runs fortran programs). The computational time for QSGW is much longer than that of LDA calculation. 
 As a rule of thumb, it takes about 10 hours for 20 atoms 
@@ -329,7 +329,7 @@ ctrlgenToml.py mp-2534
 [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/master/Samples/GetStarted/GaAs):
 `ctrlgenToml.py gaas` — produces the
 [`ctrlg.gaas.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/ctrlg.gaas.toml)
-+ [`PB.<sname>.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/PB.<sname>.toml)
++ [`PB.gaas.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/PB.gaas.toml)
 that ship in that directory.)
 
 This single command:
@@ -420,7 +420,9 @@ lmf si --ctrlg:bz.nkabc=[8,8,8] --ctrlg:bz.metal=3 --ctrlg:ham.nspin=2
 > use `--ctrlg:bz.metal=3`. See the
 > [CAUTION block on toml_migration](./toml_migration#run-time-v-overrides).
 
-* `lmchk --pr60 mp-2534` allows you to check the recognized symmetries.
+* `lmchk mp-2534 --ctrlg:verbose=60` allows you to check the recognized symmetries.
+  (Legacy `lmchk --pr60 mp-2534` is retired — the `--pr=N` shortcut now aborts
+  with a migration hint; use `--ctrlg:verbose=N` instead.)
 
 At this point, you can visually check:
 
@@ -433,9 +435,9 @@ At this point, you can visually check:
 > shares the periodic-table defaults with `ctrlgenM1.py` (atomlist
 > extracted at runtime), so both produce equivalent physics.  The
 > legacy two-step path
-> `ctrlgenM1.py <ext> → ctrlgenM1.ctrl.<ext> → cp to ctrl.<ext> → Legacy2toml.py <ext>`
+> `ctrlgenM1.py <sname> → ctrlgenM1.ctrl.<sname> → cp to ctrl.<sname> → Legacy2toml.py <sname>`
 > is preserved for migrating old directories that already have
-> hand-edited `ctrl.<ext>` (or `ctrl.<ext>` + `GWinput`) decks.  See
+> hand-edited `ctrl.<sname>` (or `ctrl.<sname>` + `GWinput`) decks.  See
 > Step 2-Migration below.
 
 ### Step 2-Migration. Existing `ctrl.<sname>` (and optional `GWinput`)
@@ -530,11 +532,11 @@ to see the structure in VESTA. To show ctrl.si, we use a converted at  /Structur
    * You can change lattice constant by editing `[struc].alat` in
      `ctrlg.mp-2534.toml`. Math operators in TOML scalars are not
      evaluated; precompute the value (e.g. `alat = 10.6818`) or use
-     `--ctrlg:struc.alat=10.6818` at run-time. The legacy `ctrl.foobar`
+     `--ctrlg:struc.alat=10.6818` at run-time. The legacy `ctrl.<sname>`
      `%const` math (`1.8897268777743552*5.65/5.75` etc.) was baked in
      at `Legacy2toml.py` time.
-   * Note (historical): `ctrlp.foobar` was an intermediate file
-     generated by `ctrl2ctrlp.py` from the legacy `ctrl.foobar`. As of
+   * Note (historical): `ctrlp.<sname>` was an intermediate file
+     generated by `ctrl2ctrlp.py` from the legacy `ctrl.<sname>`. As of
      2026-05 the Fortran reads `ctrlg.<sname>.toml` directly via
      `m_ctrl_toml_loader.f90`; no `ctrlp` step occurs.
    * check save.mp-2534. Show history of lmfa and lmf. one line per iteration. Show your console options. c,x,i,h
@@ -614,7 +616,7 @@ https://ecalj.sakura.ne.jp/BZgetsyml/
 
 A gnuplot script can be created. Edit it if necessary. If you edit syml.ba2pdo2cl2 before `job_band`, you can adjust the symmetry line and mesh size.
 
-* The following picture is the LDA bands for the default calculation of ba2pdo2cl2 (the names of the symmetric points can be confirmed with BZ.html. In addition, look into `syml.foobar`). 0 eV is the Fermi energy. Since this is metallic, we see no band gap.
+* The following picture is the LDA bands for the default calculation of ba2pdo2cl2 (the names of the symmetric points can be confirmed with BZ.html. In addition, look into `syml.<sname>`). 0 eV is the Fermi energy. Since this is metallic, we see no band gap.
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/8169cff0-78e6-ea50-0084-66a4cefc4cda.png).
 
 
@@ -633,7 +635,7 @@ Here we are talking about band energies.
 xxx 
 
 <!-- ### job_pdos,job_tdos, job_fermisurface 
-For band plot, we use job_band. Before this, we need to generate symmetry lines writtenin [syml.foobar](syml.md)。This can be generated  by getsyml foobar.
+For band plot, we use job_band. Before this, we need to generate symmetry lines written in [`syml.<sname>`](./syml). This can be generated by `getsyml <sname>`.
 
 This generates syml.mp-2534.
 [BZ.html](https://ecalj.sakura.ne.jp/BZgetsyml/) contains BZ and symmetry lines.
@@ -658,7 +660,7 @@ so we recommend running smaller systems first.
 > `[blocks]`. The legacy separate `GWinput` text file is no longer
 > parsed by Fortran.  If you started from an old directory with
 > `ctrl.<sname>` + `GWinput`, `Legacy2toml.py <sname>` (Step 2.5)
-> already merged the GW content for you.  If you have only `ctrl.foobar`
+> already merged the GW content for you.  If you have only `ctrl.<sname>`
 > (no `GWinput`) and want a default GW set-up, run:
 >
 > ```bash
@@ -684,7 +686,7 @@ mapping lives in [`lmf.md` § Legacy ctrl.&lt;sname&gt; ↔ TOML path map](./lmf
 and the historical `GWinput` text format is documented (as a reference
 only) in [`gwinput.md`](./gwinput).
 Here is a convergence behavior of the band gap for GaAs  taken from Ref.[3],
-![convGaAs](./gaasnk.pdf) 
+![convGaAs](./gaasnk.png) 
 From this picture, I may say 4 4 4 is not so bad if we assume ~0.1eV accuracy. 6 6 6 is good. More than 8 8 8 is for numerical check(not fruitful for practical applications).
 
 
@@ -703,10 +705,10 @@ gwsc -np NP [--gpu] [--mp] nloop extension
 
 
 Then console outputs of `gwsc` is somthing like
-```
+```text
 ### START gwsc: ITERADD= 1, MPI size=  4, 4 TARGET= si
-===== Ititial band structure ====== 
----> No sigm. LDA caculation for eigenfunctions 
+===== Ititial band structure ======
+---> No sigm. LDA caculation for eigenfunctions
 0:00:00.226245   mpirun -np 1 /home/takao/bin/lmfa si     >llmfa
 0:00:00.807062   mpirun -np 4 /home/takao/bin/lmf  si     >llmf_lda
 ===== QSGW iteration start iter 1 ===
@@ -771,7 +773,7 @@ Since I had 5th-QSGW iteration finished (checked  by the existence of QPU.5run),
 
 #### a case study of ba2pdo2cl2.
 
-If you started from a pre-2026-05 directory with only `ctrl.foobar`,
+If you started from a pre-2026-05 directory with only `ctrl.<sname>`,
 generate the GW driver settings and merge them into TOML in two steps:
 
 ```bash
@@ -797,7 +799,7 @@ gwsc -np 32 1 ba2pdo2cl2
 ```
 . Here 1 means the number of QSGW iterations. QSGW iteration is quite time-consuming. `gwsc` gives minimum help (we need to explain options elsewhere).
 
-The iteration is kept in `rst.foobar`:electron density, `sigm.*`:vxcqsgw.
+The iteration is kept in `rst.<sname>`:electron density, `sigm.*`:vxcqsgw.
 (Remove these files in addition to *run files/directories if you like to start from the beginning).
 
 * It requires 53 minutes to run one iteration of QSGW.
@@ -814,9 +816,9 @@ Since you did 1 already. You will have the results of 1+nx QSGQ iteration.
 * when we run 8 iterations as for ba2pdo2cl2, we had band gap 2.1 eV. We saw band gap after 4th iteration.
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/4aebc98b-a050-e198-1769-d2d4236f0bf8.png)
 * For comparison with experiments, we recommend to use ssig=0.8
-(set in ctrl.foobar file), which is called as QSGW80.
+(set in `ctrlg.<sname>.toml` as `[ham].scaledsigma = 0.8`), which is called as QSGW80.
 
-* Spin-orbit coupling. After you obtain `sigm.foobar`, you set SO=1 (LdotS scheme) and run lmf. Then you can include effect of SOC. Sinc SO=1
+* Spin-orbit coupling. After you obtain `sigm.<sname>`, you set SO=1 (LdotS scheme) and run lmf. Then you can include effect of SOC. Sinc SO=1
 is not implemented in the whole gwsc cycle, we have to include SOC just at the end step (We include SOC after we fix VxcQSGW).
 
 * If you run 
@@ -882,7 +884,7 @@ Run Si for example:
   performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
   >job_materials.py works as follows for given names.
   Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
-  Step 2. Generate `ctrlg.<ext>.toml` + `PB.<sname>.toml` by `ctrlgenToml.py`
+  Step 2. Generate `ctrlg.<sname>.toml` + `PB.<sname>.toml` by `ctrlgenToml.py`
           (legacy path: `ctrlgenM1.py` + `Legacy2toml.py`)
   Step 3. Make directory such as Si/ and copy ctrls.si plus the generated TOML pair
           (legacy: ctrls.si, ctrl.si, GWinput)

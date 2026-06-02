@@ -1,7 +1,7 @@
 
 # ecalj Install
 
-> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlG.<sname>.toml` + `PB.toml` only. Run `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](../manual/toml_migration) for the full guide and the list of migrated samples.
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Run `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](../manual/toml_migration) for the full guide and the list of migrated samples.
 
 To install the ecalj package, you need to install software and Python modules used in ecalj.
 In addition, we make some softlinks for convenience. Most steps are almost automatic. Follow the steps below.
@@ -203,7 +203,7 @@ options:
 ```
 
 
-`InstallAll.py` copies all binaries and scripts for ecalj to your directory specified by `--bindir foobar/` (default is `$HOME/bin/`). Set `foobar/` as you like. `--fc` is required.
+`InstallAll.py` copies all binaries and scripts for ecalj to your directory specified by `--bindir <path>/` (default is `$HOME/bin/`). Set `<path>/` as you like. `--fc` is required.
 For GPU, use `--fc nvfortran` together with `--gpu`.
 
 
@@ -247,20 +247,16 @@ This will compile the Fortran source, link, copy all programs and scripts to you
 If all tests pass, you will see output like:
 
 ```text
-PASSED! TEST 1 out.lmf.copt
-PASSED! TEST 1 out.lmf.te
+PASSED! copt TEST 1 out.lmf.copt
+PASSED! te TEST 1 out.lmf.te
 ...
-PASSED! nio_gwsc/QPU
-PASSED! nio_gwsc/log.nio
-PASSED! fe_gwsc/QPU
-PASSED! fe_gwsc/QPD
-PASSED! fe_gwsc/log.fe
-PASSED! ni_crpa/Screening_W-v.h
-PASSED! ni_crpa/Screening_W-v_crpa.h
-PASSED! srvo3_crpa/Screening_W-v.h
-PASSED! srvo3_crpa/Screening_W-v_crpa.h
+PASSED! nio_gwsc /home/<you>/ecalj/Samples/TestInstall/nio_gwsc_work/QPU
+PASSED! nio_gwsc /home/<you>/ecalj/Samples/TestInstall/nio_gwsc_work/log.nio
+PASSED! fe_gwsc  /home/<you>/ecalj/Samples/TestInstall/fe_gwsc_work/QPU
+PASSED! fe_gwsc  /home/<you>/ecalj/Samples/TestInstall/fe_gwsc_work/log.fe
+PASSED! ni_crpa  /home/<you>/ecalj/Samples/TestInstall/ni_crpa_work/Screening_W-v.h
+PASSED! srvo3_crpa /home/<you>/ecalj/Samples/TestInstall/srvo3_crpa_work/Screening_W-v.h
 OK! ALL PASSED ===
-  See work/summary.txt
 
 real    4m49.712s
 user    19m38.952s
@@ -326,7 +322,7 @@ For more details, see the upstream memo: [ecalj/GetSyml/README.org](https://gith
 
 ## Additional memo
 
-* When `InstallAll.py` has finished, all binaries and shell scripts are copied to `--bindir foobar` (default: `~/bin/`).
+* When `InstallAll.py` has finished, all binaries and shell scripts are copied to `--bindir <path>` (default: `~/bin/`).
 
 * Clean up:
 
@@ -345,7 +341,7 @@ For more details, see the upstream memo: [ecalj/GetSyml/README.org](https://gith
   To compile Fortran source only, move to `ecalj/SRC/exec/` and run:
 
   ```bash
-  FC=fortran cmake . -D CMAKE_BUILD_TYPE=Debug
+  FC=gfortran cmake . -D CMAKE_BUILD_TYPE=Debug  # or FC=ifort / FC=nvfortran
   make
   ```
 

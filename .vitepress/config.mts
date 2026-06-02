@@ -74,10 +74,10 @@ export default withMermaid({
       {
         text: 'Input files (TOML, 2026-05+)',
         items: [
-          { text: 'ctrlG.<sname>.toml + PB.toml', link: '/manual/toml_migration' },
-          { text: 'ctrl.foobar (legacy)', link: '/manual/lmf' },
+          { text: 'ctrlg.<sname>.toml + PB.<sname>.toml', link: '/manual/toml_migration' },
+          { text: 'ctrl.<sname> (legacy)', link: '/manual/lmf_legacy_ctrl' },
           { text: 'GWinput (legacy)', link: '/manual/gwinput' },
-          { text: 'syml.foobar', link: '/manual/syml' }
+          { text: 'syml.<sname>', link: '/manual/syml' }
         ]
       },
       {

@@ -1,11 +1,13 @@
-# `syml.foobar` 
+# `syml.<sname>`
+
 Symmetry line for the band plot.
-We can generate `syml.foobar` by `getsyml`. 
+We can generate `syml.<sname>` by `getsyml`.
 
 
 ## Get symmetry lines for band plot and Brillouwin zone plot.
-`syml.*` is generated from `ctrl.*`. `syml.*` is needed for band plot.
-After generated, you can easily edit `syml.*` for `job_band`.
+`syml.<sname>` is generated from `ctrlg.<sname>.toml` (legacy: `ctrl.<sname>`).
+`syml.<sname>` is needed for band plot.
+After generated, you can easily edit `syml.<sname>` for `job_band`.
 
 At ecalj/GetSyml, we have getsyml.py, which is based on the
 seekpath at https://github.com/giovannipizzi/seekpath/
@@ -21,7 +23,7 @@ getsyml ctrls.nio
 ```
 . This show 3D Brillouin zone together with symmetry lines for band plot.
 See [BZsamples](https://ecalj.sakura.ne.jp/BZgetsyml/) here.
-The symmetry lines are written into the `syml.*` file for ecalj.
+The symmetry lines are written into the `syml.<sname>` file for ecalj.
 The number of divisions for `syml` is give by a crude algorism, so edit it if necessary.
 
 ### Needed citations for getsyml

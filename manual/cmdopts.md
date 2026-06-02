@@ -75,7 +75,6 @@ an abort + one-line hint pointing at the canonical
 | `--help` | flag | Print Usage banner + link to this page, then exit | `m_ext.f90` |
 | `--debug` | flag | Global debug printout | many |
 | `--show_time` | flag | Print `hambl` timing | `hambl.f90:41` |
-| `--terse` / `-terse` | flag | Reduce noise in `lmchk` (`lmaux.f90:1629`) | `lmaux.f90` |
 | `--fullstdo` | flag | All ranks write to stdout (default: master only) | `m_MPItk.f90` |
 
 ## SCF / electronic structure (lmf core)
