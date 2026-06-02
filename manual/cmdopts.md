@@ -266,3 +266,65 @@ grep -rEoh "cmdopt[02]\('[-][^']+'" \
 and reconcile by hand. We deliberately do not auto-generate this page
 because the categorical grouping and the prose notes are the value;
 a flat alphabetical dump is what `grep` already gives you.
+
+## Tab completion (bash)
+
+`InstallAll.py` ships a bash-completion script that knows about both
+the cmdopt registry and the TOML override syntax. After installation:
+
+- `lmf <TAB>` (or `lmfa`, `lmchk`) -> offers every `ctrlg.<sname>.toml`
+  in the current directory as the positional `<sname>`.
+- `lmf nio --w<TAB>` -> the cmdopt0/cmdopt2 names that start with
+  `--w` (`--writedw`, `--writeham`, `--writepdos`, ...).
+- `lmf nio --ctrlg:<TAB>` (or any prefix like `--ctrlg:bz.`) -> the
+  dotted-path keys that **actually exist** in the cwd's
+  `ctrlg.<sname>.toml`. `[[spec]]` / `[[site]]` arrays expand into
+  `spec.1.r`, `spec.2.r`, ... automatically.
+- Trailing space is suppressed for `--ctrlg:` and any cmdopt2 (so
+  `--ct<TAB>` becomes `--ctrlg:` with the cursor still on the colon,
+  ready for `bz.nkabc=...`).
+
+The completion has two data sources, each with a different freshness:
+
+| Completion target | Source | When it updates |
+|---|---|---|
+| `--ctrlg:<dotted.path>` | the cwd's `ctrlg.<sname>.toml` parsed live by `python3` (tomllib) at every TAB | always reflects the on-disk TOML |
+| `--<flag>` / `--<flag>=` | `BINDIR/ecalj_cmdopts.list` (dumped by `lmf --listcmdopt` during `InstallAll.py`) | refreshed on every `./InstallAll.py` run |
+
+The mapping mirrors the parser:
+
+- A `ctrlg.*.toml` key only appears as a completion if it really exists
+  in that file — so a TAB-completed `--ctrlg:` path never triggers the
+  "key not found in target section" abort from `m_toml_override`.
+- A `--<flag>` only appears if it is registered in
+  `m_cmdopt_registry::load_cmdopt0_registry` /
+  `load_cmdopt2_registry` — so a TAB-completed flag never triggers
+  the "unknown option" abort from `validate_arglist`.
+
+Both `~/bin/ecalj_complete.bash` and `~/bin/ecalj_cmdopts.list` are
+written by `InstallAll.py`; a guarded `[ -f .../ecalj_complete.bash ]
+&& source ...` line is appended once to `~/.bashrc`. To opt out, run
+`InstallAll.py --no-bashrc`; to disable later, delete the
+`# >>> ecalj bash completion ... <<<` block from `~/.bashrc`.
+
+The `lmf --listcmdopt` entry point (added together with the
+completion plumbing) dumps every registered cmdopt0 / cmdopt2 name
+on stdout, one per line, with a trailing `=` on cmdopt2 entries so
+the completion script can distinguish them from bare flags:
+
+```text
+$ lmf --listcmdopt | head -5
+--AHCMAT
+--UUMAT
+--afsym
+--ahc
+--allband
+$ lmf --listcmdopt | grep '=$' | head -3
+--jobgw=
+--job=
+--nb=
+```
+
+Use the same `--listcmdopt` to generate completion data for any
+external scripting that needs to know the registry contents at
+install time.
