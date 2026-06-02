@@ -29,7 +29,7 @@ flow.
 
 | dir | physics / role | per-dir README | doc page |
 |---|---|---|---|
-| **GetStarted/GaAs** | minimal worked example for the [tutorial](./README_tutorial#getstarted) — GaAs zinc-blende, 2 atoms, ships `ctrls.gaas` + `ctrlG.gaas.toml` + `PB.toml` | [GetStarted/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/README.md) / [GaAs README](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/README.md) | [./README_tutorial](./README_tutorial) |
+| **GetStarted/GaAs** | minimal worked example for the [tutorial](./README_tutorial#getstarted) — GaAs zinc-blende, 2 atoms, ships `ctrls.gaas` + `ctrlg.gaas.toml` + `PB.<sname>.toml` | [GetStarted/README.md](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/README.md) / [GaAs README](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/README.md) | [./README_tutorial](./README_tutorial) |
 | **EPS/EPS_Cu** | dielectric ε(q,ω), epsPP0, FCC metal | [EPS_Cu/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS/EPS_Cu) (no README; see test.py) | [Dielectric function § epsPP0](./optical) |
 | **EPS/EPS_GaAs** | ε(q,ω), GaAs zinc-blende semiconductor | [EPS_GaAs/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS/EPS_GaAs) (no README; see test.py) | [./optical](./optical) |
 | **EPS/EPS_Ag** | ε(q,ω), Ag (FCC, no LFC) | [EPS_Ag/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS/EPS_Ag) (no README; see test.py) | [./optical](./optical) |
@@ -102,7 +102,7 @@ page; this Samples page only points:
 | topic | owner page |
 |---|---|
 | TOML migration / `Legacy2toml.py` workflow | [./toml_migration](./toml_migration) |
-| `ctrlG.<sname>.toml` schema and the legacy ↔ TOML key map | [./lmf](./lmf) |
+| `ctrlg.<sname>.toml` schema and the legacy ↔ TOML key map | [./lmf](./lmf) |
 | `GWinput` (historical legacy text format reference) | [./gwinput](./gwinput) |
 | QSGW with `gwsc` end-to-end | [./gwsc](./gwsc) |
 | Dielectric ε(q,ω) (`epsPP0`, `eps_lmfh`, `epsPP_lmfh`) | [./optical](./optical) |

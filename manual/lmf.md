@@ -1,8 +1,8 @@
 # `lmf,lmfa,lmchk`
 
-> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlG.<sname>.toml` + `PB.toml`** only. The `ctrl.foobar` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md).
+> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlg.<sname>.toml` + `PB.<sname>.toml`** only. The `ctrl.foobar` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md).
 
-We need an input file `ctrlG.<sname>.toml` (legacy: `ctrl.foobar`).
+We need an input file `ctrlg.<sname>.toml` (legacy: `ctrl.foobar`).
 
 ## lmfa: spherical atom calculations
 Example:` 
@@ -42,7 +42,7 @@ This is a case we have ctrl.si.
 * quit option at some point. `--quit=band`, `--quit=ldau`... We need to do 'grep cmdopt SRC/*/*.f90|grep quit' to know details.
 * `--tdos`
 total dos calculation. But we usually use `job_tdos'
-* `-v[<toml-path>]=<value>` : Runtime override of a key in `ctrlG.<sname>.toml`. The path uses dotted TOML syntax (e.g. `-v[bz.nkabc]=[8,8,8]`, `-v[ham.scaledsigma]=0.8`, `-v[spec.1.r]=2.5` for the 1st `[[spec]]`). Substituted into the in-memory TOML before parsing; the file on disk is untouched. Each applied override is logged on rank 0. The legacy `-vfoobar=val` form (ctrl `%const` substitution) no longer has a parser and is silently ignored.
+* `--ctrlg:<dotted.path>=<value>` : Runtime override of a key in `ctrlg.<sname>.toml`. The path uses dotted TOML syntax (e.g. `--ctrlg:bz.nkabc=[8,8,8]`, `--ctrlg:ham.scaledsigma=0.8`, `--ctrlg:ham.phispinsym=true`, `--ctrlg:verbose=50`, `--ctrlg:spec.1.r=2.5` for the 1st `[[spec]]`). Substituted into the in-memory TOML before parsing; the file on disk is untouched. Each applied override is logged on rank 0. Older syntaxes (`-vfoo=val`, `-v[<path>]=val`, `--[<path>]=val`, `--toml.<path>=val`, `--pr=N`, `--time=N,M`, `--phispinsym`) abort with a one-line migration hint.
 
 We have some kinds of options for electron density plot, boltztrap and so on.
 (not yet described).
@@ -77,34 +77,35 @@ We have some kinds of options for electron density plot, boltztrap and so on.
 ** Main Source** : [`SRC/main/lmf.f90`](https://github.com/tkotani/ecalj)
 
 
-# ctrlG.&lt;sname&gt;.toml — current input format (2026-05+)
+# ctrlg.&lt;sname&gt;.toml — current input format (2026-05+)
 
 `lmf`, `lmfa`, `lmchk` read **TOML only** since 2026-05.  The single file
-`ctrlG.<sname>.toml` carries everything that used to live in
+`ctrlg.<sname>.toml` carries everything that used to live in
 `ctrl.<sname>` plus the GW driver and product-basis sections that used
 to live in `GWinput`.  Per-atom product-basis tables (sname-free) sit in
-a sibling `PB.toml`.  Run `Legacy2toml.py <sname>` inside any old
+a sibling `PB.<sname>.toml`.  Run `Legacy2toml.py <sname>` inside any old
 working directory to generate both files.
 
-> **`PB.toml` is for the GW path** (consumed by `hbasfp0` /
+> **`PB.<sname>.toml` is for the GW path** (consumed by `hbasfp0` /
 > `hvccfp0` / etc. when generating the mixed product basis). It is
 > auto-emitted by `ctrlgenToml.py` (or `Legacy2toml.py`) and **does
 > not normally need hand editing** — when you tune a calculation,
-> edits go into `ctrlG.<sname>.toml`.
+> edits go into `ctrlg.<sname>.toml`.
 
 ## File structure (sections)
 
 ```toml
 # Top-level scalars
-symgrp = "find"          # space-group spec: 'find' = auto-detect
+symgrp  = "find"        # space-group spec: 'find' = auto-detect
+verbose = 35            # console verbosity
+time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 
-[io]      verbos / tim
-[struc]   alat / plat / nspec / nbas
-[[site]]  atom / pos / xpos / af / relax       (one table per atom)
-[[spec]]  atom / z / r / rsmh / eh / lmx / ...  (one table per species)
+[struc]   alat / plat                              (nspec / nbas auto-derived from arrays)
+[[site]]  atom / pos / xpos / af / relax           (one table per atom)
+[[spec]]  atom / z / r / rsmh / eh / lmx / ...     (one table per species)
 [bz]      nkabc / metal / tetra / npts / ...
 [iter]    nit / mix / b / conv / convc / umix / tolu
-[ham]     nspin / rel / so / xcfun / gmax / pwmode / pwemax / oveps / ...
+[ham]     nspin / rel / so / phispinsym / xcfun / gmax / pwmode / pwemax / oveps / ...
 [gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
 [product_basis]   pb_tolerance / pb_lcutmx
 [blocks]  QPNT, QforEPS, Worb (multi-line strings, GW-side blocks)
@@ -112,22 +113,18 @@ symgrp = "find"          # space-group spec: 'find' = auto-detect
 
 ## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
 
-The full `ctrlG.cu.toml` from `Samples/EPS/EPS_Cu/` is shown below. Inline
+The full `ctrlg.cu.toml` from `Samples/EPS/EPS_Cu/` is shown below. Inline
 `#` comments document each key's role; copy-paste the file as a starting
 point for FCC monatomic metals and adjust [`spec`], [`bz`], [`ham`] to
 your case.
 
 ```toml
 # Top-level scalars
-symgrp = "find"   # 'find' = auto-detect space group from lattice + species
-
-[io]
-verbos = 35       # 31 default, 35 verbose, 41+ debug
-tim    = [0, 0]
+symgrp  = "find"  # 'find' = auto-detect space group from lattice + species
+verbose = 35      # 31 default, 35 verbose, 41+ debug
+time    = [0, 0]  # CPU timing log: [depth, on-the-fly]
 
 [struc]
-nspec = 1
-nbas  = 1
 alat  = 6.798     # lattice constant (a.u.)
 plat  = [[0.0, 0.5, 0.5],   # primitive vectors in units of alat
          [0.5, 0.0, 0.5],
@@ -196,7 +193,7 @@ GaussSmear    = true
 pb_tolerance = [0.001]  # drop near-linear-dep products (default 1e-3)
 pb_lcutmx    = [4]      # max l-cutoff per atom
 
-# Per-atom product-basis tables (nlx / valence / core) live in PB.toml.
+# Per-atom product-basis tables (nlx / valence / core) live in PB.<sname>.toml.
 
 # === GW additional blocks (legacy GWinput tags become multi-line strings) ===
 [blocks]
@@ -241,8 +238,8 @@ processed in-memory by `m_toml_override.f90`:
 # OLD (legacy ctrl + %const)
 lmf si -vnk=8 -vmetal=3 -vnspin=2 -vso=0
 
-# NEW (ctrlG.toml + path syntax)
-lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3 -v[ham.nspin]=2 -v[ham.so]=0
+# NEW (ctrlg.toml + path syntax)
+lmf si --ctrlg:bz.nkabc=[8,8,8] --ctrlg:bz.metal=3 --ctrlg:ham.nspin=2 --ctrlg:ham.so=0
 ```
 
 The bracketed key is the dotted TOML path (`[section.key]` or
@@ -270,13 +267,13 @@ lower-casing.  A few are renamed or restructured:
 | `SYMGRP` / `SYMGRPAF` | top-level `symgrp = "..."` (and `symgrp_af`) | not nested in a section |
 | `EWALD_TOL` | `[ewald].tol` | rarely touched |
 | `DYN_MODE` / `DYN_NIT` / `DYN_HESS` / ... | `[dyn].mode` etc. | |
-| `IO_VERBOS` / `IO_TIM` | `[io].verbos` / `.tim` | |
+| `IO_VERBOS` / `IO_TIM` | top-level `verbose` / `time` | promoted out of `[io]` (section dropped) |
 | `<Worb>...</Worb>` block | `[blocks].Worb = """ ... """` | multi-line string |
 | `<QforEPS>...</QforEPS>` block | `[blocks].QforEPS = """ ... """` | |
 | `n1n2n3` (GWinput) | `[gw].n1n2n3 = [k1,k2,k3]` | int vector |
 | `HistBin_dw` / `HistBin_ratio` / `niw` / `delta` / `esmr` / `GaussSmear` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names, lowercased |
 | product-basis cut-offs (`tolerance`, `lcutmx` from `<PRODUCT_BASIS>`) | `[product_basis].pb_tolerance` / `.pb_lcutmx` | |
-| product-basis per-atom tables (`nlx`, `valence`, `core`) | **`PB.toml`** (separate file) | sname-free |
+| product-basis per-atom tables (`nlx`, `valence`, `core`) | **`PB.<sname>.toml`** (separate file) | per-sname |
 
 The full schema lives in
 [`SRC/exec/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/master/SRC/exec/ctrl_schema.py)
@@ -307,7 +304,7 @@ Note:
 we perform ecalj/SRC/exec/ctrl2ctrlp.py (at your BINDIR) called from the fortran program for
 converting ctrl.foobar to ctrlp.foobar. See ~/ecalj/SRC/main/lmf.f90 for example.
 Then we read ctrlp.foobar by SRC/subroutines/m_lmfinit.f90. — As of 2026-05 this
-preprocessing path is bypassed; the Fortran reads `ctrlG.<sname>.toml` directly via
+preprocessing path is bypassed; the Fortran reads `ctrlg.<sname>.toml` directly via
 `m_ctrl_toml_loader.f90`.</small>
 
 <!-- ```
@@ -329,13 +326,12 @@ The code `ecalj/SRC/exec/m_lmfinit.f90` reads ctrlp converged from ctrl.
  Categoy_Token    Input   cast  (size,min) --------------------------
 ```
 ```
- IO_VERBOS         opt    i4       1,  1          default= 30
-    Verbosity for printout. Set from the command-line with --pr=xxx
- 
- IO_TIM            opt    i4v      2,  1          default= 1 1
-    Turns CPU timing log. Value sets tree depth.
-    Optional 2nd arg prints CPU times as routines execute.
-    intead of setting IO_TIM, set through command-line: --time=#1,#2  --time=5,3 for example.
+ verbose           opt    i4       1,  1          default= 30
+    Verbosity for printout. Override from the command-line with --ctrlg:verbose=N
+
+ time              opt    i4v      2,  1          default= 0 0
+    CPU timing log. [tree_depth, on_the_fly]. Override from the
+    command-line with --ctrlg:time=[N,M] (e.g. --ctrlg:time=[5,3]).
 
  . OPTIONS_HF        opt    lg       1,  1      default= F   T for non-self-consistent Harris
 ```
@@ -906,12 +902,12 @@ usage:  lmf [--OPTION] [-var-assign] [extension]
  --help         List categories, tokens, and data program expects, and quit
  --show         Print control file after parsing by preprocessor,
                 and echo input data as read from the control file
- --pr=#1        Set the verbosity (stack) to values #1
- --time=#1[,#2] Print timing info to # levels (#1=summary; #2=on-the-fly)
-
- -v[<path>]=val Override TOML key at run time (e.g. -v[bz.nkabc]=[8,8,8],
-                 -v[ham.scaledsigma]=0.8, -v[spec.1.r]=2.5).
-                 Legacy -vnam=expr (ctrl %const) is no longer parsed.
+ --ctrlg:<path>=val  Override TOML key at run time (e.g. --ctrlg:bz.nkabc=[8,8,8],
+                 --ctrlg:ham.scaledsigma=0.8, --ctrlg:spec.1.r=2.5,
+                 --ctrlg:verbose=50, --ctrlg:time=[5,5]).
+                 Legacy --pr=N / --time=N,M / --phispinsym / -v<name>=val /
+                 -v[<path>]=val / --[<path>]=val / --toml.<path>=val all abort
+                 with a migration hint pointing at this form.
   --jobgw=1 or 2       lmf-MPIK works as the GW driver (previous lmfgw-MPIK)
   --quit=band, 
     Quit after band 

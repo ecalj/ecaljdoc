@@ -1,6 +1,6 @@
 # GWinput (legacy)
 
-> ⚠️ **TOML migration (2026-05)** — Fortran binaries no longer read this `GWinput` text file. The settings documented here are now embedded in `ctrlG.<sname>.toml` (under sections `[gw]` / `[product_basis]` / `[blocks]`) and `PB.toml` (per-atom tables). Run `Legacy2toml.py <sname>` to convert. See [TOML migration](./toml_migration) for the canonical key mapping; this page is kept as a historical/developer reference for the legacy syntax.
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries no longer read this `GWinput` text file. The settings documented here are now embedded in `ctrlg.<sname>.toml` (under sections `[gw]` / `[product_basis]` / `[blocks]`) and `PB.<sname>.toml` (per-atom tables). Run `Legacy2toml.py <sname>` to convert. See [TOML migration](./toml_migration) for the canonical key mapping; this page is kept as a historical/developer reference for the legacy syntax.
 
 GWinput sets the computatioanl conditions for  GW/QSGW calculations.
 

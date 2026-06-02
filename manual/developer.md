@@ -1,6 +1,6 @@
 # For developer
 
-> ⚠️ **TOML migration (2026-05)** — Test directories now ship `ctrlG.<sname>.toml` + `PB.toml` as the canonical inputs (see migrated [Samples/EPS/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS), [Samples/PROCAR/](https://github.com/tkotani/ecalj/tree/master/Samples/PROCAR), [Samples/MLOsamples/](https://github.com/tkotani/ecalj/tree/master/Samples/MLOsamples), [Samples/TestInstall/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall)). Legacy `ctrl,GWinput`-only directories live under [Samples/Legacy/](https://github.com/tkotani/ecalj/tree/master/Samples/Legacy) until converted with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration).
+> ⚠️ **TOML migration (2026-05)** — Test directories now ship `ctrlg.<sname>.toml` + `PB.<sname>.toml` as the canonical inputs (see migrated [Samples/EPS/](https://github.com/tkotani/ecalj/tree/master/Samples/EPS), [Samples/PROCAR/](https://github.com/tkotani/ecalj/tree/master/Samples/PROCAR), [Samples/MLOsamples/](https://github.com/tkotani/ecalj/tree/master/Samples/MLOsamples), [Samples/TestInstall/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall)). Legacy `ctrl,GWinput`-only directories live under [Samples/Legacy/](https://github.com/tkotani/ecalj/tree/master/Samples/Legacy) until converted with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration).
 
 ## Test system `testecalj` (2025-10-8).
 
@@ -14,7 +14,7 @@ SRC/exec
 * Install test described in InstallAll.py is performed at `ecalj/Samples/TestInstall`.
 * We can run testecalj as `>testecalj foobar`, where `foobar/` is the name of a test directory.
 `testecalj` creates `foobar_work/` directory and do test in it. 
-* `foobar/` should contain initial settings (`ctrlG.<sname>.toml` + `PB.toml`; legacy `ctrl,GWinput` for un-migrated dirs) and files to be compared. In addition, we have to write `test.py` which describe schedules to run programs and to compare files. `ecalj/Samples/TestInstall/foobar` contains samples of test directories.
+* `foobar/` should contain initial settings (`ctrlg.<sname>.toml` + `PB.<sname>.toml`; legacy `ctrl,GWinput` for un-migrated dirs) and files to be compared. In addition, we have to write `test.py` which describe schedules to run programs and to compare files. `ecalj/Samples/TestInstall/foobar` contains samples of test directories.
 * For any test directory `foobar`, we can perform the test by `testecalj foobar`. For example, `Fe_magnon` lives at `ecalj/Samples/Legacy/Magnon/Fe_magnon` (since the Magnon tree is awaiting TOML migration); a `test.py` exists in each Magnon sub-directory.
 * We can write your own `test.py` easily. 
 

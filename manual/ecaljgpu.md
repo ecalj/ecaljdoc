@@ -1,6 +1,6 @@
 # ecalj GPU version の使い方
 
-> ⚠️ **TOML migration (2026-05)** — GPU 版 `gwsc` も `ctrlG.<sname>.toml` + `PB.toml` を読みます。Legacy `ctrl.<sname>` / `GWinput` directory は `Legacy2toml.py <sname>` で変換してから実行してください。See [TOML migration](./toml_migration).
+> ⚠️ **TOML migration (2026-05)** — GPU 版 `gwsc` も `ctrlg.<sname>.toml` + `PB.<sname>.toml` を読みます。Legacy `ctrl.<sname>` / `GWinput` directory は `Legacy2toml.py <sname>` で変換してから実行してください。See [TOML migration](./toml_migration).
 
 ecalj ではGPUによるQSGW計算が可能です。
 * GPUは自己エネルギーおよび遮蔽クーロン相互作用の計算に使用されます。
@@ -29,7 +29,7 @@ gwsc -np 64 -np2 4 --gpu 2 inas2gasb2 > lgwsc
 
 `i1accs` はテストキュー(最大時間30分)ですので、プロダクトランでは`F1accs`等を使用してください。
 
-`ctrlG.<sname>.toml` の `[gw]` セクション抜粋 (legacy: 同 keys を `GWinput` に書く)
+`ctrlg.<sname>.toml` の `[gw]` セクション抜粋 (legacy: 同 keys を `GWinput` に書く)
 ```toml
 [gw]
 # GaussianFilterX0 = 0.0001  # (a.u.) Gaussian smearing for x0; stabilises metals
@@ -84,7 +84,7 @@ gwsc -np 64 -np2 4 --gpu 1 $id > lgwsc
 
 1. The GPU version uses fewer MPI processes compared to the CPU version, so the available memory per MPI process is larger
    This allows for larger batch sizes in the calculation, potentially improving computation speed.
-   The variables controlling the batch size are `MEMnmbatch` and `zmel_max_size` in the `[gw]` section of `ctrlG.<sname>.toml` (legacy: same keys in `GWinput`).
+   The variables controlling the batch size are `MEMnmbatch` and `zmel_max_size` in the `[gw]` section of `ctrlg.<sname>.toml` (legacy: same keys in `GWinput`).
    For GPU calculations, set these values to around 4 (representing 4GB).
    ```toml
    [gw]

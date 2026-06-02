@@ -2,7 +2,7 @@ This document is out of date. Need fixing
 
 # Spectrum function of G.
 
-> ⚠️ **TOML migration (2026-05)** — Binaries read `ctrlG.<sname>.toml` + `PB.toml` only. Use `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](./toml_migration).
+> ⚠️ **TOML migration (2026-05)** — Binaries read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Use `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](./toml_migration).
 How to calculate $\langle {\bf q} n|\Sigma(\omega)|{\bf q} n\rangle$
 
 We have an example at {\tt ecalj/MATERIALS/SiSigma/}, where
@@ -39,7 +39,7 @@ In addition, we need to set resolution of $\omega$.
 
    To know allowed q points on regular mesh point, run `mkGWIN_lmf2`, then
    supply n1,n2,n3. The generated `GWinput.tmp` contains all possible q points;
-   `Legacy2toml.py <sname>` then folds them into `[blocks].QPNT` of `ctrlG.<sname>.toml`.
+   `Legacy2toml.py <sname>` then folds them into `[blocks].QPNT` of `ctrlg.<sname>.toml`.
   
 ~~NOTE:Anyq option can allow you to specify any q points by shifted mesh technique.
    (if necessary, but only for some special purpose).~~

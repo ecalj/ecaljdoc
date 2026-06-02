@@ -1,13 +1,13 @@
 # gwsc: a script to run QSGW calculation
 
-> ⚠️ **TOML migration (2026-05)** — `gwsc` now reads `ctrlG.<sname>.toml` + `PB.toml` only. The legacy `GWinput` text file referenced below is auto-converted by `Legacy2toml.py <sname>` (run once per directory). See [TOML migration](./toml_migration) and the migrated [Samples/TestInstall/*_gwsc/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall) directories as templates.
+> ⚠️ **TOML migration (2026-05)** — `gwsc` now reads `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. The legacy `GWinput` text file referenced below is auto-converted by `Legacy2toml.py <sname>` (run once per directory). See [TOML migration](./toml_migration) and the migrated [Samples/TestInstall/*_gwsc/](https://github.com/tkotani/ecalj/tree/master/Samples/TestInstall) directories as templates.
 
 gwscがQSGW計算実行スクリプトである。
 QSGW計算は，複数のfortran実行ファイルを呼び出して実行される．
-入力は `ctrlG.<sname>.toml` (legacy: [GWinput](./gwinput.md)) から読み込まれる。
+入力は `ctrlg.<sname>.toml` (legacy: [GWinput](./gwinput.md)) から読み込まれる。
 
 ## Usage
-**Usage**: ` gwsc -np NP [-np2 NP2] [--phispinsym] [--gpu] [--mp] nloop extension [Options]`
+**Usage**: ` gwsc -np NP [-np2 NP2] [--gpu] [--mp] nloop extension [Options]`
 
 ### `-np NP`
 MPI並列数を指定する。
@@ -32,7 +32,7 @@ ctrl ファイルの拡張子を指定する。
 ### `Options`
 追加のオプションを指定する。
 追加オプションは, 全ての実行ファイルの実行時引数となる。以下追加のオプションのリスト。
-またlmfへのTOML override (`-v[ham.so]=1` など、`-v[<toml-path>]=<value>` 形式) もここに書く。
+またlmfへのTOML override (`--ctrlg:ham.so=1` など、`--ctrlg:<toml-path>=<value>` 形式) もここに書く。
 
 ------
 #### `--keepwv`
@@ -86,7 +86,7 @@ In principle, the number is determined by
 * QPU.[number]runをチェックして、number回のQSGWイテレーションが終了している、と認識する。
 (初期状態から実行したいときはすべての`*run*`ディレクトリ、ファイルを消すこと）。
 
-* QSGW.[number]runディレクトリには、QSGWのnumber回目の結果 `rst`, `sigm` (加えて `atmpnu`, `ctrlG.<sname>.toml`, `PB.toml`; legacy: `ctrl`, `GWinput`) が格納されており、これを用いてバンドプロットなどができる。
+* QSGW.[number]runディレクトリには、QSGWのnumber回目の結果 `rst`, `sigm` (加えて `atmpnu`, `ctrlg.<sname>.toml`, `PB.<sname>.toml`; legacy: `ctrl`, `GWinput`) が格納されており、これを用いてバンドプロットなどができる。
 
 
 
@@ -391,8 +391,8 @@ self-energy file in the expansion of eigenfunctions of $H^0$.
 
 # Product basis
 The product basis is now configured in two places:
-- cut-offs in `[product_basis]` of `ctrlG.<sname>.toml` (`pb_tolerance`, `pb_lcutmx`).
-- per-atom tables (`nlx`, `valence`, `core`) in the sibling **`PB.toml`** file (sname-free, shared per spec).
+- cut-offs in `[product_basis]` of `ctrlg.<sname>.toml` (`pb_tolerance`, `pb_lcutmx`).
+- per-atom tables (`nlx`, `valence`, `core`) in the sibling **`PB.<sname>.toml`** file (sname-free, shared per spec).
 
 The legacy form (kept here as historical reference) was a single
 `<PRODUCT_BASIS>` block in `GWinput`. From that block, ecalj

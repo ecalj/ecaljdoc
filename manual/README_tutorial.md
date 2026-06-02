@@ -1,7 +1,7 @@
 # ecalj MainDocument
 **This is MainDocument of ecaljdoc. All files are linked from this file.**
 
-> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlG.<sname>.toml` + `PB.toml` only. Examples below referring to `ctrl.foobar` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Examples below referring to `ctrl.foobar` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/master/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
 
 * Here we give [GetStarted](#getstarted), together with install and overview of QSGW.
 * We have [UsageDetails](./UsageDetailed.md) in another file.
@@ -21,7 +21,7 @@ running jobs (tail logs, react to errors, restart on failure, etc.)
 without you having to babysit the queue.
 
 The TOML-aware doc and tooling — `ctrlgenToml.py`, `Legacy2toml.py`,
-`testecalj`, the `ctrlG.<sname>.toml` schema annotations, much of
+`testecalj`, the `ctrlg.<sname>.toml` schema annotations, much of
 `ecalj_auto`'s slot scheduler — are co-developed with Claude Code in
 the same way; many of the doc pages here also carry an explicit
 "auto-edited by Claude" disclosure where appropriate.
@@ -146,7 +146,7 @@ We explain things step by step.
 
 > **Worked example** — every step below uses **GaAs** as the running
 > example. A minimal seed (`ctrls.gaas` + the generated
-> `ctrlG.gaas.toml` + `PB.toml`) lives at
+> `ctrlg.gaas.toml` + `PB.<sname>.toml`) lives at
 > [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/master/Samples/GetStarted/GaAs).
 > Copy that directory to a fresh work area and follow Steps 1-6
 > below. See its
@@ -311,13 +311,13 @@ to reproduce results by VASP or in MP from your POSCAR file.
     - you can use any name for sites such as [Niup or something](./UsageDetailed.md#antiferro-symmetry-without-soc), in such a case you have to set SPEC section in addition. [Non integer number of Z is allowed.](./UsageDetailed.md#background-charge-and-fractional-z). Learn afterward.
     - In old ctrls, you may see NL,NBAS,NSPEC, which are not necessary now.
 
-## Step 2. Get `ctrlG.<sname>.toml` from ctrls
+## Step 2. Get `ctrlg.<sname>.toml` from ctrls
 
-`ctrlG.<sname>.toml` plus `PB.toml` is the input pair the Fortran
+`ctrlg.<sname>.toml` plus `PB.<sname>.toml` is the input pair the Fortran
 binaries (`lmf`, `lmfa`, `lmchk`, `gwsc`, ...) actually read since
-2026-05. **`PB.toml`, which we do not edit usually, is for product
+2026-05. **`PB.<sname>.toml`, which we do not edit usually, is for product
 basis setting only in GW** — auto-emitted by the generator below;
-hand edits live in `ctrlG.<sname>.toml`. Generate both files
+hand edits live in `ctrlg.<sname>.toml`. Generate both files
 straight from the lightweight `ctrls.<sname>` (the structure-only
 seed produced by `vasp2ctrl` in Step 1) with **`ctrlgenToml.py`**:
 
@@ -328,45 +328,45 @@ ctrlgenToml.py mp-2534
 (Or, for the GaAs worked example shipped at
 [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/master/Samples/GetStarted/GaAs):
 `ctrlgenToml.py gaas` — produces the
-[`ctrlG.gaas.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/ctrlG.gaas.toml)
-+ [`PB.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/PB.toml)
+[`ctrlg.gaas.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/ctrlg.gaas.toml)
++ [`PB.<sname>.toml`](https://github.com/tkotani/ecalj/blob/master/Samples/GetStarted/GaAs/PB.<sname>.toml)
 that ship in that directory.)
 
 This single command:
 
-1. fills `[io] / [struc] / [[site]] / [[spec]]` from the periodic-table
+1. fills top-level (`symgrp` / `verbose` / `time`) and `[struc] / [[site]] / [[spec]]` from the periodic-table
    defaults (the same `atomlist` table that `ctrlgenM1.py` uses);
 2. internally runs `lmfa → lmf --jobgw=0 → gwinit` to populate
    `[gw] / [product_basis] / [blocks]` and the per-atom tables in
-   `PB.toml`;
-3. writes `ctrlG.<sname>.toml` and `PB.toml` and stops.
+   `PB.<sname>.toml`;
+3. writes `ctrlg.<sname>.toml` and `PB.<sname>.toml` and stops.
 
 Successful end-of-run looks like:
 
 ```text
-ctrlgenToml: wrote ctrlG.mp-2534.toml (2 spec, 2 sites)
+ctrlgenToml: wrote ctrlg.mp-2534.toml (2 spec, 2 sites)
 ctrlgenToml: running lmfa -> lmf --jobgw=0 -> gwinit  to fill GW sections
-ctrlgenToml: done. ctrlG.mp-2534.toml has [io]/[struc]/[[site]]/[[spec]]/...
-             plus [gw]/[product_basis]/[blocks].  PB.toml has nlx/valence/core.
+ctrlgenToml: done. ctrlg.mp-2534.toml has top-level/[struc]/[[site]]/[[spec]]/...
+             plus [gw]/[product_basis]/[blocks].  PB.<sname>.toml has nlx/valence/core.
 ```
 
 **Recommended workflow**: run `ctrlgenToml.py <sname>` with **no other
-flags** to get the defaults, then **edit `ctrlG.<sname>.toml`
+flags** to get the defaults, then **edit `ctrlg.<sname>.toml`
 afterwards** — the file is fully commented and TOML-typed, so
 in-place edits in your editor are the natural path. **The CLI flags
 listed by `ctrlgenToml.py --help` are bake-in equivalents of those
 edits, not requirements.** They are useful when scripting / batch-
 generating many materials, but for normal interactive use leave them
-off and edit the generated `ctrlG.<sname>.toml` keys directly.
+off and edit the generated `ctrlg.<sname>.toml` keys directly.
 
-`PB.toml` is consumed only on the GW path and **does not normally
+`PB.<sname>.toml` is consumed only on the GW path and **does not normally
 need hand editing**; leave it as generated.
 
 Pure DFT / no-GW directory? Add `--skipgw`:
 
 ```bash
-ctrlgenToml.py <sname> --skipgw   # ctrlG.<sname>.toml without [gw]/[product_basis]/[blocks];
-                                  # no PB.toml written.
+ctrlgenToml.py <sname> --skipgw   # ctrlg.<sname>.toml without [gw]/[product_basis]/[blocks];
+                                  # no PB.<sname>.toml written.
 ```
 
 To add the GW sections later **without losing the ctrl-side edits
@@ -374,7 +374,7 @@ you have made in the meantime**, use `--addgw`:
 
 ```bash
 ctrlgenToml.py <sname> --addgw    # appends [gw]/[product_basis]/[blocks]
-                                  # and writes PB.toml in place;
+                                  # and writes PB.<sname>.toml in place;
                                   # ctrl-side keys ([bz], [ham], [[spec]], ...)
                                   # are preserved verbatim.
 ```
@@ -382,12 +382,12 @@ ctrlgenToml.py <sname> --addgw    # appends [gw]/[product_basis]/[blocks]
 `--addgw` refuses to run if `[gw]` is already present (to avoid
 silent duplication). **Do not** plain re-run `ctrlgenToml.py <sname>`
 for this purpose: the default flow overwrites the whole
-`ctrlG.<sname>.toml` from `ctrls.<sname>` (the previous file is
-moved to `ctrlG.<sname>.toml.bakup`, one-generation backup only —
+`ctrlg.<sname>.toml` from `ctrls.<sname>` (the previous file is
+moved to `ctrlg.<sname>.toml.bakup`, one-generation backup only —
 your edits would be in there but you'd have to merge them back by
 hand).
 
-Common edits in `ctrlG.<sname>.toml`:
+Common edits in `ctrlg.<sname>.toml`:
 
 1. `[bz].nkabc` — k-mesh (LDA).
 2. `[ham].nspin` — 2 for magnetic, 1 nonmagnetic.
@@ -409,15 +409,15 @@ For the run-time `-v` syntax, see [TOML migration](./toml_migration):
 lmf si -vnk=8 -vmetal=3 -vnspin=2
 
 # NEW (TOML path; processed in-memory, no on-disk rewrite)
-lmf si -v[bz.nkabc]=[8,8,8] -v[bz.metal]=3 -v[ham.nspin]=2
+lmf si --ctrlg:bz.nkabc=[8,8,8] --ctrlg:bz.metal=3 --ctrlg:ham.nspin=2
 ```
 
 > ⚠️ **CAUTION** — `-v` *used to* override a `%const NAME=...` symbol
 > declared inside the legacy `ctrl.<sname>` (`{NAME}` then expanded
 > wherever it was referenced). Under TOML, **`-v` points directly at
-> a TOML path** (`-v[section.key]=val`); there is no `%const`
+> a TOML path** (`--ctrlg:section.key=val`); there is no `%const`
 > indirection. So habits like `-vmetal=3` silently do nothing —
-> use `-v[bz.metal]=3`. See the
+> use `--ctrlg:bz.metal=3`. See the
 > [CAUTION block on toml_migration](./toml_migration#run-time-v-overrides).
 
 * `lmchk --pr60 mp-2534` allows you to check the recognized symmetries.
@@ -427,7 +427,7 @@ At this point, you can visually check:
 * `SiteInfo.lmchk` — MT radii, atomic positions
 * `PlatQlat.chk` — primitive lattice vectors (plat) and reciprocal (qlat)
 
-[Detailed reference for every key in `ctrlG.<sname>.toml`](./lmf).
+[Detailed reference for every key in `ctrlg.<sname>.toml`](./lmf).
 
 > **`ctrlgenToml.py` ↔ `ctrlgenM1.py` (legacy)** — `ctrlgenToml.py`
 > shares the periodic-table defaults with `ctrlgenM1.py` (atomlist
@@ -449,7 +449,7 @@ Legacy2toml.py mp-2534
 ```
 
 This walks `ctrl.<sname>` and (if present) `GWinput` and emits
-`ctrlG.<sname>.toml` + `PB.toml`.  It is idempotent and prints
+`ctrlg.<sname>.toml` + `PB.<sname>.toml`.  It is idempotent and prints
 `[INFO] / [WARN] / [ERROR]` diagnostics for any `%const` / `-v`
 overrides that won't survive as-is.  See
 [TOML migration](./toml_migration) for the full key map.
@@ -473,8 +473,8 @@ to see the structure in VESTA. To show ctrl.si, we use a converted at  /Structur
    lmfa mp-2534
    ```
    gives spherical atom calculation for initialization.  `lmfa` reads
-   `ctrlG.mp-2534.toml` (auto-detected if omitted, when there is exactly
-   one `ctrlG.*.toml` in the cwd) and generates the files required for
+   `ctrlg.mp-2534.toml` (auto-detected if omitted, when there is exactly
+   one `ctrlg.*.toml` in the cwd) and generates the files required for
    `lmf` below.
    Check `conf ` section in the console output as
    ```bash
@@ -528,14 +528,14 @@ to see the structure in VESTA. To show ctrl.si, we use a converted at  /Structur
    * llmf contains information of iterations (since I use tee command above), check eigenvalue and fermi energies, band gap.
    * rst.mp-2534 is generated. Self-consistent charge included.
    * You can change lattice constant by editing `[struc].alat` in
-     `ctrlG.mp-2534.toml`. Math operators in TOML scalars are not
+     `ctrlg.mp-2534.toml`. Math operators in TOML scalars are not
      evaluated; precompute the value (e.g. `alat = 10.6818`) or use
-     `-v[struc.alat]=10.6818` at run-time. The legacy `ctrl.foobar`
+     `--ctrlg:struc.alat=10.6818` at run-time. The legacy `ctrl.foobar`
      `%const` math (`1.8897268777743552*5.65/5.75` etc.) was baked in
      at `Legacy2toml.py` time.
    * Note (historical): `ctrlp.foobar` was an intermediate file
      generated by `ctrl2ctrlp.py` from the legacy `ctrl.foobar`. As of
-     2026-05 the Fortran reads `ctrlG.<sname>.toml` directly via
+     2026-05 the Fortran reads `ctrlg.<sname>.toml` directly via
      `m_ctrl_toml_loader.f90`; no `ctrlp` step occurs.
    * check save.mp-2534. Show history of lmfa and lmf. one line per iteration. Show your console options. c,x,i,h
    LDA energy shown two values need to be the same (but slight difference).
@@ -586,7 +586,7 @@ of real harmonics (shown at the end of `job_pdos`).
 Be careful about the number of k points. You may need to enlarge the
 mesh for accurate DOS / PDOS. Pass it on the command line with the
 TOML-path syntax:
-`job_tdos mp-2534 -np 8 -v[bz.nkabc]=[10,10,10]`.
+`job_tdos mp-2534 -np 8 --ctrlg:bz.nkabc=[10,10,10]`.
 Check by `grep '^bz.nkabc\|^nkabc' llmf_tdos` and look at `save.mp-2534`.
 
 ## Step 4. Create k-path and Brillouin zone for band plot
@@ -598,7 +598,7 @@ It is an interactive figure written with plotly, so you can read the coordinate 
 ```
 getsyml foobar
 ```
-(`foobar` here matches the `<sname>` in `ctrlG.<sname>.toml`.)
+(`foobar` here matches the `<sname>` in `ctrlg.<sname>.toml`.)
 
 * Samples of BZ.html by getsyml are seen at 
 https://ecalj.sakura.ne.jp/BZgetsyml/
@@ -621,7 +621,7 @@ A gnuplot script can be created. Edit it if necessary. If you edit syml.ba2pdo2c
 
 Here we are talking about band energies.
 
-* In ecalj, the k mesh for `lmf` (`[bz].nkabc` in `ctrlG.<sname>.toml`) and the k mesh for GW (`[gw].n1n2n3`) can be different. The former affects LDA wall-time only weakly; the latter has a large effect (so we want to reduce `[gw].n1n2n3`).
+* In ecalj, the k mesh for `lmf` (`[bz].nkabc` in `ctrlg.<sname>.toml`) and the k mesh for GW (`[gw].n1n2n3`) can be different. The former affects LDA wall-time only weakly; the latter has a large effect (so we want to reduce `[gw].n1n2n3`).
 
 * In ecalj's band plot mode, theoretically degenerated bands because of symmetry at the BZ edge are not degenerated. This is because there are limited numbers of APW basis functions, so run the band plot with pwemax=4, etc. (Temporary solution: We want to automate it).
 ![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/482779/8169cff0-78e6-ea50-0084-66a4cefc4cda.png)
@@ -641,7 +641,7 @@ For bandplot,
 ```
 job_band mp-2534 -np 8 [options]
 ```
-At the end of job_band, you can add TOML overrides for lmf as `-v[ham.so]=1 -v[ham.nspin]=2`.
+At the end of job_band, you can add TOML overrides for lmf as `--ctrlg:ham.so=1 --ctrlg:ham.nspin=2`.
 (these are for SOC as perturbation)
 We use gnuplot for band plot bandplot.isp1.glt.
 
@@ -654,7 +654,7 @@ We now run QSGW calculations. QSGW is computationally very expensive,
 so we recommend running smaller systems first.
 
 > Since 2026-05 the GW driver inputs are **inside** the same
-> `ctrlG.<sname>.toml`, in sections `[gw]`, `[product_basis]`, and
+> `ctrlg.<sname>.toml`, in sections `[gw]`, `[product_basis]`, and
 > `[blocks]`. The legacy separate `GWinput` text file is no longer
 > parsed by Fortran.  If you started from an old directory with
 > `ctrl.<sname>` + `GWinput`, `Legacy2toml.py <sname>` (Step 2.5)
@@ -663,7 +663,7 @@ so we recommend running smaller systems first.
 >
 > ```bash
 > mkGWinput mp-2534                  # produces a legacy GWinput template
-> Legacy2toml.py mp-2534             # re-emit ctrlG.mp-2534.toml with [gw] etc.
+> Legacy2toml.py mp-2534             # re-emit ctrlg.mp-2534.toml with [gw] etc.
 > ```
 
 The single key you most often tweak before launching QSGW is the GW
@@ -695,9 +695,11 @@ QSGW is to obtain band structures (or one-body Hamiltonian), the total energy is
 `QPU` file contains diagonal components of GW calculations.
 Note that our `Mixed Produce basis` is a key technology for the GW calculation.
 ```
-gwsc -np NP [--phispinsym] [--gpu] [--mp] nloop extension
+gwsc -np NP [--gpu] [--mp] nloop extension
 ```
-(--phispinsym is for magnetic materials to keep the same basis for up and down)
+(For magnetic materials wanting the same basis for up and down, set
+`[ham] phispinsym = true` in `ctrlg.<sname>.toml`, or pass
+`--ctrlg:ham.phispinsym=true` at run time.)
 
 
 Then console outputs of `gwsc` is somthing like
@@ -734,7 +736,7 @@ If you repeat gwsc, we have additional QSGW iterations on top the previous calcu
 #### a case of La2CuO4
 For La2CuO4, I had (verbatim log from 2025-06; the legacy `-vssig=0.8`
 form recorded below is no longer parsed — today the same override is
-`-v[ham.scaledsigma]=0.8`):
+`--ctrlg:ham.scaledsigma=0.8`):
 ```
 2025-06-27 19:09:01.465241   mpirun -np 1 echo --- Start gwsc ---
 --- Start gwsc ---
@@ -775,7 +777,7 @@ generate the GW driver settings and merge them into TOML in two steps:
 ```bash
 mkGWinput ba2pdo2cl2          # produces a legacy GWinput.tmp template
 cp GWinput.tmp GWinput        # copy and (optionally) edit
-Legacy2toml.py ba2pdo2cl2     # ctrl.<sname> + GWinput -> ctrlG.<sname>.toml + PB.toml
+Legacy2toml.py ba2pdo2cl2     # ctrl.<sname> + GWinput -> ctrlg.<sname>.toml + PB.<sname>.toml
 ```
 
 After conversion, the only key you usually need to tweak before
@@ -856,7 +858,7 @@ If MT radius are changed, start over from lmfa (remove atm* files)
 
 # jobmaterials.py: mini database for computational tests
 At ecalj/MATERIALS/, type `./jobmaterials.py`. It shows a help with a list of materials.
-It contains samples of simple materials. It performs LDA calculations and generates GW driver settings (now in `[gw]` of `ctrlG.<sname>.toml`; legacy `GWinput` for un-migrated materials).
+It contains samples of simple materials. It performs LDA calculations and generates GW driver settings (now in `[gw]` of `ctrlg.<sname>.toml`; legacy `GWinput` for un-migrated materials).
 (I think MATERIALS/ is not organaized well. We are going to clean up)
 * How to run 
   ```
@@ -880,7 +882,7 @@ Run Si for example:
   performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
   >job_materials.py works as follows for given names.
   Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
-  Step 2. Generate `ctrlG.<ext>.toml` + `PB.toml` by `ctrlgenToml.py`
+  Step 2. Generate `ctrlg.<ext>.toml` + `PB.<sname>.toml` by `ctrlgenToml.py`
           (legacy path: `ctrlgenM1.py` + `Legacy2toml.py`)
   Step 3. Make directory such as Si/ and copy ctrls.si plus the generated TOML pair
           (legacy: ctrls.si, ctrl.si, GWinput)

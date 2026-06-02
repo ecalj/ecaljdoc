@@ -1,7 +1,7 @@
 # How to make doping?
 
 > ⚠️ **TOML migration (2026-05)** — The legacy `Category_Token`s in this
-> page map onto `ctrlG.<sname>.toml` as: `SPEC_ATOM_Z` → `[[spec]].z`,
+> page map onto `ctrlg.<sname>.toml` as: `SPEC_ATOM_Z` → `[[spec]].z`,
 > `SPEC_ATOM_Q` → `[[spec]].q`, `BZ_ZBAK` → `[bz].zbak`. The conceptual
 > recipe below is identical; only the file/key path changes. See
 > [TOML migration](./toml_migration).
