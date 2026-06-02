@@ -307,7 +307,7 @@ It is convenient to view structures with VESTA.
 At `ecalj/StructureTool/`, we have the `viewvesta` command. Try:
 
 ```bash
-viewvesta ctrl.si
+viewvesta ctrls.si
 ```
 
 to check the structure in the viewer. In `/StructureTool`, we have converters:

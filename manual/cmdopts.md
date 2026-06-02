@@ -12,9 +12,17 @@ startup with a one-line hint. All parsing lives in
 | Form | Meaning | Where it goes |
 |---|---|---|
 | `<sname>` | positional, the ctrlg file extension | `m_ext::sname` |
+| `ctrlg.<sname>.toml` | positional, the full TOML filename (e.g. after TAB completion) | `m_ext::sname` |
 | `--ctrlg:<dotted.path>=<value>` | runtime TOML override (applied in memory; file untouched) | `m_toml_override` |
 | `--<flag>` | registered cmdopt0 — presence bool | `c0_<flag>` in `m_cmdopt_registry` |
 | `--<flag>=<value>` | registered cmdopt2 — typed value | `c2_<flag>` in `m_cmdopt_registry` |
+
+The two positional forms are equivalent: `lmf nio` and
+`lmf ctrlg.nio.toml` both end up with `sname='nio'`. m_ext_init
+rejects anything in between -- `ctrlg.nio` (no `.toml` suffix) and
+`ctrl.nio` (the legacy text format) abort at startup with a hint
+pointing at the two canonical forms (and at `Legacy2toml.py` for
+the latter).
 
 A single argument-validation pass runs at startup
 (`m_cmdopt_registry::validate_arglist`, called from `m_args::m_setargs`).

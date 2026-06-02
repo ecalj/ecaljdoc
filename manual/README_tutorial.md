@@ -462,7 +462,7 @@ It is convenient to see crystal structures with VESTA.
 At ecalj/StructureTool/, we have 'viewvesta' command. 
 Try 
 ```
-viewvesta ctrl.si
+viewvesta ctrls.si
 ```
 to see the structure in VESTA. To show ctrl.si, we use a converted at  /StructureTool,`vasp2ctrl` and `ctrl2vasp`.  
 <small>(We have ~/ecalj/GetSyml/README.org. but Users do not need to read this.)</small>
