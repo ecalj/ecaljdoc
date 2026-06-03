@@ -46,7 +46,8 @@ export default withMermaid({
         text: 'Install',
         items: [
           { text: 'Install', link: '/install/install' },
-          { text: 'Install@ISSP', link: '/install/installISSP' }
+          { text: 'Install@ISSP', link: '/install/installISSP' },
+          { text: 'Uninstall', link: '/install/uninstall' }
         ]
       },
       {

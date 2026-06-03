@@ -299,6 +299,13 @@ PATH="~/bin/:$PATH"
 
 
 
+## 4. Uninstall
+
+See [Uninstall](./uninstall) — three commands: `python3 uninstall.py`,
+open a new shell, then `rm -rf <ecalj-checkout>`.
+
+
+
 ## Install VESTA and getsyml
 
 It is convenient to view structures with VESTA.
