@@ -314,11 +314,13 @@ It is convenient to view structures with VESTA.
 At `ecalj/StructureTool/`, we have the `viewvesta` command. Try:
 
 ```bash
-viewvesta ctrls.si
+viewvesta ctrlg.si.toml      # canonical (post-2026-05)
+viewvesta ctrls.si           # legacy structure-only seed file
 ```
 
 to check the structure in the viewer. In `/StructureTool`, we have converters:
 `vasp2ctrl` and `ctrl2vasp`. These allow you to convert structures with POSCAR.
+`ctrl2vasp` accepts the same three input forms as `viewvesta`.
 
 In addition, you may need to install `getsyml.py` to obtain symmetry lines for band plots.
 Generated `syml.*` files are used for band plots in ecalj.

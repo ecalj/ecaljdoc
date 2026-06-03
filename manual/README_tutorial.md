@@ -459,12 +459,13 @@ overrides that won't survive as-is.  See
 ### Install VESTA 
 It is convenient to see crystal structures with VESTA.
 (I installed VESTA-gtk3.tar.bz2 (ver. 3.5.8, built on Aug 11 2022, 23.8MB) on ubuntu 24)
-At ecalj/StructureTool/, we have 'viewvesta' command. 
-Try 
+At ecalj/StructureTool/, we have 'viewvesta' command.
+Try
 ```
-viewvesta ctrls.si
+viewvesta ctrlg.si.toml      # canonical (post-2026-05)
+viewvesta ctrls.si           # legacy structure-only seed file
 ```
-to see the structure in VESTA. To show ctrl.si, we use a converted at  /StructureTool,`vasp2ctrl` and `ctrl2vasp`.  
+to see the structure in VESTA. The converters `vasp2ctrl` / `ctrl2vasp` (also in `/StructureTool`) accept the same TOML / ctrls / ctrl input forms.
 <small>(We have ~/ecalj/GetSyml/README.org. but Users do not need to read this.)</small>
 
 
