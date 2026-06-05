@@ -16,6 +16,7 @@ ecalj/Samples/
 ├── MLOsamples/        TOML-migrated, testecalj-runnable
 ├── PROCAR/            TOML-migrated, testecalj-runnable
 ├── TestInstall/       TOML-migrated, testecalj-runnable (install validation)
+├── mptf32problem/     GW1500 failure corpus: TF32 vs FP32 on AgNO3 etc.
 └── Legacy/            still ctrl.<sname> + GWinput — needs Legacy2toml.py
 ```
 

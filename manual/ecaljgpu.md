@@ -43,6 +43,32 @@ MEMnmbatch = 4
 * `[gw].MEMnmbatch = 4`
 それぞれの意味は [GWinput (legacy reference)](../manual/gwinput.md) または [lmf.md § Legacy ctrl ↔ TOML map](./lmf#legacy-ctrl-lt-sname-gt-toml-path-map) を参照してください。
 
+### 混合精度: `--mp` と `--fp32` (2026-06)
+
+GPU GW では GEMM の compute_type を指定して精度・速度を切替えます。
+
+| フラグ | compute_type | 仮数精度 | 既定の用途 |
+|---|---|---|---|
+| `--gpu` のみ | FP64 | ~1e-16 | safest / 最遅 |
+| `--gpu --mp` | TF32 (`CUBLAS_COMPUTE_32F_FAST_TF32`) | ~1e-3 (仮数10bit) | 通常の QSGW (高速、推奨) |
+| `--gpu --mp --fp32` | 真の FP32 (`CUBLAS_COMPUTE_32F`) | ~1e-7 (仮数23bit) | 悪条件な誘電行列向け fallback (TF32 比 ~7% 減速) |
+
+通常は `--gpu --mp` で十分ですが、**重元素 + 分子アニオン (NO3 / N3 / ClO / BrO /
+PO4 等) で局所場が強く ε(q,ω) の条件数が大きい系**では TF32 の ~1e-3 誤差が
+$(1-v\chi_0)^{-1}$ で増幅され、$W$ / $\Sigma^c$ が破壊されて QSGW が発散
+(`lmf failed`) もしくは NaN (lsc / lqpe) になることがあります。
+その場合は `--fp32` を追加してください — 真の FP32 で CPU / 倍精度と一致します。
+ストレージは単精度のままなのでメモリ使用量は不変です。
+
+```bash
+gwsc 5 -np 64 -np2 4 --gpu --mp --fp32 inas2gasb2 > lgwsc
+```
+
+汚染源は $\chi_0$ 累積 (`zmel` 縮約) であり、逆行列パスだけを直しても解決しないと
+確認済み (2026-06)。失敗パターンと再現データは
+[`Samples/mptf32problem/`](https://github.com/tkotani/ecalj/tree/main/Samples/mptf32problem)
+にあります (GW1500 production の 62 例)。
+
 ### MPSの設定
 
 以下を`~/.bashrc` に記載する。

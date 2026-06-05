@@ -7,7 +7,7 @@ QSGW計算は，複数のfortran実行ファイルを呼び出して実行され
 入力は `ctrlg.<sname>.toml` (legacy: [GWinput](./gwinput.md)) から読み込まれる。
 
 ## Usage
-**Usage**: ` gwsc -np NP [-np2 NP2] [--gpu] [--mp] nloop extension [Options]`
+**Usage**: ` gwsc -np NP [-np2 NP2] [--gpu] [--mp] [--fp32] nloop extension [Options]`
 
 ### `-np NP`
 MPI並列数を指定する。
@@ -20,7 +20,18 @@ GPU版を使用する場合のみ指定する。GPUで実行される計算のMP
 GPU版を使用する場合のみ指定する。
 
 ### `--mp`
-GPU-MP版(混合精度)を使用する場合のみ指定する。計算精度に注意すること。
+GPU-MP版(混合精度)を使用する場合のみ指定する。GEMM の compute_type が既定で TF32
+(`CUBLAS_COMPUTE_32F_FAST_TF32`、仮数10bit、相対誤差 ~1e-3) になる。通常の QSGW
+では十分高速かつ安全だが、悪条件な誘電行列 (重元素 + 分子アニオン NO3 / N3 / ClO
+など) では TF32 誤差が増幅され $W$ / $\Sigma^c$ が破壊されることがある — その場合は
+下の `--fp32` を追加。詳細は [GPU 版マニュアル § 混合精度](./ecaljgpu#混合精度-mp-と-fp32-2026-06)。
+
+### `--fp32` (2026-06)
+`--gpu --mp` と併用する。GEMM の compute_type を真の FP32
+(`CUBLAS_COMPUTE_32F`、仮数23bit、相対誤差 ~1e-7) に切替える。TF32 比 ~7% 減速で
+ストレージは単精度のまま。`--mp` で QSGW が発散 / NaN になる悪条件系の fallback。
+ecalj_auto の GW1500 バッチ (`gwscconv --gpu --mp --fp32 --conv-tol 0.1`) は
+これを既定で使用。失敗事例の再現は [`Samples/mptf32problem/`](https://github.com/tkotani/ecalj/tree/main/Samples/mptf32problem)。
 
 
 ### `nloop`
@@ -95,6 +106,12 @@ In principle, the number is determined by
 # Other scripts 
 
 `cleargw`: clean up temporary files
+
+`gwscconv`: `gwsc` を自動収束まで回すラッパー。`--conv-tol <eV>` (例 `0.1`) で
+QSGW 反復の停止条件を指定する。**収束判定 (2026-06 改定)**: 直近 3 イテレーションの
+ギャップ振れが連続して 2 回 `conv-tol` 以下になったら停止 (一発の偶然収束で止まる
+のを防ぐ)。`--gpu --mp --fp32` を渡せばそのまま `gwsc` に流される。
+ecalj_auto の GW1500 バッチもこの script を呼んでいる ([auto.md](./auto))。
 
 `gw_lmfh`: The one-shot \GW calculation. Lifetime(impact ionization rate) of QPs.
 

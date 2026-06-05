@@ -8,6 +8,15 @@ For the GW1500 production run details and slot scheduler, see:
 - [ecalj_auto/README_slot_scheduler.md](https://github.com/tkotani/ecalj/blob/main/ecalj_auto/README_slot_scheduler.md) — TOML + hgw_combined + scheduler architecture (2026-05)
 
 > ⚠️ **TOML migration (2026-05)** — `ecalj_auto` now ships `ctrlg.<sname>.toml` per generated job (no legacy `ctrl,GWinput` write-out). Templates: `jobtemplate{,.kugui,.ohtaka,.ucgw}` for SLURM/PBS dispatch. See [TOML migration](./toml_migration).
+>
+> ⚠️ **GW1500 batch: `--fp32` by default (2026-06)** — `worker.sh` /
+> `run_gw1500_addrun.sh` / `run_gw1500_addrun_conv.sh` now call
+> `gwscconv --gpu --mp --fp32 --conv-tol 0.1`. `--fp32` switches the GPU GEMMs
+> from TF32 to true FP32 で、悪条件な誘電行列 (重元素 + 分子アニオン NO3 / N3 /
+> ClO など) でも QSGW が NaN / 発散しない。詳細は
+> [gwsc § `--fp32`](./gwsc#fp32-2026-06) および
+> [GPU マニュアル § 混合精度](./ecaljgpu#混合精度-mp-と-fp32-2026-06)。
+> 失敗事例の再現は [`Samples/mptf32problem/`](https://github.com/tkotani/ecalj/tree/main/Samples/mptf32problem)。
 
 
 
