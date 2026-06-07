@@ -1,8 +1,10 @@
-# Dielectric function: epsPP0 
+# Dielectric function: job_eps
 
-> ⚠️ **TOML migration (2026-05)** — `epsPP0`, `eps_lmfh`, `epsPP_lmfh` and friends now read `ctrlg.<sname>.toml` + `PB.<sname>.toml`. Convert legacy `ctrl.<sname>` / `GWinput` directories with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration) and worked examples in [Samples/EPS/](https://github.com/tkotani/ecalj/blob/main/Samples/EPS) — `EPS_Cu`, `EPS_GaAs`, `EPS_Ag`.
+> ⚠️ **Tool consolidation (2026-06)** — The dielectric-function driver is now **`job_eps`** (with `--lcf` for local-field correction, `--decompose` for interband / intraband split). The legacy `epsPP0` / `eps_lmfh` / `epsPP_lmfh` / `epsPP_lmfh_intra` wrappers have moved to `SRC/exec_legacy/` and are no longer installed to `~/bin`.
+>
+> **TOML migration (2026-05)** — `job_eps` reads `ctrlg.<sname>.toml` + `PB.<sname>.toml`. Convert legacy `ctrl.<sname>` / `GWinput` directories with `Legacy2toml.py <sname>`. See [TOML migration](./toml_migration) and worked examples in [Samples/EPS/](https://github.com/tkotani/ecalj/blob/main/Samples/EPS) — `EPS_Cu`, `EPS_GaAs`, `EPS_Ag`.
 
-epsPP0(2025-5-8 version)
+job_eps (canonical post-2026-06; replaces the 2025-5-8 `epsPP0` script).
 
 During QSGW, we calculate $\epsilon_{IJ}(q, \omega)$ for $W$ in the GW calculation.
 
@@ -13,15 +15,15 @@ to compare experiments.
 
 Based on the no local-field correction equation $\epsilon({\bf q},\omega)=1-v({\bf q}) \chi_0({{\bf q},\omega})$, we can calculate interband and intraband contributions separately.
 The intraband contribution is the Drude weight at the limit ${\bf q} \to 0$.
-We use the command `epsPP0` now.
+We use the command `job_eps` now (legacy name: `epsPP0`). `job_eps --decompose` writes the interband / intraband split.
 We include spherical Bessel functions in the MPB to expand $\exp(i {\bf q r})$.
 
-We can include local-field corrections with `eps_lmfh` (in fact, we do include the local-field correction is QSGW iteration), but computationally expensive and not open to users currently.
+Local-field corrections are enabled with `job_eps --lcf` (legacy name: `eps_lmfh`); the LFC path is computationally heavier but otherwise drives the same machinery. The LFC contribution is always included in the QSGW iteration itself; `--lcf` here only controls the post-SC dielectric output.
 
 
 ## Computational steps
 
-### Examples of `epsPP0`
+### Examples of `job_eps`
 It is instructive to learn things from samples as 
 * ecalj/Samples/EPS/GaAsEps
 * ecalj/Samples/EPS/CuEpsPP0
@@ -112,7 +114,7 @@ q=(0d0 0d0 0.00005)/bohrと読んでください。
 これはGramSchmidt2をsugw.f90に挿入して
 すこし正確な直行化が可能になったためです。
 
-* epsPP0では最後にreadeps.pyを読んでて答えをまとめ上げてます。
+* `job_eps` (legacy `epsPP0`) は最後に readeps.py を呼んで答えをまとめ上げてます。
 
 
 * Cuの場合だと、qがあまりにゼロに近いと計算が不安定です。たとえば
@@ -131,7 +133,7 @@ QforEPSau on
 などとすると、 0d0 0d0 0.00005のグラフがおかしいです。
 それ以外のグラフはほぼ重なります。だた、0.0032ぐらいになるとomega=0での実部がいくらかずれてきます。
 
-* CuepsPP0ではフェルミ面の寄与もあり、
+* Cu (Samples/EPS/EPS_Cu) ではフェルミ面の寄与もあり、
 ```
 gnuplot -p epsintra.glt
 ```
@@ -143,7 +145,7 @@ gnuplot -p epsall.glt
 ```
 
 
-* epsPP0の計算が終わると `EPS000*.nlfc.dat` というファイルが `[blocks].QforEPS` で設定したq点の数分作られます (legacy: `<QforEPS>` in `GWinput`)。この中は
+* `job_eps` (legacy `epsPP0`) の計算が終わると `EPS000*.nlfc.dat` というファイルが `[blocks].QforEPS` で設定したq点の数分作られます (legacy: `<QforEPS>` in `GWinput`)。この中は
 
 ```
     // example EPS0001.nlfc.dat
@@ -167,11 +169,11 @@ Test at 2016: we need to have correct edge $\propto \sqrt{\omega-E_0}$. To do so
 **（改良計画）q=0でのinterbandの寄与は<u|u>行列を使えば先に1/q^2の割り算ができるのでもっと直接的にできるはずです。
 
 ** （修正するべき）局所場補正
-Local field correction with `eps_lmfh`
-To include eps with LFC, do `eps_lmfh`. Expensive.
+Local-field correction with `job_eps --lcf` (legacy name: `eps_lmfh`).
+To include eps with LFC, do `job_eps --lcf <sname>`. Expensive.
 lcutmx=2 seems to be good enough to get 0.5 percent error (maybe better than this).
 Further we can use smaller QpGcut_cou like 2.2 or so, with rather smaller product basis (up to p timed d, not including f).
-But we need checks and may be modification of `eps_lmfh`.
+But we need checks and may be modification of `job_eps --lcf`.
 
 ** スピンゆらぎを計算するにはモデルを経由するべき
   

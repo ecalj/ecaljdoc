@@ -32,7 +32,8 @@ gwsc -np 64 -np2 4 --gpu 2 inas2gasb2 > lgwsc
 `ctrlg.<sname>.toml` の `[gw]` セクション抜粋 (legacy: 同 keys を `GWinput` に書く)
 ```toml
 [gw]
-# GaussianFilterX0 = 0.0001  # (a.u.) Gaussian smearing for x0; stabilises metals
+# SmearX0      = 0.0001       # (Ha) Gaussian smear of x0 along freq; stabilises metals (was GaussianFilterX0 pre-2026-06)
+# SmearX0q0    = 0.0005       # (Ha) override SmearX0 at offset-Gamma (q≈0) only; <0 = off
 KeepEigen = false
 zmel_max_size = 4
 MEMnmbatch = 4

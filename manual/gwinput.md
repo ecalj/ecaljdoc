@@ -67,11 +67,17 @@ MT内の積基底とMT内波動関数基底の行列要素(`ppb`変数)をメモ
 - **type**: boolean
 - **default**: .true.
 
-### `GaussianFilterX0`
-密度応答関数の計算に用いられる振動数におけるスメアリングパラメータ: 単位 a.u.$^2$ (Hartree$^2$)。QSGW計算が不安定な場合(固有値が振動するなど)の際に用いる。
-- **type**: float
-- **default** : 0
-- **examples**: GaussianFilterX0 0.0001
+### `SmearX0` / `SmearX0q0`  *(2026-06)*
+密度応答関数 $\chi_0$ を周波数方向に Gauss スメアして QSGW を安定化させるパラメータ。単位 Ha (a.u.)。QSGW 計算が不安定 (固有値が振動するなど) のときに使う。
+- `SmearX0`: 全 q に適用する標準のスメア幅。
+- `SmearX0q0`: offset-Γ (q ≈ 0) のみで `SmearX0` を上書きする値。`<0` (default) なら off で、全 q で `SmearX0` を使う。q=0 付近だけスメアを強めたい/弱めたい場合に使う。
+
+| key | type | default | 例 |
+|---|---|---|---|
+| `SmearX0`   | float (Ha) | 0.0 (off) | `SmearX0 = 0.0001` |
+| `SmearX0q0` | float (Ha) | -1.0 (unset) | `SmearX0q0 = 0.0005` |
+
+> ⚠️ **Legacy key `GaussianFilterX0` was removed (2026-06).** 旧 `GWinput` の `GaussianFilterX0` は dead key で実際には効いていませんでした。同等品が `SmearX0` です。古い `.toml` / `GWinput` を読み込ませると lmf は loud abort し、`SmearX0` への置換ヒントを出します。`gwinput2toml.py` は legacy GWinput を変換するときに `GaussianFilterX0` を自動で `SmearX0` にリネームします。
 
 ## `esmr`
 In (Ry). this is the smeaing of poles of G for G x W. To reduce the effect of the sharp cutoff of Fermi energy, use larger esmr (maybe stablized).
