@@ -191,9 +191,12 @@ $q\to0$ head が高温 × 大きい `deltaq` で破綻する**。
 
 ## 5. サンプル — `Samples/kBT/`
 
-`ecalj/Samples/kBT/` に LiTi₂O₄ の**収束した計算一式**(入力と結果)がある。
-GW を 11–45 反復するので計算が重く、`testecalj` のターゲットにはしていない。
+`ecalj/Samples/kBT/` に**収束した計算一式**(入力と結果)がある。物質ごとに
+`LiTi2O4/`(66 MB)と `Fe/`(0.8 MB)に分かれている。GW を何十回も反復するので
+計算が重く、`testecalj` のターゲットにはしていない。
 **手法が何を変えるかを、収束した結果そのもので見るためのもの。**
+
+`LiTi2O4/` の 3 つの run:
 
 | ディレクトリ | k メッシュ | $T$ | 反復 | 何のため |
 |---|---|---|---|---|
@@ -256,15 +259,16 @@ $9^3$ 単独の反復の重ね描きは以下。45 反復かかっているが�
 
 | | |
 |---|---|
-| `input/` | 3 run 共通の `PB` / `syml` と LDA 収束済みの `rst` |
-| `<run>/ctrlg.liti2o4.toml` | run ごとの入力 |
-| `<run>/results/EFERMI`, `EFERMI_kbt` | $T=0$ と有限温度の Fermi 準位 |
-| `<run>/results/finiteT_evidence.txt` | 実行ログからの抜粋(下記) |
-| `<run>/results/QPU.<N>run` | QP エネルギー |
-| `n666_T2000/results/sigm.liti2o4` | 収束した自己エネルギー(13 MB)。GW をやり直さずバンドが描ける |
-| `n999_T1000/results/sigm.liti2o4` | 同 $9^3$(30 MB)。**45 反復かかっていて一番作り直しにくい** |
-| `n666_T2000/results/bnd_iterations.tar.gz` | 全反復のバンド生データ |
-| `plots/` | 上の PDF・メッシュ比較図・$T$ 依存図・`deltaq` 比較図 |
+| `LiTi2O4/input/` | 3 run 共通の `PB` / `syml` と LDA 収束済みの `rst` |
+| `LiTi2O4/<run>/ctrlg.liti2o4.toml` | run ごとの入力 |
+| `LiTi2O4/<run>/results/EFERMI`, `EFERMI_kbt` | $T=0$ と有限温度の Fermi 準位 |
+| `LiTi2O4/<run>/results/finiteT_evidence.txt` | 実行ログからの抜粋(下記) |
+| `LiTi2O4/<run>/results/QPU.<N>run` | QP エネルギー |
+| `LiTi2O4/n666_T2000/results/sigm.liti2o4` | 収束した自己エネルギー(13 MB)。GW をやり直さずバンドが描ける |
+| `LiTi2O4/n999_T1000/results/sigm.liti2o4` | 同 $9^3$(30 MB)。**45 反復かかっていて一番作り直しにくい** |
+| `LiTi2O4/n666_T2000/results/bnd_iterations.tar.gz` | 全反復のバンド生データ |
+| `LiTi2O4/plots/` | 上の PDF・メッシュ比較図・$T$ 依存図・`deltaq` 比較図 |
+| `Fe/` | §5.4 の対照実験(入力 2 つと `QPU`/`QPD` だけ) |
 
 1000 K の 2 run は全反復の生データを置いていない($6^3$ で 17 MB、$9^3$ で
 26 MB になるため)。反復ごとの中身は 5.2 の PDF で見られる。
@@ -281,6 +285,66 @@ $9^3$ 単独の反復の重ね描きは以下。45 反復かかっているが�
 2 行目の `ef<-EFERMI_kbt` が、$\Sigma$ 側が $T=0$ の `EFERMI`(0.2771 Ry)ではなく
 **有限温度の `EFERMI_kbt`(0.2675 Ry)を使っている**ことを示す。
 ここが食い違ったままだと $\chi_0$ と $\Sigma$ が別の Fermi 準位を見ることになる。
+
+---
+
+### 5.4 Fe — $\Sigma$ 側が効くことの対照実験
+
+`Samples/kBT/Fe/` は **`t_sigmakbt` の値以外まったく同じ入力**の 2 つの run である。
+
+| | `t_sigmakbt0/` | `t_sigmakbt3000/` |
+|---|---|---|
+| `tetrakbt` / `t_tetrakbt` | `true` / 3000 K | `true` / 3000 K |
+| **`t_sigmakbt`** | **0.0** | **3000.0** |
+
+$\chi_0$(したがって $W$)は**両方とも 3000 K で同一**なので、差は $\Sigma$ 側
+だけから来る。bcc Fe、`nspin=2`、GW メッシュ $5^3$、QSGW 1 反復。
+(実用の設定ではない。実用では `t_sigmakbt == t_tetrakbt` にすること。)
+
+まず、変わってはいけないものは変わっていない — `vxc`・`SExcore`・$Z$・LDA
+固有値は**ビット単位で同一**である。対照実験として成立している。
+
+![Fe の Sigma シフト](kBT/fe_sigmakbt_shift.png)
+
+QSGW が使う $\Sigma-v_{xc}$ の変化:
+
+| $\lvert\varepsilon-E_F\rvert$ | rms $\Delta(\Sigma-v_{xc})$ | rms $\Delta\Sigma_x$ | rms $\Delta\Sigma_c$ |
+|---|---|---|---|
+| 0–1 eV | 0.788 eV | 0.680 eV | 1.180 eV |
+| 1–3 eV | 0.648 eV | 0.199 eV | 0.784 eV |
+| 3–10 eV | 0.428 eV | 0.123 eV | 0.442 eV |
+| 10 eV 以上 | 0.094 eV | 0.025 eV | 0.093 eV |
+
+---
+
+**$\Sigma$ 側の有限温度は小さな補正ではない。** $E_F$ 近傍で rms 0.7 eV、
+最大 1.93 eV 動く。$\chi_0$ だけ温めて $\Sigma$ を $T=0$ に置き去りにするのは、
+つじつまが合わないだけでなく数値的にも大きい。これが `t_sigmakbt` を
+作った理由である。
+
+$\Sigma_x$ と $\Sigma_c$ は個別にはもっと大きく動く(最大 2.40 eV と 3.66 eV)が、
+符号が逆で和は 1.93 eV に収まる。交換分裂はほぼ不変(−0.213 → −0.212 eV)で、
+効果はほぼスピン共通のシフトである。Fermi 準位自体は
+`EFERMI` 0.01496 Ry → `EFERMI_kbt` 0.03373 Ry と **0.26 eV** 動く。
+
+### 5.5 結果を読むときの注意
+
+**ここの結果はすべて 2026-06-15〜06-20 の実行で、下の 2 件の修正が入った後のもの。**
+kt1 の `runs/` には修正前の run も残っているので、日付で判別すること。
+
+- **2026-06-13 `m_sxcf_sc.f90` の OOB ガード修正。** `ixs < 2` が正当な
+  $\omega_\epsilon\approx0$ の実軸極項(静的 $W$ のビン)を全部捨てていた。
+  これ以前のビルドの run は **QP エネルギーの絶対値と $E_F$ 近傍の形が
+  信用できない**(si_gwsc で 3.54 eV ずれた)。
+- **2026-06-13 `tetwt5.f90` のペア選別の有限温度化**(`37e6fbc23`)。
+  それ以前は上流のペア選別が sharp $\theta$ のままで、高温で $\chi_0$ を
+  なめらかに過小評価していた(1000 K で ~1%、3000 K で落ちる殻の重みの ~18%)。
+  現在は `wocc = 12*kbt` で窓を広げ、`fbound`/`tolpair` の厳密上界で刈っている
+  ([§7.1](#_7-1-恒等式は厳密-確認済み))。
+
+$T$ 依存図(§4)と `deltaq` 比較図(§4)は QSGW 第 1 反復の別 run 群からのもので、
+`deltaq_scale` が 0.3 である。§5 の 3 つの run(`deltaq_scale = 0.1`)とは
+直接比較できない。
 
 ---
 
