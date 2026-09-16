@@ -322,25 +322,50 @@ $$
 取らないこと。** 直すなら `sig_fd` のとき窓を `max(ddw*esmr, 12*sig_kbt)` にし、
 `sigmakbt_setup` を count の前に移す(または count に `ef_kbt` を渡す)。**未修正。**
 
-### 7.4 範囲 — Bose 因子は入っていない
+### 7.4 範囲 — $\Sigma$ が要るのは「差」ではなく「和」
 
-有限温度 GW の $\Sigma_c$ は $f_n$ だけでなく $n_B(\omega)$ も含む:
+$\chi_0$ を有限温度化しただけでは $\Sigma$ は揃わない。理由は一行で書ける。
+
+中間状態の粒子‑正孔対を $(2,3)$、$\omega'=\varepsilon_2-\varepsilon_3>0$ として、
+
+| | 重み |
+|---|---|
+| 対を**作る** | $f_3(1-f_2)$ |
+| すでにある対を**壊す** | $f_2(1-f_3)$ |
+
+$\mathrm{Im}\,\chi_0$ が持っているのはこの**差** $f_3(1-f_2)-f_2(1-f_3)=f_3-f_2$ だが、
+$\Sigma$ の中間状態の重みは**和**である(どちらも同じ分母を持つ)。
+いまの実装は $\mathrm{Im}W$ から差を取ってきて外側の $f_j$ を掛けるので、
+**$f_2(1-f_3)$ の分が落ちる。** 詳細釣り合い $f_2(1-f_3)/f_3(1-f_2)=e^{-\beta\omega'}$ から
 
 $$
-\Sigma_c(\varepsilon)=\sum_n\int_0^\infty\!\! d\omega\,\frac{\mathrm{Im}W(\omega)}{\pi}
-\Bigl[\frac{1-f_n+n_B(\omega)}{\varepsilon-e_n-\omega+i\delta}
-+\frac{f_n+n_B(\omega)}{\varepsilon-e_n+\omega-i\delta}\Bigr]
+f_2(1-f_3)=\bigl(f_3-f_2\bigr)\,n_B(\omega')
 \tag{5}
 $$
 
-いまの実装は **$T=0$ の等高線(虚軸積分 + 実軸の極補正)をそのまま残して
-占有数だけ Fermi–Dirac に置き換えた**もので、コード中に Bose 因子は存在しない。
-金属では $\mathrm{Im}W \propto \omega$ なので $n_B\,\mathrm{Im}W$ は $\omega\to0$ で
-$O(k_BT)$ の有限値として残り、寄与はゼロではない。
+なので、これは普通 Bose 因子と呼ばれるものである。**ただし出どころは Fermi の
+占有数**であって、ボソンの熱浴を外から入れたわけではない。導出は
+[§8](#_8-付録-—-虚時間を使わない定式化) を見よ。物理は単純で、$T>0$ では
+粒子‑正孔対がすでに熱励起されていて電子はそれを吸収できる、というだけのこと。
 
-つまりこれは**「電子温度を入れた GW」であって「有限温度 GW」ではない。**
-QSGW の反復を安定化する正則化としては筋が通っているし元々そのためのものだが、
-熱力学量を出すものだと思ってはいけない。
+**大きさ。** $f_2(1-f_3)$ は $\omega'\gg k_BT$ で指数的に小さいので、効くのは
+$\omega'\lesssim k_BT$ の粒子‑正孔連続体だけである。金属で
+$\mathrm{Im}W_c\simeq c\,\omega'$ とすると
+
+$$
+\int_0^\infty\!\! d\omega'\,\mathrm{Im}W_c(\omega')\,n_B(\omega')
+= c\,(k_BT)^2\frac{\pi^2}{6}
+\tag{6}
+$$
+
+2000 K で $(k_BT)^2=0.029$ eV²、$\omega-\varepsilon_j\sim1$ eV なら数 meV–数十 meV。
+
+**これは欠陥ではなく定義である。** ecalj のスキームは「温度 $T$ の占有数で作る
+有効一体ハミルトニアン」であって、Mermin の有限温度 DFT が Fermi 占有数だけで
+閉じているのと同じ立場である。QSGW は動的な $\Sigma$ ではなく**静的エルミートな**
+一体ハミルトニアンを作るものなので、落ちているのが主に詳細釣り合い(= 寿命)側で
+あることもあって、影響は一発 GW のスペクトル関数を出す場合よりずっと軽い。
+平衡の多体摂動論の $\Sigma$ が欲しいなら (5) が要る、というだけのことである。
 
 ### 7.5 いまは踏まないが直すべき箇所
 
@@ -355,7 +380,222 @@ QSGW の反復を安定化する正則化としては筋が通っているし元
 
 ---
 
-## 8. ブランチの状況
+## 8. 付録 — 虚時間を使わない定式化
+
+$n_B$ がどこから来るのかは、松原形式を経由しなくてもはっきりする。むしろ
+そちらのほうが**すべてが Fermi の占有数から出る**ことが見えてよい。
+教科書では閉時間径路と平衡の話が分かれて書かれていることが多いので、
+ここで通して書いておく。
+
+以下 $\hbar=1$、エネルギーは $\mu$ から測る。
+$f(\varepsilon)=1/(e^{\beta\varepsilon}+1)$、$n_B(\omega)=1/(e^{\beta\omega}-1)$。
+
+### 8.1 $T=0$ の議論がなぜそのまま使えないか
+
+$T=0$ の実時間摂動論は Gell-Mann–Low に依っている。断熱的に相互作用を入れると
+$U(\infty,-\infty)|\Phi_0\rangle = e^{i\theta}|\Phi_0\rangle$、つまり
+**基底状態は位相を除いて自分自身に戻る**ので、$+\infty$ 側を $-\infty$ 側と
+取り替えられて
+
+$$
+\langle\Psi_0|T\{\cdots\}|\Psi_0\rangle
+=\frac{\langle\Phi_0|T\{S\cdots\}|\Phi_0\rangle}{\langle\Phi_0|S|\Phi_0\rangle}
+\tag{7}
+$$
+
+と片道の時間順序積で書ける。
+
+$T>0$ ではこれが使えない。$\rho_0=e^{-\beta(H_0-\mu N)}/Z_0$ は固有状態ではなく、
+断熱的に発展させても**重みが非相互作用系のまま**($e^{-\beta E_n^{(0)}}$ であって
+$e^{-\beta E_n}$ ではない)なので、$+\infty$ 側を $-\infty$ 側と同一視できない。
+(7) の分母に相当するものが書けない、というのが問題の本質である。
+
+### 8.2 閉時間径路 — 行って戻る
+
+そこで **$+\infty$ の状態を一切使わない**。$-\infty\to+\infty\to-\infty$ と
+往復する径路 $C$ を取れば、演算子を挟まない限り
+
+$$
+\mathrm{Tr}\bigl[\rho_0\,U(-\infty,+\infty)\,U(+\infty,-\infty)\bigr]
+=\mathrm{Tr}\,\rho_0 = 1
+\tag{8}
+$$
+
+が**恒等的に**成り立つ。分母が要らない。これが閉時間径路(Keldysh)の全部である。
+
+径路順序積 $T_C$(往路の後に復路が来る順序)を使って
+
+$$
+G(1,2)=-i\,\mathrm{Tr}\Bigl[\rho_0\,T_C\Bigl\{
+e^{-i\int_C dt\,H_1(t)}\;\psi(1)\psi^\dagger(2)\Bigr\}\Bigr]
+\tag{9}
+$$
+
+場は $H_0$ の相互作用表示。$\tau$ ではなく実時間で、$T$ 積が $T_C$ 積になっただけ
+である。$1,2$ をどちらの枝に置くかで 4 つの成分が出るが、独立なのは 2 つで、
+以下では
+
+$$
+G^<(1,2)=+i\langle\psi^\dagger(2)\psi(1)\rangle,\qquad
+G^>(1,2)=-i\langle\psi(1)\psi^\dagger(2)\rangle
+\tag{10}
+$$
+
+を使う。
+
+### 8.3 Wick の定理 — 入力は $f$ だけ
+
+$\rho_0$ は $H_0$ について Gauss 的なので Wick の定理がそのまま成立し、
+縮約は自由な径路伝播関数になる。エネルギー $\varepsilon_j$ の準位について
+
+$$
+g_j^<(\omega)=2\pi i\,f_j\,\delta(\omega-\varepsilon_j),\qquad
+g_j^>(\omega)=-2\pi i\,(1-f_j)\,\delta(\omega-\varepsilon_j)
+\tag{11}
+$$
+
+**温度が入るのはここだけで、入るのは Fermi 分布だけである。**
+Bose 分布はこの段階でどこにも無い。
+
+### 8.4 GW を径路上で書く
+
+径路引数のまま、形は $T=0$ と同じ:
+
+$$
+\chi_0(1,2)=-i\,G(1,2)G(2,1),\qquad
+W=v+v\chi_0 W,\qquad
+\Sigma(1,2)=i\,G(1,2)W(2,1)
+\tag{12}
+$$
+
+実時間成分に落とすには Langreth 則を使う。同じ引数の積
+$C(1,2)=A(1,2)B(2,1)$ に対して
+
+$$
+C^{\gtrless}(1,2)=A^{\gtrless}(1,2)\,B^{\lessgtr}(2,1)
+\tag{13}
+$$
+
+**$\gtrless$ がひっくり返る**のが要点である。
+
+### 8.5 $\chi_0$ の $\gtrless$ 成分 — ここで $n_B$ が出る
+
+(12)(13) と (11) から、時間並進対称性を使って
+
+$$
+\chi_0^>(\omega)=-2\pi i\sum_{23} f_3(1-f_2)\,\delta(\omega-\varepsilon_2+\varepsilon_3)
+$$
+$$
+\chi_0^<(\omega)=-2\pi i\sum_{23} f_2(1-f_3)\,\delta(\omega-\varepsilon_2+\varepsilon_3)
+\tag{14}
+$$
+
+$\chi_0^>$ が**対を作る**過程、$\chi_0^<$ が**すでにある対を壊す**過程である。
+$\omega>0$ では $\varepsilon_2>\varepsilon_3$。
+
+スペクトル関数は差のほうで、
+
+$$
+\chi_0^>-\chi_0^< \;\propto\; f_3(1-f_2)-f_2(1-f_3)=f_3-f_2
+\;=\;2i\,\mathrm{Im}\chi_0^R
+\tag{15}
+$$
+
+これが $T=0$ のコードが計算している量である。一方 (14) の比は
+$f_j=1/(e^{\beta\varepsilon_j}+1)$ を代入するだけで
+
+$$
+\frac{\chi_0^<(\omega)}{\chi_0^>(\omega)}
+=\frac{f_2(1-f_3)}{f_3(1-f_2)}=e^{-\beta\omega}
+\tag{16}
+$$
+
+となり、$1/(1-e^{-\beta\omega})=1+n_B(\omega)$ を使えば
+
+$$
+\chi_0^>=\bigl(1+n_B\bigr)\bigl(\chi_0^>-\chi_0^<\bigr),\qquad
+\chi_0^<=n_B\,\bigl(\chi_0^>-\chi_0^<\bigr)
+\tag{17}
+$$
+
+**$n_B$ はここで初めて現れる。仮定ではなく (11) の Fermi 分布からの帰結**である。
+ボソンの熱浴を外から入れた覚えはないのに Bose 分布が出るのは、
+$\chi_0$ がボソン的な相関関数だから((16) がボソンの KMS 条件そのもの)。
+
+RPA の衣を着せても比は変わらない。$W^{\gtrless}=\epsilon^{-1,R}\,v\chi_0^{\gtrless}v\,
+\epsilon^{-1,A}$ で $\epsilon^{-1,A}=(\epsilon^{-1,R})^\dagger$ だから、
+(16) はそのまま $W^{\gtrless}$ に受け継がれる。
+
+### 8.6 $\Sigma$ の $\gtrless$ 成分
+
+(12)(13) より $\Sigma^{\gtrless}(t)=i\,G^{\gtrless}(t)\,W^{\lessgtr}(-t)$、
+振動数では
+
+$$
+\Sigma^{\gtrless}(\omega)=i\sum_j\int\!\frac{d\nu}{2\pi}\,
+g_j^{\gtrless}(\nu)\,W^{\lessgtr}(\nu-\omega)
+\tag{18}
+$$
+
+(11) を入れ、$B(\Omega)\equiv W^>(\Omega)-W^<(\Omega)=2i\,\mathrm{Im}W^R(\Omega)$、
+$W^>=(1+n_B)B$、$W^<=n_B B$ とすると、
+$2i\,\mathrm{Im}\Sigma^R=\Sigma^>-\Sigma^<$ から
+
+$$
+\mathrm{Im}\,\Sigma^R(\omega)=\sum_j
+\mathrm{Im}W^R(\varepsilon_j-\omega)\;
+\bigl[\,n_B(\varepsilon_j-\omega)+f_j\,\bigr]
+\tag{19}
+$$
+
+$\varepsilon_j-\omega$ の符号で分けて $n_B(-\Omega)=-(1+n_B(\Omega))$ を使えば、
+見慣れた放出因子 $1-f_j+n_B$ と吸収因子 $f_j+n_B$ になる。実部は
+Kramers–Kronig で決まる。
+
+$T\to0$ の確認: $n_B(\Omega>0)\to0$、$n_B(\Omega<0)\to-1$、$f_j\to\theta(-\varepsilon_j)$。
+$\omega>0$ の準粒子について、$j$ が占有だと $[-1+1]=0$(Pauli 阻止)、
+$j$ が空だと $[-1+0]=-1$ で寄与する。従来の $T=0$ GW に戻る。
+
+### 8.7 いまの実装が保っているもの・落としているもの
+
+ecalj が計算しているのは $\mathrm{Im}W^R$、すなわち (15) の**差**である。
+$\Sigma$ を組むときに外側の $f_j$ だけを有限温度にし、(19) の $n_B$ は入れていない。
+つまり
+
+$$
+\Sigma^{\text{ecalj}}:\quad n_B\to 0,\qquad f_j\to f_j(T)
+$$
+
+これは $\Sigma$ の詳細釣り合い
+
+$$
+\Sigma^<(\omega)=-e^{-\beta\omega}\,\Sigma^>(\omega)
+\tag{20}
+$$
+
+を破る((18) と (16) から (20) は**両方**を残したときにのみ成り立つ)。
+したがって得られる $\Sigma$ は、厳密にはどんな温度 $T$ の平衡状態のものでもない。
+
+一方でこれは QSGW では軽い。QSGW が作るのは**静的エルミートな**一体
+ハミルトニアンで、$\mathrm{Im}\Sigma$ は最初から捨てているからである。
+(20) が壊れているというのは主に寿命側の話で、QSGW が使う
+$\mathrm{Re}\,\Sigma(\varepsilon_j)$ への影響は (6) の $O((k_BT)^2)$ にとどまる。
+
+### 8.8 初期相関についての注意
+
+8.2 では $\rho_0$(非相互作用の熱平衡)から断熱的に相互作用を入れると書いたが、
+これは**初期相関を落としている**。厳密には径路に虚時間の縦枝
+$[t_0,\,t_0-i\beta]$ を足した Kadanoff–Baym 径路を使い、そこに初期相関を
+持たせる(Danielewicz)。平衡かつ断熱的な場合には縦枝が実時間部分から
+分離し、結果は松原形式と一致する。
+
+ここで $\tau$ が顔を出すのは**初期条件を指定するため**であって、
+摂動展開そのものは実時間のままである。$n_B$ が出るかどうかとは関係がない —
+それは 8.5 で見たとおり (11) の Fermi 分布だけから出る。
+
+---
+
+## 9. ブランチの状況
 
 | ブランチ | 状態 |
 |---|---|
