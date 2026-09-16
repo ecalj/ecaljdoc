@@ -626,7 +626,28 @@ DFT 計算側で $Z=0$ の球から $l$ チャネルを削ると動径方程式�
 `[esm]` が無いと `lmf` は通常の周期境界で解き、**警告一行を出すだけで止まらない**。
 FeMgO では $E_F$ が **4.4155 eV** ずれた。全エネルギー・`Vesav`・磁気モーメントは
 8〜13 桁一致するので、Fermi エネルギーを比べるまで何も異常に見えない。
-詳細は [ESM](./lmf#esm-effective-screening-medium)。
+
+```toml
+[esm]
+boundary  = "vac/slab/vac"   # 真空(-z)/スラブ/真空(+z)
+origin    = -8.63717         # (a.u.)
+shiftmode = 0
+zb        = [23.907104, -23.907104]   # (a.u.)
+potential = [0.0, 0.0]       # (Ry)
+field     = [0.0, 0.0]       # (Ry/a.u.)
+```
+
+**`esm_input.dat` は廃止した(2026-09-16)。** 設定は `ctrlg.<sname>.toml` の
+`[esm]` セクションに書く。ただし**古いディレクトリはそのままで動く**:
+
+| 状況 | 起きること |
+|---|---|
+| `ctrlg` に `[esm]` が**ある** | そちらが使われる。`esm_input.dat` は **`esm_input.dat.bk`** へ退避され、`.bk` の冒頭に「この設定は使われなかった」と記録される |
+| `ctrlg` に `[esm]` が**ない** | `esm_input.dat` を変換して `ctrlg` の末尾に `[esm]` を**自動で書き込み**、原本を **`esm_input.dat.bk`** へ退避(移送先を `.bk` 冒頭に明記)。**その実行から変換値が効く** |
+
+どちらも冪等で、2 回目以降は `[esm]` があるので何も起きない。
+`Legacy2toml.py` も同じ規則で変換する。詳細は
+[ESM](./lmf#esm-effective-screening-medium)。
 
 > この件で長く回り道をした。同じ `rst` から別の機械で別の $E_F$ が出るのを見て
 > コンパイラや MPI を疑い、rst のバイナリ互換性・`atmpnu`・負の電荷密度・非決定性を
