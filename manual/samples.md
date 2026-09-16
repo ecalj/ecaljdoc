@@ -16,6 +16,7 @@ ecalj/Samples/
 ├── MLOsamples/        TOML-migrated, testecalj-runnable
 ├── PROCAR/            TOML-migrated, testecalj-runnable
 ├── TestInstall/       TOML-migrated, testecalj-runnable (install validation)
+├── kBT/               finite-T QSGW (tetrakbt / t_sigmakbt): inputs + results only
 ├── mptf32problem/     GW1500 failure corpus: TF32 vs FP32 on AgNO3 etc.
 └── Legacy/            still ctrl.<sname> + GWinput — needs Legacy2toml.py
 ```
@@ -38,6 +39,12 @@ flow.
 | **PROCAR/MgO_PROCAR** | fat-band weight; O-2p projection on MgO bands | [MgO_PROCAR/](https://github.com/tkotani/ecalj/tree/main/Samples/PROCAR/MgO_PROCAR) (no README; see test.py) | [./UsageDetailed § PROCAR mode](./UsageDetailed#procar-mode) |
 | **PROCAR/Ni2MnGa_L21_PROCAR** | per-atom fat band; FM Heusler; ships converged `rst.ni2mnga` | [Ni2MnGa_L21_PROCAR/](https://github.com/tkotani/ecalj/tree/main/Samples/PROCAR/Ni2MnGa_L21_PROCAR) (no README; see test.py) | [./UsageDetailed § PROCAR mode](./UsageDetailed#procar-mode) |
 | **TestInstall/** (23 dirs) | install validation: ground-state, GW (`gwsc`), eps (`eps_lmfh`, `epsPP_lmfh`), ChiPM, cRPA | (per dir; driven by `testecalj --all`) | [./gwsc](./gwsc), [./optical](./optical) |
+
+## Not testecalj targets
+
+| dir | physics / role | per-dir README | doc page |
+|---|---|---|---|
+| **kBT/** | finite-T QSGW of LiTi₂O₄ (`tetrakbt` + `t_sigmakbt` = 2000 K). **Inputs and results only** — the 11-iteration GW run is too expensive for a regression test. Ships the converged `sigm`, the per-iteration QP energies and bands, and the `deltaq_scale` artifact evidence | [kBT/README.md](https://github.com/tkotani/ecalj/blob/main/Samples/kBT/README.md) | [./kBT](./kBT) |
 
 ### `Samples/MLOsamples/` quick map (17 testecalj cases)
 

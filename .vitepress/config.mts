@@ -59,7 +59,7 @@ export default withMermaid({
           { text: 'Command-line options (--foo) catalogue', link: '/manual/cmdopts' },
           { text: 'QSGW calculation: gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
-          { text: '有限温度の自己エネルギー (tetrakbt / t_sigmakbt)', link: '/manual/finiteT' },
+          { text: 'kBT — 有限温度の自己エネルギー (tetrakbt / t_sigmakbt)', link: '/manual/kBT' },
           { text: 'MLO — 最大局在化などに代わる自動モデル化法', link: '/manual/mlo' },
           { text: 'MLO — 経緯と作業記録 (backup)', link: '/manual/mlo_backup' },
           { text: 'UsageDetailed ', link: '/manual/UsageDetailed' },
