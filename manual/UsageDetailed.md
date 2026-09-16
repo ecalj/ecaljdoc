@@ -229,7 +229,7 @@ See [dielectric fuctnion](optical.md).
 
 ## Spin fluctuation
 `~/ecalj/Samples/Legacy/Magnon`
-It is via the MaxlocWannier. We are going to move to MLO instead. Here is a figure (this is on top of LDA) for the spin fluctuation of Fe in [Okumura2021](https://github.com/ecalj/ecaljdoc/blob/main/presentations/okumura2021.pdf).
+It is via the MaxlocWannier. We are going to move to [MLO](./mlo) instead. Here is a figure (this is on top of LDA) for the spin fluctuation of Fe in [Okumura2021](https://github.com/ecalj/ecaljdoc/blob/main/presentations/okumura2021.pdf).
 ![alt text](image-6.png)
 
 ## Effective Screening Medium (ESM)
@@ -271,7 +271,9 @@ For the canonical layout and per-tree role table see the
 Highlights touched in this page:
 
 * `MLOsamples/` — new MTO Localized Orbital basis (Wannier replacement),
-  with on-site W via `job_mloW`. See the per-dir
+  with on-site W via `job_mloW`. **The method itself is written up in
+  [MLO](./mlo)** (what theta is, why `mlo_method = 4`, measured accuracy of all
+  18 samples with band plots). See also the per-dir
   [README](https://github.com/tkotani/ecalj/blob/main/Samples/MLOsamples/README.md).
 * `Legacy/BK/MLWF_sampls/` — historical Wannier90-style implementation
   (CuMLWFs, La2CuO4, NiOMLWF, SrVO3MLWF), cRPA via the Juelich group's

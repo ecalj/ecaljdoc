@@ -59,6 +59,7 @@ export default withMermaid({
           { text: 'Command-line options (--foo) catalogue', link: '/manual/cmdopts' },
           { text: 'QSGW calculation: gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
+          { text: 'MLO (localized orbitals, Wannier replacement)', link: '/manual/mlo' },
           { text: 'UsageDetailed ', link: '/manual/UsageDetailed' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion plot', link: '/manual/band' },
