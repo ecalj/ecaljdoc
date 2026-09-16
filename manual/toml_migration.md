@@ -65,6 +65,15 @@ Legacy2toml.py <sname>
 and prints `[INFO] / [WARN] / [ERROR]` diagnostics for any
 command-line `-v` overrides that would not survive the conversion.
 
+### `esm_input.dat` (slabs)
+
+The separate positional `esm_input.dat` was retired on 2026-09-16 and became
+the `[esm]` section of `ctrlg.<sname>.toml`. You do not have to convert it
+yourself: both `Legacy2toml.py` and `lmf` itself migrate a leftover file in
+place — appending `[esm]` to the TOML if it is not there yet, and moving the
+original to `esm_input.dat.bk` with a header saying where the settings went.
+See [ESM in lmf.md](./lmf#esm-effective-screening-medium).
+
 ## Run-time `--ctrlg:` overrides
 
 `%const` constants embedded in the legacy `ctrl.<sname>` are baked into

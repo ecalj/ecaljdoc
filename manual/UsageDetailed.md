@@ -233,9 +233,21 @@ It is via the MaxlocWannier. We are going to move to MLO instead. Here is a figu
 ![alt text](image-6.png)
 
 ## Effective Screening Medium (ESM)
-We can apply electric field to slab model. ESM combined with QSGW is quite unique.
-Used in the paper https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205120
-Ask us.
+For a slab with a vacuum layer, ESM replaces the periodic electrostatics with
+the boundary condition you actually want (vacuum, or a metal electrode) on
+each side. It also lets you apply an electric field to a slab. ESM combined
+with QSGW is quite unique; used in
+[PRB 101, 205120 (2020)](https://doi.org/10.1103/PhysRevB.101.205120).
+
+**Turn it on for every slab with a vacuum layer.** Without it the whole
+eigenvalue spectrum sits on a different zero — 4.4 eV on the Fe/MgO sample —
+while the total energy and `Vesav` look perfectly normal.
+
+Configured by the `[esm]` section of `ctrlg.<sname>.toml`. Full reference
+(all keys, the `boundary` values, how to apply a field, and the automatic
+migration from the retired `esm_input.dat`):
+**[ESM in lmf.md](./lmf#esm-effective-screening-medium)**.
+Sample: `Samples/MLOsamples/FeMgO`.
 
 ## lmf and ctrl
 See [lmf and ctrl](lmf.md)
