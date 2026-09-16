@@ -1,0 +1,31 @@
+/* ---------------------------------------------------------------------------
+   MathJax display equations
+   ---------------------------------------------------------------------------
+   VitePress ships `mjx-container { overflow-x: auto }`. For an equation with
+   \tag{n}, MathJax emits the container as
+       display="true" width="full"  style="display:flex; min-width:<natural>ex"
+   i.e. it stretches to the full text width so the tag can sit at the right
+   margin. That full-width box plus overflow-x:auto turns every numbered
+   equation into a scroll box, even when the math itself fits comfortably.
+
+   Let numbered equations lay out normally, and keep the scrollbar only for
+   math that genuinely does not fit (`max-width: 100%` still clips, so wide
+   untagged math keeps VitePress's default behaviour).
+--------------------------------------------------------------------------- */
+.vp-doc mjx-container[display="true"][width="full"] {
+  overflow-x: visible;
+  max-width: 100%;
+}
+
+/* Genuinely wide math (tagged or not) may still need to scroll; scope the
+   scrollbar to the horizontal axis so it never adds a vertical one. */
+.vp-doc mjx-container {
+  overflow-y: hidden;
+}
+
+/* The tag itself should not be pushed off-screen on a narrow window. */
+@media (max-width: 640px) {
+  .vp-doc mjx-container[display="true"][width="full"] {
+    overflow-x: auto;
+  }
+}
