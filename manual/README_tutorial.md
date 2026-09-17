@@ -337,7 +337,7 @@ This single command:
 1. fills top-level (`symgrp` / `verbose` / `time`) and `[struc] / [[site]] / [[spec]]` from the periodic-table
    defaults (the same `atomlist` table that `ctrlgenM1.py` uses);
 2. internally runs `lmfa → lmf --jobgw=0 → gwinit` to populate
-   `[gw] / [product_basis] / [blocks]` and the per-atom tables in
+   `[gw] / [mlo] / [blocks] / [product_basis]` and the per-atom tables in
    `PB.<sname>.toml`;
 3. writes `ctrlg.<sname>.toml` and `PB.<sname>.toml` and stops.
 
@@ -347,7 +347,7 @@ Successful end-of-run looks like:
 ctrlgenToml: wrote ctrlg.mp-2534.toml (2 spec, 2 sites)
 ctrlgenToml: running lmfa -> lmf --jobgw=0 -> gwinit  to fill GW sections
 ctrlgenToml: done. ctrlg.mp-2534.toml has top-level/[struc]/[[site]]/[[spec]]/...
-             plus [gw]/[product_basis]/[blocks].  PB.<sname>.toml has nlx/valence/core.
+             plus [gw]/[mlo]/[blocks]/[product_basis].  PB.<sname>.toml has nlx/valence/core.
 ```
 
 **Recommended workflow**: run `ctrlgenToml.py <sname>` with **no other
@@ -365,7 +365,7 @@ need hand editing**; leave it as generated.
 Pure DFT / no-GW directory? Add `--skipgw`:
 
 ```bash
-ctrlgenToml.py <sname> --skipgw   # ctrlg.<sname>.toml without [gw]/[product_basis]/[blocks];
+ctrlgenToml.py <sname> --skipgw   # ctrlg.<sname>.toml without [gw]/[mlo]/[blocks]/[product_basis];
                                   # no PB.<sname>.toml written.
 ```
 
@@ -373,7 +373,7 @@ To add the GW sections later **without losing the ctrl-side edits
 you have made in the meantime**, use `--addgw`:
 
 ```bash
-ctrlgenToml.py <sname> --addgw    # appends [gw]/[product_basis]/[blocks]
+ctrlgenToml.py <sname> --addgw    # appends [gw]/[mlo]/[blocks]/[product_basis]
                                   # and writes PB.<sname>.toml in place;
                                   # ctrl-side keys ([bz], [ham], [[spec]], ...)
                                   # are preserved verbatim.

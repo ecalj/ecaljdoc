@@ -118,8 +118,8 @@ time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 [gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
           QforEPS / QforGW (multi-line q lists)
 [mlo]     mlo_method / mlo_delta / mlo_w / mlo_lm (the lm channels per atom; formerly Worb)
-[product_basis]   pb_tolerance / pb_lcutmx
 [blocks]  QPNT, QforEPSL, hrotr (raw multi-line blocks with no better home)
+[product_basis]   pb_tolerance / pb_lcutmx   (always the last section; PB.<sname>.toml holds the per-atom tables)
 ```
 
 ## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
@@ -229,7 +229,9 @@ pb_lcutmx    = [4]      # max l-cutoff per atom
 multi-line strings; the example above shows them.) That's the entire input.
 A `[blocks]` section only appears for the few legacy `<...>` tags that have
 no better home (`QPNT`, `QforEPSL`, `hrotr`), kept as multi-line strings and
-parsed opaquely by the GW driver.
+parsed opaquely by the GW driver; when present it sits between `[mlo]` and
+`[product_basis]`, which always closes the file (`toml_tidy.py` enforces the
+order `[gw]` `[mlo]` `[blocks]` `[product_basis]`).
 
 ### Per-physics deltas (from the Cu starting point)
 

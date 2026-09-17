@@ -32,12 +32,12 @@ must be converted before any binary is invoked.
 > band plots) and don't want the GW sections at all, pass
 > **`--skipgw`** to `ctrlgenToml.py` — that skips the
 > `lmfa → lmf --jobgw=0 → gwinit` sub-step, omits
-> `[gw]` / `[product_basis]` / `[blocks]` from the output, and does
+> `[gw]` / `[mlo]` / `[blocks]` / `[product_basis]` from the output, and does
 > not write `PB.<sname>.toml`.
 >
 > **Adding GW sections later (preserving your hand-edits):** use
 > `ctrlgenToml.py <sname> --addgw`. This appends `[gw]` /
-> `[product_basis]` / `[blocks]` and writes `PB.<sname>.toml` **without
+> `[mlo]` / `[blocks]` / `[product_basis]` and writes `PB.<sname>.toml` **without
 > regenerating the ctrl-side keys** — your edits to `[bz]`, `[ham]`,
 > `[[spec]]` etc. are preserved as is. It refuses to run if `[gw]`
 > is already present (to avoid silent duplication). Do **not** plain
