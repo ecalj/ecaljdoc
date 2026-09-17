@@ -116,9 +116,10 @@ time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 [ham]     nspin / rel / so / phispinsym / xcfun / gmax / pwmode / pwemax / oveps / ...
 [esm]     boundary / origin / shiftmode / zb / potential / field   (slabs only)
 [gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
-[mlo]     mlo_method / mlo_delta / mlo_w   (MLO model; Worb stays in [blocks])
+          QforEPS / QforGW (multi-line q lists)
+[mlo]     mlo_method / mlo_delta / mlo_w / mlo_lm (the lm channels per atom; formerly Worb)
 [product_basis]   pb_tolerance / pb_lcutmx
-[blocks]  QPNT, QforEPS, Worb (multi-line strings, GW-side blocks)
+[blocks]  QPNT, QforEPSL, hrotr (raw multi-line blocks with no better home)
 ```
 
 ## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
@@ -198,35 +199,37 @@ delta         = -1e-06
 deltaw        = 0.02
 esmr          = 0.003   # hsfp0 smearing
 GaussSmear    = true
+QforEPS = """           # q points for eps (a.u. if QforEPSau = true)
+ 0 0 0.00050
+ 0 0 0.00100
+ 0 0 0.00200
+"""
+QforGW = """            # q points for the one-shot GW driver (gw_lmfh)
+ 0.0 0.0 0.0
+ 0.1 0.0 0.0
+"""
 
 # === MLO (muffin-tin based localized orbitals; see manual/mlo) ===
 [mlo]
 mlo_method = 4          # theta = sigma((eps - ecut_j)/mlo_w), ecut_j = max(CBM + mlo_delta, eps^MTO_j)
 mlo_delta  = 2.0        # (eV) how far above the band edge the model must be accurate
 mlo_w      = 2.0        # (eV) width of the fall-off; the knob if the residual is too large
+mlo_lm     = """        # which lm channels of which atom make the model (1=s, 2-4=p, 5-9=d, 10-16=f)
+  1 Cu   5 6 7 8 9
+"""
 
 [product_basis]
 pb_tolerance = [0.001]  # drop near-linear-dep products (default 1e-3)
 pb_lcutmx    = [4]      # max l-cutoff per atom
 
 # Per-atom product-basis tables (nlx / valence / core) live in PB.<sname>.toml.
-
-# === GW additional blocks (legacy GWinput tags become multi-line strings) ===
-[blocks]
-QforEPS = """
- 0 0 0.00050
- 0 0 0.00100
- 0 0 0.00200
-"""
-
-Worb = """
-!  1 Cu   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
-"""
 ```
 
-That's the entire input.  `[blocks]` carries the legacy `<...>...</...>`
-GWinput tag content as multi-line TOML strings; the body is parsed
-opaquely (per-block) by the GW driver.
+(`QforEPS` / `QforGW`, the q-point lists, sit at the end of `[gw]` as
+multi-line strings; the example above shows them.) That's the entire input.
+A `[blocks]` section only appears for the few legacy `<...>` tags that have
+no better home (`QPNT`, `QforEPSL`, `hrotr`), kept as multi-line strings and
+parsed opaquely by the GW driver.
 
 ### Per-physics deltas (from the Cu starting point)
 
@@ -285,8 +288,8 @@ lower-casing.  A few are renamed or restructured:
 | `EWALD_TOL` | `[ewald].tol` | rarely touched |
 | `DYN_MODE` / `DYN_NIT` / `DYN_HESS` / ... | `[dyn].mode` etc. | |
 | `IO_VERBOS` / `IO_TIM` | top-level `verbose` / `time` | promoted out of `[io]` (section dropped) |
-| `<Worb>...</Worb>` block | `[blocks].Worb = """ ... """` | multi-line string |
-| `<QforEPS>...</QforEPS>` block | `[blocks].QforEPS = """ ... """` | |
+| `<Worb>...</Worb>` block | `[mlo].mlo_lm = """ ... """` | multi-line string |
+| `<QforEPS>...</QforEPS>` block | `[gw].QforEPS = """ ... """` (likewise `QforGW`) | |
 | `n1n2n3` (GWinput) | `[gw].n1n2n3 = [k1,k2,k3]` | int vector |
 | `HistBin_dw` / `HistBin_ratio` / `niw` / `delta` / `esmr` / `GaussSmear` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names, lowercased |
 | product-basis cut-offs (`tolerance`, `lcutmx` from `<PRODUCT_BASIS>`) | `[product_basis].pb_tolerance` / `.pb_lcutmx` | |
