@@ -118,7 +118,7 @@ time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 [esm]     boundary / origin / shiftmode / zb / potential / field   (slabs only)
 [gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
           QforEPS / QforGW (multi-line q lists)
-[mlo]     mlo_method / mlo_delta / mlo_w / mlo_lm (the lm channels per atom; formerly Worb)
+[mlo]     mlo_method / mlo_delta / mlo_w / mlo_nkabc / mlo_lm (the lm channels per atom; formerly Worb)
 [blocks]  QPNT, QforEPSL, hrotr (raw multi-line blocks with no better home)
 [product_basis]   pb_tolerance / pb_lcutmx + nlx / valence / core   (always the last section)
 ```
