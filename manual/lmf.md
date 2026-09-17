@@ -264,7 +264,11 @@ order `[gw]` `[mlo]` `[blocks]` `[product_basis]`).
 ### Per-physics deltas (from the Cu starting point)
 
 - **Spin-polarized metal** (Fe, Ni, FeCo): set `[ham].nspin = 2` and
-  add `mmom = [0, 0, 2.5]` (or per-l guess) to each `[[spec]]`.
+  add `mmom = [0, 0, 2.5]` (or per-l guess) to each `[[spec]]`, **and use
+  Anderson mixing `[iter].mix = "A3"` (`b = 0.3`)**. The template default
+  Broyden `B3` with `b = 0.2` can wipe the moment out at the first SCF step
+  (Fe from a 2.2 μB atom start: 2.13 → 0.02 μB at iteration 2; A3 keeps
+  2.24). `ctrlgenToml.py --nspin=2` writes A3 for you (2026-09-18).
 - **SOC** (`HAM_SO`): set `[ham].so = 1` (full L·S) or `2` (Lz·Sz only),
   with `[ham].nspin = 2`.  See `Samples/MLOsamples/FeSoc/`.
 - **Insulator / semiconductor** (Si, GaAs): `[bz].metal = 0` and
