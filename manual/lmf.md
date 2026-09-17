@@ -410,6 +410,11 @@ problems: you could not tell what the numbers meant without reading
 one line and carried on). Copying a sample directory without that one file
 therefore changed the physics without any error.
 
+`ctrlgenToml.py` writes a commented-out `[esm]` template (with the
+`# === ESM` heading and one line per key) into every new file, right after
+`[ham]`; for a slab, uncomment it and set the numbers with care. A bulk
+crystal leaves it commented — no `[esm]` section means ESM off.
+
 The Fortran reads `ctrlg.<sname>.toml` and nothing else (since 2026-09-17;
 for one day in between `lmf` converted the file itself). A leftover
 `esm_input.dat` makes `lmf` / `lmfa` / `lmchk` **abort** with a message
