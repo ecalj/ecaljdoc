@@ -211,6 +211,13 @@ mlo_nkabc = [10, 10, 10]   # k mesh the MLO Hamiltonian is built on; required
 数え、その**全 k での最小値**を全 k に使う（2026-09-18）。k ごとに決めると、Cu の d 模型の
 ように s 帯が最下位になる k とならない k で射影子が入れ替わり、バンドに折れが出る。
 手動指定 `mlo_nskip` は廃止した。
+
+`mlo_lm` で指定した (原子, l) に**半芯の局所軌道**（`pz`、例 Ga 3d の `pz = 3.9`）があるとき、
+どちらの動径関数を模型に使うかも自動で決まる（2026-09-18）: その LO の帯（LO 部分空間への
+射影重みが 1/2 を超える占有状態）の最高エネルギーが E_F − 10 eV より**上**なら「浅い」LO と
+して LO を模型関数にし（ZnO の Zn 3d、−3.8 eV: これで 476 → 0.8 meV）、**下**なら従来どおり
+EH 関数を使って LO の状態は `nskip` で射影子から外す（GaAs の Ga 3d、−15 eV）。`lmlo` に
+`local orbital atom ... SHALLOW / deep` と出る。価電子殻より上の拡張 LO（`pz > pnu`）は対象外。
 Cu の d 模型で 10³ → 16³ にすると d 帯の rms は 98 → 90 meV
 (`Samples/MLOsamples/BackUp_notes/mlo_low_cu_20260917.md`)。
 
