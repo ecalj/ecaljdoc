@@ -205,6 +205,12 @@ mlo_nkabc = [10, 10, 10]   # k mesh the MLO Hamiltonian is built on; required
 流用しない — 模型を何の上に作ったかは入力に書いてあるべきなので)。効くのは
 `--writeham --mlo` のパスだけで、SCF・バンド図は `[bz] nkabc`、$W$ は `[gw] n1n2n3` のまま。
 `gwinit` は `[bz] nkabc` と同じ値を書き出すので、通常はそのままでよい。
+
+射影子から外す最下位の PMT 状態（半芯 LO、O 2s のような模型に乗らない低い帯）の数
+`nskip` は自動で決まる: 各 k で「模型部分空間への重みが 1/2 未満の最下位状態の数」を
+数え、その**全 k での最小値**を全 k に使う（2026-09-18）。k ごとに決めると、Cu の d 模型の
+ように s 帯が最下位になる k とならない k で射影子が入れ替わり、バンドに折れが出る。
+手動指定 `mlo_nskip` は廃止した。
 Cu の d 模型で 10³ → 16³ にすると d 帯の rms は 98 → 90 meV
 (`Samples/MLOsamples/BackUp_notes/mlo_low_cu_20260917.md`)。
 
