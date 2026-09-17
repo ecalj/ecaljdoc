@@ -173,9 +173,12 @@ f は基底にあったのに模型には一度も入っていなかった。
 
 ### 入力キー
 
-`gwinit` が生成する `ctrlg.<sname>.toml` の `[gw]` に、既定値が陽に書き出される:
+`gwinit` が生成する `ctrlg.<sname>.toml` の **`[mlo]` セクション**に、既定値が
+陽に書き出される(2026-09-17 までは `[gw]` の中にあった。古い置き場のままでも
+読めるが、一行の案内が出る):
 
 ```toml
+[mlo]
 mlo_method = 4      # theta = sigma((eps - ecut_j)/mlo_w),
                     #   ecut_j = max(CBM + mlo_delta, eps^MTO_j)
 mlo_delta  = 2.0    # (eV) how far above the band edge (EF in metals) the
@@ -187,7 +190,8 @@ mlo_w      = 2.0    # (eV) width of the fall-off above that floor. THIS is the
 ```
 
 $\Delta$ が `mlo_delta`、$w$ が `mlo_w` で、**単位はすべて eV**
-(`mlo_emax` が元から eV なので `mlo_*` が揃う)。
+(`mlo_emax` が元から eV なので `mlo_*` が揃う)。模型のチャネルを決める `Worb` は
+Wannier(`hmaxloc`)とも共用なので `[blocks]` のままである。
 
 **通常はこのまま使える。** `Samples/MLOsamples` の 18 サンプルは全部この既定値
 ($\Delta=w=2.0$ eV)で、物質ごとに変えていない(§2)。3 つとも既定値なので、

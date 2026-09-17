@@ -116,6 +116,7 @@ time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 [ham]     nspin / rel / so / phispinsym / xcfun / gmax / pwmode / pwemax / oveps / ...
 [esm]     boundary / origin / shiftmode / zb / potential / field   (slabs only)
 [gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
+[mlo]     mlo_method / mlo_delta / mlo_w   (MLO model; Worb stays in [blocks])
 [product_basis]   pb_tolerance / pb_lcutmx
 [blocks]  QPNT, QforEPS, Worb (multi-line strings, GW-side blocks)
 ```
@@ -197,6 +198,12 @@ delta         = -1e-06
 deltaw        = 0.02
 esmr          = 0.003   # hsfp0 smearing
 GaussSmear    = true
+
+# === MLO (muffin-tin based localized orbitals; see manual/mlo) ===
+[mlo]
+mlo_method = 4          # theta = sigma((eps - ecut_j)/mlo_w), ecut_j = max(CBM + mlo_delta, eps^MTO_j)
+mlo_delta  = 2.0        # (eV) how far above the band edge the model must be accurate
+mlo_w      = 2.0        # (eV) width of the fall-off; the knob if the residual is too large
 
 [product_basis]
 pb_tolerance = [0.001]  # drop near-linear-dep products (default 1e-3)
