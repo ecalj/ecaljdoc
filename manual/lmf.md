@@ -370,6 +370,11 @@ field     = [0.0, 0.0]      # (Ry/a.u.) on the +z / -z sides
 a bulk crystal and the wrong thing for a slab, so `lmf` prints a warning when
 `c` is more than 3× the longer of `a`, `b` and no `[esm]` is present.
 
+`ctrlgenToml.py` writes a commented-out `[esm]` template (with the
+`# === ESM` heading and one line per key) into every new file, right after
+`[ham]`; for a slab, uncomment it and set the numbers with care. A bulk
+crystal leaves it commented — no `[esm]` section means ESM off.
+
 | key | meaning | legacy `esm_input.dat` |
 |---|---|---|
 | `boundary` | which boundary condition on each side (table below) | line 1, `jesm` |
@@ -409,11 +414,6 @@ problems: you could not tell what the numbers meant without reading
 `esmsmves.f90`, and **a missing file disabled ESM silently** (`lmf` printed
 one line and carried on). Copying a sample directory without that one file
 therefore changed the physics without any error.
-
-`ctrlgenToml.py` writes a commented-out `[esm]` template (with the
-`# === ESM` heading and one line per key) into every new file, right after
-`[ham]`; for a slab, uncomment it and set the numbers with care. A bulk
-crystal leaves it commented — no `[esm]` section means ESM off.
 
 The Fortran reads `ctrlg.<sname>.toml` and nothing else (since 2026-09-17;
 for one day in between `lmf` converted the file itself). A leftover
