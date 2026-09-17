@@ -433,8 +433,9 @@ interaction `W`. It is specified in the **`[product_basis]` section of
 | `nlx`, `valence`, `core` | per-atom radial-function tables, written by `gwinit` (via `ctrlgenToml.py` / `Legacy2toml.py`) from `[[spec]]`; almost never hand-edited |
 
 (Until 2026-09 the three tables were a separate `PB.<sname>.toml`. The
-binaries still read such a file, with a NOTE, when `ctrlg` has no `nlx`;
-`Legacy2toml.py` and `gwinit` now write everything into `ctrlg`.)
+binaries do not read such a file: they abort and point at
+`ctrlg_absorb.py <sname>`, which appends its tables to `[product_basis]`
+and keeps the original as `.bk`.)
 
 > Product basis is originally given by F.Aryasetiawan and O.Gunnarsson
 > ([PRB 49, 16214](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.49.16214)).

@@ -312,7 +312,7 @@ lower-casing.  A few are renamed or restructured:
 | `HAM_FORCES` / `HAM_OVEPS` / `HAM_FRZWF` / `HAM_REL` | `[ham].forces` etc. | |
 | `HAM_ScaledSigma` | `[ham].scaledsigma` | lowercase |
 | `HAM_READP` / `HAM_PNUFIX` / `HAM_V0FIX` | `[ham].readp` etc. | |
-| `esm_input.dat` (separate positional file) | **`[esm]`** section | retired 2026-09-16; migrated automatically, see [ESM](#esm-effective-screening-medium) |
+| `esm_input.dat` (separate positional file) | **`[esm]`** section | retired 2026-09-16; not read — `ctrlg_absorb.py <sname>` converts it, see [ESM](#esm-effective-screening-medium) |
 | `ITER_NIT` / `ITER_MIX` / `ITER_CONV` / `ITER_CONVC` / `ITER_UMIX` / `ITER_TOLU` | `[iter].nit` / `.mix` / ... | |
 | `SYMGRP` / `SYMGRPAF` | top-level `symgrp = "..."` (and `symgrp_af`) | not nested in a section |
 | `EWALD_TOL` | `[ewald].tol` | rarely touched |
@@ -410,14 +410,22 @@ problems: you could not tell what the numbers meant without reading
 one line and carried on). Copying a sample directory without that one file
 therefore changed the physics without any error.
 
-`lmf` now migrates it for you; nothing to do by hand:
+The Fortran reads `ctrlg.<sname>.toml` and nothing else (since 2026-09-17;
+for one day in between `lmf` converted the file itself). A leftover
+`esm_input.dat` makes `lmf` / `lmfa` / `lmchk` **abort** with a message
+naming the converter — abort rather than ignore, so a slab never runs
+without ESM by accident:
 
-| situation | what happens |
+```bash
+ctrlg_absorb.py <sname>      # esm_input.dat -> [esm] in ctrlg.<sname>.toml
+                             # (and PB.<sname>.toml -> [product_basis], if present)
+```
+
+| situation | what `ctrlg_absorb.py` does |
 |---|---|
 | `ctrlg.<sname>.toml` already has `[esm]` | the TOML wins. `esm_input.dat` is moved to `esm_input.dat.bk`, whose header records that its settings were **not** used |
-| no `[esm]` in the TOML | the file is converted, the `[esm]` block is appended to `ctrlg.<sname>.toml` with comments, and the original is moved to `esm_input.dat.bk` with a header saying where it went. **The values take effect in that same run** |
+| no `[esm]` in the TOML | the file is converted, the `[esm]` block is inserted (with comments, before the GW sections), and the original is moved to `esm_input.dat.bk` with a header saying where it went |
 
-Both paths are idempotent — the second run finds `[esm]` and does nothing.
 `Legacy2toml.py` performs the same conversion when it migrates a legacy
 directory.
 

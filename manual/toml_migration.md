@@ -26,8 +26,8 @@ must be converted before any binary is invoked.
 > etc.) used by `gwsc`, the eps tools and `mlo`'s W-side, and are written
 > by `gwinit` (through `ctrlgenToml.py` or `Legacy2toml.py`); leave them
 > as generated. Until 2026-09 they were a separate `PB.<sname>.toml`; such
-> a file is still read (with a NOTE) when `ctrlg` has no `nlx`, but new
-> conversions put everything into `ctrlg`.
+> a file is not read any more — the binaries abort and point at
+> `ctrlg_absorb.py <sname>`, which moves the tables into `ctrlg`.
 >
 > If you have a pure DFT / no-GW workflow (just `lmf` / `lmfa` /
 > band plots) and don't want the GW sections at all, pass
@@ -68,10 +68,14 @@ command-line `-v` overrides that would not survive the conversion.
 ### `esm_input.dat` (slabs)
 
 The separate positional `esm_input.dat` was retired on 2026-09-16 and became
-the `[esm]` section of `ctrlg.<sname>.toml`. You do not have to convert it
-yourself: both `Legacy2toml.py` and `lmf` itself migrate a leftover file in
-place — appending `[esm]` to the TOML if it is not there yet, and moving the
-original to `esm_input.dat.bk` with a header saying where the settings went.
+the `[esm]` section of `ctrlg.<sname>.toml`. The Fortran does not read
+the file: a leftover one makes `lmf` abort and name the converter,
+`ctrlg_absorb.py <sname>`, which appends `[esm]` to the TOML if it is not
+there yet and moves the original to `esm_input.dat.bk` with a header saying
+where the settings went. `Legacy2toml.py` does the same during a legacy
+conversion. The same script folds a leftover `PB.<sname>.toml` (the
+per-atom product-basis tables, a separate file until 2026-09) into
+`[product_basis]`; the GW binaries abort on that file likewise.
 See [ESM in lmf.md](./lmf#esm-effective-screening-medium).
 
 ## Run-time `--ctrlg:` overrides

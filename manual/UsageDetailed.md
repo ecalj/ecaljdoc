@@ -244,8 +244,8 @@ eigenvalue spectrum sits on a different zero — 4.4 eV on the Fe/MgO sample —
 while the total energy and `Vesav` look perfectly normal.
 
 Configured by the `[esm]` section of `ctrlg.<sname>.toml`. Full reference
-(all keys, the `boundary` values, how to apply a field, and the automatic
-migration from the retired `esm_input.dat`):
+(all keys, the `boundary` values, how to apply a field, and the conversion
+of the retired `esm_input.dat` by `ctrlg_absorb.py`):
 **[ESM in lmf.md](./lmf#esm-effective-screening-medium)**.
 Sample: `Samples/MLOsamples/FeMgO`.
 

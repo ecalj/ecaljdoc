@@ -722,14 +722,15 @@ field     = [0.0, 0.0]       # (Ry/a.u.)
 ```
 
 **`esm_input.dat` は廃止した(2026-09-16)。** 設定は `ctrlg.<sname>.toml` の
-`[esm]` セクションに書く。ただし**古いディレクトリはそのままで動く**:
+`[esm]` セクションに書く。Fortran は `ctrlg` 以外を読まないので(2026-09-17)、
+`esm_input.dat` が残っていると `lmf` は**止まって** `ctrlg_absorb.py <sname>` を
+案内する(黙って ESM 無しで走らないように、無視ではなく abort):
 
-| 状況 | 起きること |
+| 状況 | `ctrlg_absorb.py` がすること |
 |---|---|
 | `ctrlg` に `[esm]` が**ある** | そちらが使われる。`esm_input.dat` は **`esm_input.dat.bk`** へ退避され、`.bk` の冒頭に「この設定は使われなかった」と記録される |
-| `ctrlg` に `[esm]` が**ない** | `esm_input.dat` を変換して `ctrlg` の末尾に `[esm]` を**自動で書き込み**、原本を **`esm_input.dat.bk`** へ退避(移送先を `.bk` 冒頭に明記)。**その実行から変換値が効く** |
+| `ctrlg` に `[esm]` が**ない** | `esm_input.dat` を変換して `ctrlg` に `[esm]` を書き込み(GW セクションの前)、原本を **`esm_input.dat.bk`** へ退避(移送先を `.bk` 冒頭に明記) |
 
-どちらも冪等で、2 回目以降は `[esm]` があるので何も起きない。
 `Legacy2toml.py` も同じ規則で変換する。詳細は
 [ESM](./lmf#esm-effective-screening-medium)。
 
@@ -1037,9 +1038,10 @@ $\Delta$ の効きは $w$ よりはるかに弱い。$\Delta$ を 1→4 eV と�
   **その後の措置(2026-09-16)**
 
   1. `esm_input.dat` を廃止し、`ctrlg.<sname>.toml` の **`[esm]` セクション**へ移した。
-     後方互換のため、ファイルが残っていても止めずにその場で移行する
-     — `[esm]` が既に有ればそちらを使い、無ければ変換して ctrlg 末尾に
-     説明付きで追記し、その実行でも変換値を使う。原本はどちらの場合も
+     当初は Fortran がその場で移行していたが、翌 09-17 に「Fortran は ctrlg 以外を
+     読まない」に統一: ファイルが残っていれば abort して `ctrlg_absorb.py` を案内する。
+     変換は `ctrlg_absorb.py` / `Legacy2toml.py` が行い、`[esm]` が既に有ればそちらを
+     残し、無ければ変換して ctrlg に説明付きで書く。原本はどちらの場合も
      `esm_input.dat.bk` へ移し、冒頭に移送先(または「TOML 側が使われた」)を書く。
      $c/a>3$ なのに `[esm]` が無ければ警告も出す。
   2. **`FeMgOSoc` も同じ病気だった。** `FeMgO` と `ctrlg` も `rst.femgo` も
