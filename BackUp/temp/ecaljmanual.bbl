@@ -1,0 +1,81 @@
+\begin{thebibliography}{10}
+
+\bibitem{kotani2015pmt}
+Takao Kotani, Hiori Kino, and Hisazumu Akai.
+\newblock Formulation of the augmented plane-wave and muffin-tin orbital
+  method.
+\newblock {\em Journal of the Physical Society of Japan}, 84(3):034702, March
+  2015.
+
+\bibitem{kotani_quasiparticle_2014}
+Takao Kotani.
+\newblock Quasiparticle self-consistent {GW} method based on the augmented
+  plane-wave and muffin-tin orbital method.
+\newblock {\em J. Phys. Soc. Jpn.}, 83(9):094711 [11 Pages], September 2014.
+\newblock {WOS}:000340822100029.
+
+\bibitem{kotani07a}
+Takao Kotani, Mark van Schilfgaarde, and Sergey~V. Faleev.
+\newblock Quasiparticle self-consistent gw method: A basis for the
+  independent-particle approximation.
+\newblock {\em Physical Review B}, 76(16):165106, 2007.
+
+\bibitem{di_valentin_quasiparticle_2014}
+Fabien Bruneval and Matteo Gatti.
+\newblock Quasiparticle self-consistent {GW} method for the spectral properties
+  of complex materials.
+\newblock In Cristiana Di~Valentin, Silvana Botti, and Matteo Cococcioni,
+  editors, {\em First Principles Approaches to Spectroscopic Properties of
+  Complex Materials}, volume 347, pages 99--135. Springer Berlin Heidelberg,
+  Berlin, Heidelberg, 2014.
+
+\bibitem{Kotani2002}
+T.~Kotani and M.~van Schilfgaarde.
+\newblock {All-electron GW approximation with the mixed basis expansion based
+  on the full-potential LMTO method}.
+\newblock {\em Solid State Communications}, 121(9-10):461--465, 2002.
+
+\bibitem{Friedrich2012}
+Christoph Friedrich, Markus Betzinger, Martin Schlipf, Stefan Bl\"{u}gel, and
+  Arno Schindlmayr.
+\newblock {Hybrid functionals and GW approximation in the FLAPW method.}
+\newblock {\em Journal of physics. Condensed matter : an Institute of Physics
+  journal}, 24(29):293201, July 2012.
+
+\bibitem{Kotani2010}
+Takao Kotani and Mark van Schilfgaarde.
+\newblock {Fusion of the LAPW and LMTO methods: The augmented plane wave plus
+  muffin-tin orbital method}.
+\newblock {\em Physical Review B}, 81(12):125117 (2010) [5 pages], March 2010.
+
+\bibitem{soler89}
+Jos\'e~M. Soler and Arthur~R. Williams.
+\newblock Simple formula for the atomic forces in the augmented-plane-wave
+  method.
+\newblock {\em Phys. Rev. B}, 40(3):1560--1564, Jul 1989.
+
+\bibitem{soler90}
+Jos\'{e}~M Soler and Arthur~R Williams.
+\newblock {No Title}.
+\newblock {\em Phys. Rev. B}, 42:9728, 1990.
+
+\bibitem{kotani_formulation_2015}
+Takao Kotani, Hiori Kino, and Hisazumu Akai.
+\newblock Formulation of the {Augmented} {Plane}-{Wave} and {Muffin}-{Tin}
+  {Orbital} {Method}.
+\newblock {\em Journal of the Physical Society of Japan}, 84(3):034702, March
+  2015.
+
+\bibitem{rath75}
+J.~Rath and A.J. Freeman.
+\newblock Generalized magnetic susceptibilities in metals: {A}pplication of the
+  analytic tetrahedron linear energy method to {Sc}.
+\newblock {\em Phys. Rev. B}, 11:2109, 1975.
+
+\bibitem{deguchi2016}
+D~Deguch, K~Sato, H~Kino, and T~Kotani.
+\newblock Accurate energy bands calculated by the hybrid quasiparticle
+  self-consistent {GW} method implemented in the ecalj package.
+\newblock {\em Journal of the Physical Society of Japan}, page accepted, 2016.
+
+\end{thebibliography}
