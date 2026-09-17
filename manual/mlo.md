@@ -194,6 +194,18 @@ $\Delta$ が `mlo_delta`、$w$ が `mlo_w` で、**単位はすべて eV**
 (`mlo_emax` が元から eV なので `mlo_*` が揃う)。模型のチャネルを決める `mlo_lm` も
 同じ `[mlo]` にあり、Wannier(`hmaxloc`、cRPA・magnon)もこれを読む。
 
+MLO を作る **k メッシュ**は既定では `[bz] nkabc`(SCF と同じ)。`lmf --writeham --mlo`
+がその全 BZ 点で PMT ハミルトニアンを書き、`mlo` がそこから実空間表現を作る。
+SCF のメッシュと切り離したいときは `[mlo]` に
+
+```toml
+mlo_nkabc = [16, 16, 16]   # k mesh for the MLO Hamiltonian only; absent = [bz] nkabc
+```
+
+と書く(2026-09-17)。効くのは `--writeham --mlo` のパスだけで、SCF・バンド図・GW
+(`[gw] n1n2n3`)は変わらない。Cu の d 模型で 10³ → 16³ にすると d 帯の rms は
+98 → 90 meV(`Samples/MLOsamples/BackUp_notes/mlo_low_cu_20260917.md`)。
+
 **通常はこのまま使える。** `Samples/MLOsamples` の 18 サンプルは全部この既定値
 ($\Delta=w=2.0$ eV)で、物質ごとに変えていない(§2)。3 つとも既定値なので、
 そもそも書かなくてよい。
