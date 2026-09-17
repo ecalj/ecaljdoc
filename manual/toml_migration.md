@@ -15,29 +15,29 @@ TOML only**. Legacy `ctrl.<sname>` and `GWinput` text files are no longer
 parsed by Fortran — they are kept around as developer references but
 must be converted before any binary is invoked.
 
-## The two TOML files
+## The one TOML file
 
-| file | role | scope |
-|---|---|---|
-| `ctrlg.<sname>.toml` | merged ctrl + GW driver sections + product-basis cut-offs | sname-specific |
-| `PB.<sname>.toml` | per-atom product-basis tables (`nlx`, `valence`, `core`) | sname-free, shared per spec |
+| file | role |
+|---|---|
+| `ctrlg.<sname>.toml` | ctrl + GW driver sections (`[gw]` `[mlo]` `[blocks]`) + `[product_basis]` last, with the cut-offs and the per-atom tables (`nlx`, `valence`, `core`) |
 
-> **`PB.<sname>.toml` is for the GW path only — normally no hand editing.**
-> It feeds the mixed-product-basis generator (`hbasfp0` / `hvccfp0`
-> etc.) used by `gwsc`, the eps tools and `mlo`'s W-side. It is
-> auto-emitted by `ctrlgenToml.py` (or `Legacy2toml.py`); leave it
-> as generated. All hand edits live in `ctrlg.<sname>.toml`.
+> **The per-atom tables are for the GW path only — normally no hand editing.**
+> They feed the mixed-product-basis generator (`hbasfp0` / `hvccfp0`
+> etc.) used by `gwsc`, the eps tools and `mlo`'s W-side, and are written
+> by `gwinit` (through `ctrlgenToml.py` or `Legacy2toml.py`); leave them
+> as generated. Until 2026-09 they were a separate `PB.<sname>.toml`; such
+> a file is still read (with a NOTE) when `ctrlg` has no `nlx`, but new
+> conversions put everything into `ctrlg`.
 >
 > If you have a pure DFT / no-GW workflow (just `lmf` / `lmfa` /
 > band plots) and don't want the GW sections at all, pass
 > **`--skipgw`** to `ctrlgenToml.py` — that skips the
 > `lmfa → lmf --jobgw=0 → gwinit` sub-step, omits
-> `[gw]` / `[mlo]` / `[blocks]` / `[product_basis]` from the output, and does
-> not write `PB.<sname>.toml`.
+> `[gw]` / `[mlo]` / `[blocks]` / `[product_basis]` from the output.
 >
 > **Adding GW sections later (preserving your hand-edits):** use
 > `ctrlgenToml.py <sname> --addgw`. This appends `[gw]` /
-> `[mlo]` / `[blocks]` / `[product_basis]` and writes `PB.<sname>.toml` **without
+> `[mlo]` / `[blocks]` / `[product_basis]` **without
 > regenerating the ctrl-side keys** — your edits to `[bz]`, `[ham]`,
 > `[[spec]]` etc. are preserved as is. It refuses to run if `[gw]`
 > is already present (to avoid silent duplication). Do **not** plain
@@ -56,7 +56,7 @@ when run inside the directory.
 ```bash
 # inside an old directory containing ctrl.<sname> [+ GWinput]
 Legacy2toml.py <sname>
-# produces ctrlg.<sname>.toml + PB.<sname>.toml
+# produces ctrlg.<sname>.toml
 # resume normal workflow (lmf, gwsc, eps_lmfh, ...) unchanged
 ```
 

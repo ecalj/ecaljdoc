@@ -2,7 +2,7 @@ This document is out of date. Need fixing
 
 # Spectrum function of G.
 
-> ⚠️ **TOML migration (2026-05)** — Binaries read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Use `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](./toml_migration).
+> ⚠️ **TOML migration (2026-05)** — Binaries read `ctrlg.<sname>.toml` only. Use `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](./toml_migration).
 How to calculate $\langle {\bf q} n|\Sigma(\omega)|{\bf q} n\rangle$
 
 We have an example at {\tt ecalj/MATERIALS/SiSigma/}, where

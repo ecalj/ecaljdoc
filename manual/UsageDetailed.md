@@ -1,6 +1,6 @@
 # UsageDetailed
 
-> ⚠️ **TOML migration (2026-05)** — Inputs are now `ctrlg.<sname>.toml` + `PB.<sname>.toml`. Run `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. The `--ctrlg:<path>=val` form has replaced `-v<NAME>=<VAL>`. See [TOML migration](./toml_migration).
+> ⚠️ **TOML migration (2026-05)** — Inputs are now `ctrlg.<sname>.toml`. Run `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. The `--ctrlg:<path>=val` form has replaced `-v<NAME>=<VAL>`. See [TOML migration](./toml_migration).
 
 ## console output
 Console output is now mainly for debug purpose. 

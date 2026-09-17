@@ -1,6 +1,6 @@
 # `lmf,lmfa,lmchk`
 
-> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlg.<sname>.toml` + `PB.<sname>.toml`** only. The `ctrl.<sname>` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
+> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlg.<sname>.toml`** only. The `ctrl.<sname>` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
 
 We need an input file `ctrlg.<sname>.toml` (legacy: `ctrl.<sname>`).  
 `<sname>` is the **positional** argument passed to the binary
@@ -90,15 +90,16 @@ We have some kinds of options for electron density plot, boltztrap and so on.
 `lmf`, `lmfa`, `lmchk` read **TOML only** since 2026-05.  The single file
 `ctrlg.<sname>.toml` carries everything that used to live in
 `ctrl.<sname>` plus the GW driver and product-basis sections that used
-to live in `GWinput`.  Per-atom product-basis tables (sname-free) sit in
-a sibling `PB.<sname>.toml`.  Run `Legacy2toml.py <sname>` inside any old
-working directory to generate both files.
+to live in `GWinput`, including the per-atom product-basis tables that
+close the file.  Run `Legacy2toml.py <sname>` inside any old working
+directory to generate it.
 
-> **`PB.<sname>.toml` is for the GW path** (consumed by `hbasfp0` /
-> `hvccfp0` / etc. when generating the mixed product basis). It is
-> auto-emitted by `ctrlgenToml.py` (or `Legacy2toml.py`) and **does
-> not normally need hand editing** — when you tune a calculation,
-> edits go into `ctrlg.<sname>.toml`.
+> **The `[product_basis]` tables `nlx` / `valence` / `core` are for the GW
+> path** (consumed by `hbasfp0` / `hvccfp0` / etc. when generating the
+> mixed product basis). They are written by `gwinit` (through
+> `ctrlgenToml.py` or `Legacy2toml.py`) and **do not normally need hand
+> editing**; the cut-offs `pb_tolerance` / `pb_lcutmx` above them are what
+> you tune. (Before 2026-09 the tables were a separate `PB.<sname>.toml`.)
 
 ## File structure (sections)
 
@@ -119,7 +120,7 @@ time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
           QforEPS / QforGW (multi-line q lists)
 [mlo]     mlo_method / mlo_delta / mlo_w / mlo_lm (the lm channels per atom; formerly Worb)
 [blocks]  QPNT, QforEPSL, hrotr (raw multi-line blocks with no better home)
-[product_basis]   pb_tolerance / pb_lcutmx   (always the last section; PB.<sname>.toml holds the per-atom tables)
+[product_basis]   pb_tolerance / pb_lcutmx + nlx / valence / core   (always the last section)
 ```
 
 ## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
@@ -221,12 +222,39 @@ mlo_lm     = """        # which lm channels of which atom make the model (1=s, 2
 [product_basis]
 pb_tolerance = [0.001]  # drop near-linear-dep products (default 1e-3)
 pb_lcutmx    = [4]      # max l-cutoff per atom
-
-# Per-atom product-basis tables (nlx / valence / core) live in PB.<sname>.toml.
+# ----------------------------------------------------------------
+# nlx [iatom, l, nnvv, nnc] ... (per-atom tables written by gwinit; see manual/gwsc)
+nlx = [
+  [1, 0, 2, 3],
+  [1, 1, 2, 2],
+  [1, 2, 2, 0],
+  [1, 3, 2, 0],
+  [1, 4, 2, 0],
+]
+# ----------------------------------------------------------------
+valence = [
+  [1, 0, 1, 1, 1],   # 4s_phi
+  [1, 0, 2, 0, 0],   # 4s_phidot
+  # ...
+]
+# ----------------------------------------------------------------
+core = [
+  [1, 0, 1, 0, 0, 0, 0],   # 1S
+  # ...
+]
 ```
 
 (`QforEPS` / `QforGW`, the q-point lists, sit at the end of `[gw]` as
 multi-line strings; the example above shows them.) That's the entire input.
+
+Layout convention of the generated files (`ctrlgenToml.py`, `gwinit`,
+`Legacy2toml.py` and the formatter `pylib/toml_tidy.py` all produce it): a
+blank line separates only the big headings — the `# === X ===` comment
+runs and single `[section]` headers — while everything inside a section
+(one `[[site]]` or `[[spec]]` table from the next, a multi-line block from
+its neighbours, the three product-basis tables) is divided by a
+`# ----` rule instead. The example above is abridged; real files carry the
+`# ===` headers and rules.
 A `[blocks]` section only appears for the few legacy `<...>` tags that have
 no better home (`QPNT`, `QforEPSL`, `hrotr`), kept as multi-line strings and
 parsed opaquely by the GW driver; when present it sits between `[mlo]` and
@@ -295,7 +323,7 @@ lower-casing.  A few are renamed or restructured:
 | `n1n2n3` (GWinput) | `[gw].n1n2n3 = [k1,k2,k3]` | int vector |
 | `HistBin_dw` / `HistBin_ratio` / `niw` / `delta` / `esmr` / `GaussSmear` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names, lowercased |
 | product-basis cut-offs (`tolerance`, `lcutmx` from `<PRODUCT_BASIS>`) | `[product_basis].pb_tolerance` / `.pb_lcutmx` | |
-| product-basis per-atom tables (`nlx`, `valence`, `core`) | **`PB.<sname>.toml`** (separate file) | per-sname |
+| product-basis per-atom tables (`nlx`, `valence`, `core`) | `[product_basis].nlx` / `.valence` / `.core` (end of the file; a separate `PB.<sname>.toml` before 2026-09) | |
 
 The full schema lives in
 [`SRC/exec/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/ctrl_schema.py)

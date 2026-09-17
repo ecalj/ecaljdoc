@@ -2,7 +2,7 @@
 
 > ⚠️ **This page is the historical reference for the legacy `ctrl.<sname>`
 > text format.** Since 2026-05, `lmf` / `lmfa` / `lmchk` read TOML only
-> (`ctrlg.<sname>.toml` + `PB.<sname>.toml`) — the Fortran no longer parses
+> (`ctrlg.<sname>.toml`) — the Fortran no longer parses
 > the `ctrl.<sname>` shown below. The page is kept because the
 > `Category_Token` documentation here is still the most thorough
 > per-key reference; treat it as the canonical place to look up the
@@ -12,7 +12,7 @@
 > If you are starting fresh, ignore this page entirely and read
 > [`lmf`](./lmf) instead. If you are migrating an old working
 > directory, run `Legacy2toml.py <sname>` to produce the
-> `ctrlg.<sname>.toml` + `PB.<sname>.toml` pair automatically.
+> `ctrlg.<sname>.toml` pair automatically.
 
 ctrl is the legacy basic input file. ctrl contains inputs to control
 calculations by lmf, lmfa, and lmchk.

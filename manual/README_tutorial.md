@@ -1,7 +1,7 @@
 # ecalj MainDocument
 **This is MainDocument of ecaljdoc. All files are linked from this file.**
 
-> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` + `PB.<sname>.toml` only. Examples below referring to `ctrl.<sname>` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
+> ⚠️ **TOML migration (2026-05)** — Fortran binaries now read `ctrlg.<sname>.toml` only. Examples below referring to `ctrl.<sname>` / `GWinput` are legacy; convert with `Legacy2toml.py <sname>` before running. See [TOML migration](./toml_migration) for the full guide, and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md) (EPS, PROCAR, MLOsamples, TestInstall) as templates.
 
 * Here we give [GetStarted](#getstarted), together with install and overview of QSGW.
 * We have [UsageDetails](./UsageDetailed.md) in another file.
@@ -146,7 +146,7 @@ We explain things step by step.
 
 > **Worked example** — every step below uses **GaAs** as the running
 > example. A minimal seed (`ctrls.gaas` + the generated
-> `ctrlg.gaas.toml` + `PB.<sname>.toml`) lives at
+> `ctrlg.gaas.toml`) lives at
 > [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/main/Samples/GetStarted/GaAs).
 > Copy that directory to a fresh work area and follow Steps 1-6
 > below. See its
@@ -313,13 +313,13 @@ to reproduce results by VASP or in MP from your POSCAR file.
 
 ## Step 2. Get `ctrlg.<sname>.toml` from ctrls
 
-`ctrlg.<sname>.toml` plus `PB.<sname>.toml` is the input pair the Fortran
+`ctrlg.<sname>.toml` is the one input file the Fortran
 binaries (`lmf`, `lmfa`, `lmchk`, `gwsc`, ...) actually read since
-2026-05. **`PB.<sname>.toml`, which we do not edit usually, is for product
-basis setting only in GW** — auto-emitted by the generator below;
-hand edits live in `ctrlg.<sname>.toml`. Generate both files
-straight from the lightweight `ctrls.<sname>` (the structure-only
-seed produced by `vasp2ctrl` in Step 1) with **`ctrlgenToml.py`**:
+2026-05. (Its last section `[product_basis]` ends with per-atom tables
+used only by GW; the generator writes them and we do not edit them
+usually.) Generate it straight from the lightweight `ctrls.<sname>`
+(the structure-only seed produced by `vasp2ctrl` in Step 1) with
+**`ctrlgenToml.py`**:
 
 ```bash
 ctrlgenToml.py mp-2534
@@ -329,17 +329,16 @@ ctrlgenToml.py mp-2534
 [`Samples/GetStarted/GaAs/`](https://github.com/tkotani/ecalj/tree/main/Samples/GetStarted/GaAs):
 `ctrlgenToml.py gaas` — produces the
 [`ctrlg.gaas.toml`](https://github.com/tkotani/ecalj/blob/main/Samples/GetStarted/GaAs/ctrlg.gaas.toml)
-+ [`PB.gaas.toml`](https://github.com/tkotani/ecalj/blob/main/Samples/GetStarted/GaAs/PB.gaas.toml)
-that ship in that directory.)
+that ships in that directory.)
 
 This single command:
 
 1. fills top-level (`symgrp` / `verbose` / `time`) and `[struc] / [[site]] / [[spec]]` from the periodic-table
    defaults (the same `atomlist` table that `ctrlgenM1.py` uses);
 2. internally runs `lmfa → lmf --jobgw=0 → gwinit` to populate
-   `[gw] / [mlo] / [blocks] / [product_basis]` and the per-atom tables in
-   `PB.<sname>.toml`;
-3. writes `ctrlg.<sname>.toml` and `PB.<sname>.toml` and stops.
+   `[gw] / [mlo] / [blocks] / [product_basis]` (the last one including the
+   per-atom tables `nlx` / `valence` / `core`);
+3. writes `ctrlg.<sname>.toml` and stops.
 
 Successful end-of-run looks like:
 
@@ -347,7 +346,7 @@ Successful end-of-run looks like:
 ctrlgenToml: wrote ctrlg.mp-2534.toml (2 spec, 2 sites)
 ctrlgenToml: running lmfa -> lmf --jobgw=0 -> gwinit  to fill GW sections
 ctrlgenToml: done. ctrlg.mp-2534.toml has top-level/[struc]/[[site]]/[[spec]]/...
-             plus [gw]/[mlo]/[blocks]/[product_basis].  PB.<sname>.toml has nlx/valence/core.
+             plus [gw]/[mlo]/[blocks]/[product_basis] (incl. nlx/valence/core).
 ```
 
 **Recommended workflow**: run `ctrlgenToml.py <sname>` with **no other
@@ -359,22 +358,21 @@ edits, not requirements.** They are useful when scripting / batch-
 generating many materials, but for normal interactive use leave them
 off and edit the generated `ctrlg.<sname>.toml` keys directly.
 
-`PB.<sname>.toml` is consumed only on the GW path and **does not normally
-need hand editing**; leave it as generated.
+The `nlx` / `valence` / `core` tables at the end of `[product_basis]` are
+consumed only on the GW path and **do not normally need hand editing**;
+leave them as generated.
 
 Pure DFT / no-GW directory? Add `--skipgw`:
 
 ```bash
-ctrlgenToml.py <sname> --skipgw   # ctrlg.<sname>.toml without [gw]/[mlo]/[blocks]/[product_basis];
-                                  # no PB.<sname>.toml written.
+ctrlgenToml.py <sname> --skipgw   # ctrlg.<sname>.toml without [gw]/[mlo]/[blocks]/[product_basis]
 ```
 
 To add the GW sections later **without losing the ctrl-side edits
 you have made in the meantime**, use `--addgw`:
 
 ```bash
-ctrlgenToml.py <sname> --addgw    # appends [gw]/[mlo]/[blocks]/[product_basis]
-                                  # and writes PB.<sname>.toml in place;
+ctrlgenToml.py <sname> --addgw    # appends [gw]/[mlo]/[blocks]/[product_basis] in place;
                                   # ctrl-side keys ([bz], [ham], [[spec]], ...)
                                   # are preserved verbatim.
 ```
@@ -451,7 +449,7 @@ Legacy2toml.py mp-2534
 ```
 
 This walks `ctrl.<sname>` and (if present) `GWinput` and emits
-`ctrlg.<sname>.toml` + `PB.<sname>.toml`.  It is idempotent and prints
+`ctrlg.<sname>.toml`.  It is idempotent and prints
 `[INFO] / [WARN] / [ERROR]` diagnostics for any `%const` / `-v`
 overrides that won't survive as-is.  See
 [TOML migration](./toml_migration) for the full key map.
@@ -780,7 +778,7 @@ generate the GW driver settings and merge them into TOML in two steps:
 ```bash
 mkGWinput ba2pdo2cl2          # produces a legacy GWinput.tmp template
 cp GWinput.tmp GWinput        # copy and (optionally) edit
-Legacy2toml.py ba2pdo2cl2     # ctrl.<sname> + GWinput -> ctrlg.<sname>.toml + PB.<sname>.toml
+Legacy2toml.py ba2pdo2cl2     # ctrl.<sname> + GWinput -> ctrlg.<sname>.toml
 ```
 
 After conversion, the only key you usually need to tweak before
@@ -885,7 +883,7 @@ Run Si for example:
   performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
   >job_materials.py works as follows for given names.
   Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
-  Step 2. Generate `ctrlg.<sname>.toml` + `PB.<sname>.toml` by `ctrlgenToml.py`
+  Step 2. Generate `ctrlg.<sname>.toml` by `ctrlgenToml.py`
           (legacy path: `ctrlgenM1.py` + `Legacy2toml.py`)
   Step 3. Make directory such as Si/ and copy ctrls.si plus the generated TOML pair
           (legacy: ctrls.si, ctrl.si, GWinput)
