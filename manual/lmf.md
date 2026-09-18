@@ -264,11 +264,14 @@ order `[gw]` `[mlo]` `[blocks]` `[product_basis]`).
 ### Per-physics deltas (from the Cu starting point)
 
 - **Spin-polarized metal** (Fe, Ni, FeCo): set `[ham].nspin = 2` and
-  add `mmom = [0, 0, 2.5]` (or per-l guess) to each `[[spec]]`, **and use
-  Anderson mixing `[iter].mix = "A3"` (`b = 0.3`)**. The template default
-  Broyden `B3` with `b = 0.2` can wipe the moment out at the first SCF step
-  (Fe from a 2.2 μB atom start: 2.13 → 0.02 μB at iteration 2; A3 keeps
-  2.24). `ctrlgenToml.py --nspin=2` writes A3 for you (2026-09-18).
+  add `mmom = [0, 0, 2.5]` (or per-l guess) to each `[[spec]]`. Start from
+  a clean directory: `lmf` keeps its mixing history in `__mixm.<sname>`, and
+  a history left by a run that ended non-magnetic drags the new run onto the
+  non-magnetic solution at the first Broyden step (Fe: 2.13 → 0.02 μB).
+  Since 2026-09-18 `lmf` discards `__mixm` when it starts from the atomic
+  density (no `rst`), and `ctrlgenToml.py` no longer leaves one behind; if
+  you change `nspin` on top of an existing `rst`, delete `rst.<sname>` and
+  `__mixm.<sname>` first. The default `mix = "B3"`, `b = 0.2` is fine.
 - **SOC** (`HAM_SO`): set `[ham].so = 1` (full L·S) or `2` (Lz·Sz only),
   with `[ham].nspin = 2`.  See `Samples/MLOsamples/FeSoc/`.
 - **Insulator / semiconductor** (Si, GaAs): `[bz].metal = 0` and
