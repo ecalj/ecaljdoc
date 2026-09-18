@@ -268,10 +268,10 @@ order `[gw]` `[mlo]` `[blocks]` `[product_basis]`).
   a clean directory: `lmf` keeps its mixing history in `__mixm.<sname>`, and
   a history left by a run that ended non-magnetic drags the new run onto the
   non-magnetic solution at the first Broyden step (Fe: 2.13 → 0.02 μB).
-  Since 2026-09-18 `lmf` discards `__mixm` when it starts from the atomic
-  density (no `rst`), and `ctrlgenToml.py` no longer leaves one behind; if
-  you change `nspin` on top of an existing `rst`, delete `rst.<sname>` and
-  `__mixm.<sname>` first. The default `mix = "B3"`, `b = 0.2` is fine.
+  Since 2026-09-18 `lmf` deletes `__mixm.<sname>` at start (the hidden
+  `--keepmixm` keeps it), so only the density `rst.<sname>` carries over;
+  if you change `nspin` on top of an existing `rst`, delete `rst.<sname>`
+  first. The default `mix = "B3"`, `b = 0.2` is fine.
 - **SOC** (`HAM_SO`): set `[ham].so = 1` (full L·S) or `2` (Lz·Sz only),
   with `[ham].nspin = 2`.  See `Samples/MLOsamples/FeSoc/`.
 - **Insulator / semiconductor** (Si, GaAs): `[bz].metal = 0` and
