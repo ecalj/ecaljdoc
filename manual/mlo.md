@@ -454,6 +454,43 @@ FeCo(18 軌道、窓 8.3 meV)— 磁性金属で両スピンとも良く乗る�
 
 ---
 
+### MLO フィッティング一覧 — 全サンプル
+
+`Samples/MLOsamples` の 25 系すべて（灰: 第一原理 PMT バンド、赤 ×: MLO）。`testecalj` が
+回すものと同じ入力・同じ参照。図は `SRC/exec/mlo_bandplot.py <sampledir>_work` で再生成。
+表の後半 7 系は Materials Project の構造をそのまま `ctrlgenToml.py` に通し、
+`mlo_lm` に全原子の s,p,d を入れて既定（$\Delta = w = 2$ eV）で回したもの
+（2026-09-18、[Samples/MLOsamples/BackUp_notes/mp_20260918](https://github.com/tkotani/ecalj/tree/main/Samples/MLOsamples/BackUp_notes/mp_20260918)）。
+
+| 半導体・絶縁体 | | | |
+|---|---|---|---|
+| Si (QSGW) | GaAs (QSGW) | GaAs+SOC | C (diamond) |
+| ![](mlo/Si666gwsc.png) | ![](mlo/GaAs.png) | ![](mlo/GaAsSoc.png) | ![](mlo/C.png) |
+| C.sp | SrTiO3 | Al2O3:Cr (QSGW80) | NiO (LDA, AFM) |
+| ![](mlo/C.sp.png) | ![](mlo/SrTiO3.png) | ![](mlo/Al2O3_Cr.png) | ![](mlo/NiO666lda.png) |
+
+| 金属・磁性 | | | |
+|---|---|---|---|
+| Cu (d だけ) | Fe | Fe+SOC | FeCo |
+| ![](mlo/Cu.png) | ![](mlo/Fe.png) | ![](mlo/FeSoc.png) | ![](mlo/FeCo.png) |
+| RuO2 (QSGW) | GdCo5 (4f) | GdION (4f, QSGW) | SmP (4f, so=2) |
+| ![](mlo/RuO2.png) | ![](mlo/GdCo5.png) | ![](mlo/GdION.png) | ![](mlo/SmP.png) |
+
+| スラブ | |
+|---|---|
+| FeMgO + 空格子球 (76 MLO) | FeMgO+SOC |
+| ![](mlo/FeMgO.png) | ![](mlo/FeMgOSoc.png) |
+
+| Materials Project、既定のまま (DFT) | | | |
+|---|---|---|---|
+| Ag | Al | NaCl | SiC (3C) |
+| ![](mlo/Ag.png) | ![](mlo/Al.png) | ![](mlo/NaCl.png) | ![](mlo/SiC.png) |
+| CdTe | ZnO (Zn 3d は LO を模型に) | TiO2 (rutile) | |
+| ![](mlo/CdTe.png) | ![](mlo/ZnO.png) | ![](mlo/TiO2.png) | |
+
+MP 7 系の窓内 rms（金属 [E_F−8, +2]、絶縁体 [E_F−8, CBM+3] eV）: Ag 15, Al 74（自由電子帯は
+窓外）, NaCl 2.9, SiC 3.3, CdTe 28, ZnO 0.8, TiO2 0.8 meV。
+
 ## 3. 部分バンドを取る模型 — d だけ / 4f だけ
 
 こちらは**はじめから一部のバンドしか取らない**模型である。Cu の d 5 本、
