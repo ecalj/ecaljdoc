@@ -219,7 +219,7 @@ mlo_nkabc = [10, 10, 10]   # k mesh the MLO Hamiltonian is built on; required
 EH 関数を使って LO の状態は `nskip` で射影子から外す（GaAs の Ga 3d、−15 eV）。`lmlo` に
 `local orbital atom ... SHALLOW / deep` と出る。価電子殻より上の拡張 LO（`pz > pnu`）は対象外。
 Cu の d 模型で 10³ → 16³ にすると d 帯の rms は 98 → 90 meV
-(`Samples/MLOsamples/BackUp_notes/mlo_low_cu_20260917.md`)。
+(`Samples/MLOsamples/BackUp_notes/mlo_nskip_cu_problem.md`)。
 
 **通常はこのまま使える。** `Samples/MLOsamples` の 18 サンプルは全部この既定値
 ($\Delta=w=2.0$ eV)で、物質ごとに変えていない(§2)。3 つとも既定値なので、
