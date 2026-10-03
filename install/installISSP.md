@@ -113,7 +113,8 @@ nvfortranでもテストはCPU実行です。
 
 ### 5. GPU計算テスト
 
-`ecalj/Samples/Legacy/Samples_ISSP/inas2gasb2_kugui` に移動して、
+`ecalj/Samples/BenchmarkTest/inas2gasb2` を作業用のディレクトリに写し（作業ファイルが大きい）、そこに
+`ecalj/Samples/BenchmarkTest/ISSP/job_kugui.sh` を置いて
 
 ```bash
 qsub job_kugui.sh
@@ -153,13 +154,15 @@ sbatch jobinstall_ohtaka.sh
 
 です。この段階で最後に`OK! ALL PASSED!`が見れない場合はインストールできていません。
 
-それを確認後、計算テストは `ecalj/Samples/Legacy/Samples_ISSP/inas2gasb2_ohtaka` にて
+それを確認後、計算テストは `ecalj/Samples/BenchmarkTest/inas2gasb2` を作業用のディレクトリに写し、そこに
+`ecalj/Samples/BenchmarkTest/ISSP/job_ohtaka.sh` を置いて
 
 ```bash
 sbatch job_ohtaka.sh
 ```
 
-を行ってください。GPU テスト用ディレクトリも同 `Samples/Legacy/Samples_ISSP/` 配下にあります (`inas4gasb4_kugui`, `inas4gasb4_ohtaka` も参照)。
+を行ってください。16 原子の `inas4gasb4` も同じ手順です（スクリプトの `id` を書き換える）。
+スクリプトは 2026-09-30 に今の入力（`ctrlg.<sname>.toml`）とオプションに合わせたもので、それ以後 ISSP の機械では実行していません。
 
 
 kuguiではmpirunのかわりにsrunがつかわれるなどのためgwscなどを走らせるときにこれが必要です。

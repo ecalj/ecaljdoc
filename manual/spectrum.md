@@ -1,126 +1,104 @@
-This document is out of date. Need fixing
-
 # Spectrum function of G.
 
-> ⚠️ **TOML migration (2026-05)** — Binaries read `ctrlg.<sname>.toml` only. Use `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](./toml_migration).
+> ⚠️ Binaries read `ctrlg.<sname>.toml` only. Use `Legacy2toml.py <sname>` to convert legacy `ctrl.<sname>` / `GWinput`. See [TOML migration](./toml_migration).
+
 How to calculate $\langle {\bf q} n|\Sigma(\omega)|{\bf q} n\rangle$
 
-We have an example at {\tt ecalj/MATERIALS/SiSigma/}, where
-you can just type {\tt job}. It calls a shell script {\tt gwsigma}, which is
-just a modification of {\tt gwsc} for spectrum function plotting.
-If you have {\tt sigm.*}, it will automatically read it as in the case
-of {\tt gwsc}.
+We calculate the diagonal elements
+$\langle \psi({\bf q},n)|\Sigma_{\rm c}(\omega) |\psi({\bf q},n)\rangle$
+by the program `hsfp0` in the mode `--job=4`, after a one-shot GW calculation by `gw_lmfh`
+(`gw_lmfh` leaves $W$ in the files `__WVR.*` and `__WVI.*`, which `hsfp0 --job=4` reads).
+If you have `sigm.*`, it is read as in the case of `gwsc`.
 
-By the script {\tt gwsigma}, we calculate the diagonal elements
-$\langle \psi({\bf q},n)|\sigma_{\rm c}(\omega) |\psi({\bf q},n)\rangle$.
-Thus we need to set $\bf q$ and band index $n$ for which we calcualte.
-In addition, we need to set resolution of $\omega$.
+We need to set $\bf q$ and band index $n$ for which we calcualte.
+These are keys of `[gw]` in `ctrlg.<sname>.toml`, the same ones as for `gw_lmfh`.
 
- ~~Set `<QPNT>` section~~(-->probably QforGW instead). This section is to set the q point, and band index
- for which we calculate the self energy. In addition, energy mesh for plotting is set.
+(A) q points
 
-(A) ~~Set q point set~~ --> We now use QforGW probably
-(--- following is not correct. ---)
-   If you set 
+The q points are those of `QforGW`, one q per line in the unit of `2pi/alat`:
+```toml
+[gw]
+QforGW = """
+ 0.0 0.0 0.0
+ 0.5 0.0 0.0
+ 1.0 0.0 0.0
+"""
 ```
-  *** all q -->1, otherwise 0;  up only -->1, otherwise 0
-           1           0
-  ----------
-  You will have self-energy for all irreducible k points. This may be needed for A(omega).
-  or 
-  You have to set all q points as
-  ----------
-  *** q-points, which shoud be in qbz.,See KPNTin1BZ.
-           3            <--- number of readin q point 
-  1     0.0000000000000000     0.0000000000000000     0.0000000000000000 <--1st number is irrelevant
-  2    -0.5000000000000000     0.5000000000000000     0.5000000000000000
-  3     0.0000000000000000     0.0000000000000000     1.0000000000000000
+Without `QforGW`, or with `QforGWIBZ = true`, you will have self-energy for all irreducible k points
+of the mesh `n1n2n3`. This may be needed for A(omega).
+Because of the shifted-mesh method, q points which are not on the mesh can be given in `QforGW`.
+
+(B) Band index
+
+The bands are chosen by their energies. `EMINforGW` and `EMAXforGW` (eV, relative to the Fermi energy)
+give the range of the bands for which the self-energy is calculated:
+```toml
+[gw]
+EMINforGW = -2.0
+EMAXforGW =  3.0
 ```
 
-   To know allowed q points on regular mesh point, run `mkGWIN_lmf2`, then
-   supply n1,n2,n3. The generated `GWinput.tmp` contains all possible q points;
-   `Legacy2toml.py <sname>` then folds them into `[blocks].QPNT` of `ctrlg.<sname>.toml`.
-  
-~~NOTE:Anyq option can allow you to specify any q points by shifted mesh technique.
-   (if necessary, but only for some special purpose).~~
+(C) energy mesh
 
-(B) 
-~~Band index set~~ --> instead, We now use EMAXforGW probably 
-  It is specified by the section
-  ```
-  *** no. states and band index for calculation.
-  2
-  4  5
-  ----------
-  means the self-energy for band index 4 and 5. Just two bands.
-  If you like to plot self energy from 1 through 8, use
-  *** no. states and band index for calculation.
-  8
-  1 2 3 4 5 6 7 8
-  ```
-  If you need 17 bands for example, it should be 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
-  in addition to 17 (number of bands at the first line).   
+The mesh of the self-energy is $\omega - E_{\rm F} = 0.01\,{\rm Ry} \times i$ ($i=0,\pm1,\pm2,...$), up to twice the
+highest energy of the mesh of $W$ along the real axis.
 
+Note that imaginary part of Sigma is given as the comvolution of ImW(omega) and the pole of Green's function
+(`[gw].t_sigmaw` (K) gives the width of the Fermi-Dirac smearing of the pole). Resolution for Im W (near omega=0) is set by `[gw].HistBin_dw`.
 
-(C) ~~energy mesh set ~~ We now use Histbin
+Run
+```bash
+gw_lmfh si -np 24
+mpirun -np 24 hsfp0 si --job=4 > lsc_spec
 ```
-  At the bottom of <QPNT> section, we have
-  ----------------
-  *****
-   0.01 2.0
-  ----------------
-   Two real number should be supplied.
-   These are dwplot and omegamaxin, read in hsfp0.m.F by a line 
-     read (ifqpnt,*,err=2038,end=2038) dwplot,omegamaxin
-   dwplot (=0.01 Ry) is mesh for self energy.
-   omegamaxin=(2.0 Ry) means the range "-2 Ry to 2 Ry" for self-energy plot.
+Then we have SEComg.UP (DN) files. A line of the file is written in `main_hsfp0.f90` by
+```
+    write(ifoutsec,"(4i5,3f10.6,3x,f10.6,2x,2f16.8,x,3f16.8)")
+         iw,itq(i),ip,is, q(1:3,ip), wibz(ip), eqx(i,ip,is),
+         (omega(i,iw)-ef)*rydberg(),  hartree*zsec(iw,i,ip)
+```
+This means we use energy in eV.
 
-   Note that imaginary part of Sigma is given as the comvolution of ImW(omega) and the pole of Green's function
-   (`[gw].esmr` gives energy smearing of the pole; legacy: `esmr` in `GWinput`). Resolution for Im W (near omega=0) is set by `[gw].HistBin_dw` (legacy: `dw` in `GWinput`).
-   I think that the reolution of self-energy is ~ 0.05 eV in the default setting.
-   This is because {\tt dw} \sim {\tt esmr} \sim 0.05 eV. 
+**Table 1**. Columns of `SEComg.UP` (`SEComg.DN`)
 
+| column | variable | meaning |
+|---|---|---|
+| 1 | `iw` | omega index |
+| 2 | `itq(i)` | band index |
+| 3 | `ip` | q point index (in the order of `QforGW`) |
+| 4 | `is` | spin index |
+| 5-7 | `q` | q vector (cartesian in 2pi/alat) |
+| 8 | `wibz` | weight of the q point in the irreducible BZ |
+| 9 | `eqx` | eigenvalue in eV, relative to the Fermi energy |
+| 10 | `(omega(i,iw)-ef)*rydberg()` | omega relative to the Fermi energy |
+| 11, 12 | `hartree*zsec(iw,i,ip)` | Self energy. real and imaginary part |
 
-  Run gwsigma. This will run 
-    echo 4| mpirun -np 24 hsfp0,
-  after dielectric funcition is calculated.
-  Then we have SEComg.UP (DN) files, Look for file handle, ifoutsec,
-  for the file in fpgw/main/hsfp0.m.F to see format for the file. 
-  (not hsfp0.sc.m.F but hsfp0.m.F). Search a line
-       open(ifoutsec,file='SEComg'//sss) (around hsfp0.m.F L1052)
-   You can find that we use folloing lines to plot SEComg.*.
-    ----------------                    
-           write(ifoutsec,"(4i5,3f10.6,3x,f10.6,2x,f16.8,x,3f16.8)")
-     &          iw,itq(i),ip,is, q(1:3,ip),  eqx(i,ip,is),
-     &          (omega(i,iw)-ef)*rydberg(),  hartree*zsec(iw,i,ip) !,sumimg                                                   ----------------                    
-     This means we use energy in eV. 
-     iw:      omega index
-     itq(iq): band index specified by <QPNT>
-     ip:      k point index specified by <QPNT>
-     is:      spin index
-     q:       q vector (cartesian in 2pi/alat)
-     eqx:     eigenvalue in eV. (I think relative to the Fermi energy)
-     (omega(i,iw)-ef)*rydberg():  omega relative to the Fermi energy
-     hartree*zsec(iw,i,ip):       Self energy. real and imaginary part.(complex, two values)
+The data of a band at a q point make a block; the blocks are divided by two blank lines.
+When you change `QforGW`, run `gw_lmfh` again (it makes the eigenfunctions at the q points of `QforGW`).
 
-   You can only repeat echo 4| mpirun -np 24 hsfp0 
-   when you change setting in <QPNT> section.
+Cautions for q points of `QforGW` that are not on the mesh:
 
-* Example.  There is an example MATERIALS/SiSigma/
-  plot 'SEComg.UP' u ($9):($10) w l,'' u ($9):($11) w l
-  can give a plot for Re (Sigma_c(omega)) and Im(Sigma_c).
+- Set `EMAXforGW`. At such q the eigenvalue solver returns fewer states than `nband` and pads the rest with 1d20;
+  without an upper limit these padded states enter $\Sigma$ and `hsfp0` stops with `sxcf 222: |w-e| out of range`.
+- When you change `EMINforGW` or `EMAXforGW`, redo the exchange part as well (`gw_lmfh` from the start). The exchange files
+  (`SEXU`, `XCU`) and the correlation file (`SECU`) must have the same bands; otherwise `hqpe` stops at the end of `SEXU`.
+- The standard output of `hgw` and `hx0fp0` has lines `epsWVR: iq iw omg eps(wFC) eps(woLFC)` for the small q around $\Gamma$:
+  $\varepsilon(\omega)$ there shows the plasmon (Re $\varepsilon = 0$) without an extra run. A level that falls on a sharp plasmon structure
+  is sensitive to the real-axis mesh; check it with a finer `HistBin_ratio` (e.g. 1.03 → 1.015).
 
-  9th:  energy in eV   (omega(i,iw)-ef)*rydberg()
-  10th: real part      Re hartree*zsec(iw,i,ip) 
-  11th: imag part      Im hartree*zsec(iw,i,ip) 
+* Example.
+```
+  plot 'SEComg.UP' u ($10):($11) w l,'' u ($10):($12) w l
+```
+  can give a plot for Re (Sigma_c(omega)) and Im(Sigma_c) (columns of Table 1).
 
 ## 4
  To get integrated spectrum function (DOS), we need to superpose all the spectrum function
  (All q points and all band index). Be careful about the degeneracy (multiplicity) for each q points.
   You have to build it from SEComg file.
-  To know the multiplicity, search following lines ofkeyword {\tt Multiplicity} in the console output of qg4gw (lqg4gw).
+  The weight of a q point is in the 8th column (Table 1); see also the lines with the keyword `Multiplicity`
+  in the console output of qg4gw (lqg4gw).
 
   Anyway, consider about ``is it worth to do?''
   To confirm your result, use sum rule (sum of spectrum weight). And pay attention to the relation
   between real and imag parts (Hilbert transformation).
-```

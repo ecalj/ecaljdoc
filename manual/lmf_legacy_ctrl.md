@@ -108,7 +108,7 @@ The following tokens are input for each site. See examples.
     Calculate force or not.
     0 no force
     1 force calculated.  free-atom shift
-    See examples of LaGaO3_relax
+    See the example Samples/Relax/LaGaO3
  HAM_XCFUN         opt    i4       1,  1          default= 2
    Specifies local exchange correlation functional:
    1 for Ceperly-Alder (VWN)
@@ -544,7 +544,7 @@ The syntax for Anderson mixing is `MIX=A3 b=.2` for example. You can use 'A5' or
 
 
 ## Parameters for relaxiation of atomic positions
-Try `Samples/Legacy/LaGaO3_relax`. See SITE_RELAX (TOML: `[[site]].relax`) as well.
+Try `Samples/Relax/LaGaO3`. See SITE_RELAX (TOML: `[[site]].relax`) as well.
 ```
  DYN_MODE          opt    i4       1,  1          default= 0
     0: no relaxation

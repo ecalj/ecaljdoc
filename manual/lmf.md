@@ -1,6 +1,6 @@
 # `lmf,lmfa,lmchk`
 
-> ⚠️ **TOML migration (2026-05)** — `lmf`, `lmfa`, `lmchk` now read **`ctrlg.<sname>.toml`** only. The `ctrl.<sname>` examples below are legacy syntax kept as developer reference; convert with `Legacy2toml.py <sname>` before invoking these binaries. See [TOML migration](./toml_migration) for the full guide and migrated [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
+> ⚠️ `lmf`, `lmfa`, `lmchk` read **`ctrlg.<sname>.toml`** only. A directory with the legacy `ctrl.<sname>` is converted with `Legacy2toml.py <sname>` before invoking these binaries (the legacy syntax is described in [Legacy `ctrl.<sname>` reference](./lmf_legacy_ctrl)). See [TOML migration](./toml_migration) for the full guide and [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
 
 We need an input file `ctrlg.<sname>.toml` (legacy: `ctrl.<sname>`).  
 `<sname>` is the **positional** argument passed to the binary
@@ -43,7 +43,7 @@ mpirun -np 4 lmf si [options] > llmf
 This is a case with `ctrlg.si.toml`.
 
 ### options
-* quit option at some point. `--quit=band`, `--quit=ldau`... We need to do 'grep cmdopt SRC/*/*.f90|grep quit' to know details.
+* quit option at some point: `--quit=show`, `--quit=ham`, `--quit=mkpot`, `--quit=dmat`, `--quit=band` (see [Command-line options](./cmdopts)).
 * `--tdos`
 total dos calculation. But we usually use `job_tdos'
 * `--ctrlg:<dotted.path>=<value>` : Runtime override of a key in `ctrlg.<sname>.toml`. The path uses dotted TOML syntax (e.g. `--ctrlg:bz.nkabc=[8,8,8]`, `--ctrlg:ham.scaledsigma=0.8`, `--ctrlg:ham.phispinsym=true`, `--ctrlg:verbose=50`, `--ctrlg:spec.1.r=2.5` for the 1st `[[spec]]`). Substituted into the in-memory TOML before parsing; the file on disk is untouched. Each applied override is logged on rank 0. Older syntaxes (`-vfoo=val`, `-v[<path>]=val`, `--[<path>]=val`, `--toml.<path>=val`, `--pr=N`, `--time=N,M`, `--phispinsym`) abort with a one-line migration hint.
@@ -71,14 +71,14 @@ We have some kinds of options for electron density plot, boltztrap and so on.
 * `save.<sname>`
  Minimal iteration history for `lmf` / `lmfa` / `lmchk`, with total energies for each `lmf` SCF step.
 
-* `__mix.<sname>`
- mixing file for electron density. When you stop iteration at the middle, you may need to delete this.
- mixm  retains prior iterations of sets
-        of input and output moments.  Used by the Anderson or
+* `__mixm.<sname>`
+ mixing file for electron density.
+ It retains prior iterations of sets
+        of input and output densities.  Used by the Anderson or
         Broyden mixing scheme to accelerate convergence towards
-        self-consistency.  Usually you should delete these when
-        starting a new calculation (such as changing the lattice
-        constant) so it doesn't get used in subsequent runs.  
+        self-consistency.  `lmf` discards the file of a previous run
+        at start (the option `--keepmixm` keeps it), so that it is not
+        used in a new calculation (such as changing the lattice constant).
 
 
 
@@ -109,19 +109,29 @@ symgrp  = "find"        # space-group spec: 'find' = auto-detect
 verbose = 35            # console verbosity
 time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 
-[struc]   alat / plat                              (nspec / nbas auto-derived from arrays)
+[struc]   alat / plat                              (no nbas / nspec: the counts are those of the tables below)
 [[site]]  atom / pos / xpos / af / relax           (one table per atom)
 [[spec]]  atom / z / r / rsmh / eh / lmx / ...     (one table per species)
 [bz]      nkabc / metal / tetra / npts / ...
 [iter]    nit / mix / b / conv / convc / umix / tolu
 [ham]     nspin / rel / so / phispinsym / xcfun / gmax / pwmode / pwemax / oveps / ...
 [esm]     boundary / origin / shiftmode / zb / potential / field   (slabs only)
-[gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / esmr / GaussSmear / ...
+[gw]      n1n2n3 / QpGcut_psi / HistBin_dw / iSigMode / niw / t_sigmaw / t_tetrakbt / ...
           QforEPS / QforGW (multi-line q lists)
 [mlo]     mlo_method / mlo_delta / mlo_w / mlo_nkabc (required for job_mlo) / mlo_lm (formerly Worb)
 [blocks]  QPNT, QforEPSL, hrotr (raw multi-line blocks with no better home)
 [product_basis]   pb_tolerance / pb_lcutmx + nlx / valence / core   (always the last section)
 ```
+
+> **Do not write `nbas` / `nspec`** (2026-09-28). The numbers of sites and
+> species are the numbers of `[[site]]` / `[[spec]]` tables, and `lmf`
+> stops if `[struc]` carries `nbas` or `nspec`. A count written beside the
+> tables used to win over them, so sites added to the tables were silently
+> left out. To leave a site out, comment out its whole `[[site]]` block.
+> For an older file, `ctrlg_update.py ctrlg.<sname>.toml` removes the
+> two lines; if `nbas` was smaller than the tables (the old way to use only
+> the first sites), it comments out the `[[site]]` blocks beyond it, so the
+> calculation stays the same.
 
 ## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
 
@@ -196,10 +206,9 @@ HistBin_dw    = 1e-05   # bin width on real-axis at omega=0
 HistBin_ratio = 1.03
 iSigMode      = 3       # self-energy mode (3 = standard QSGW)
 niw           = 10      # # of imag-axis frequencies
-delta         = -1e-06
 deltaw        = 0.02
-esmr          = 0.003   # hsfp0 smearing
-GaussSmear    = true
+t_sigmaw      = 262     # (K) Fermi-Dirac width of the Sigma levels
+t_tetrakbt    = 0       # (K) required. 0: no smearing of chi0; T > 0: finite-T tetrahedron; -T: Gaussian on Im chi0
 QforEPS = """           # q points for eps (a.u. if QforEPSau = true)
  0 0 0.00050
  0 0 0.00100
@@ -284,25 +293,27 @@ order `[gw]` `[mlo]` `[blocks]` `[product_basis]`).
 - **GW BZ mesh**: keep `[gw].n1n2n3` ≤ `[bz].nkabc` (often 1/2 or 2/3 of
   it) — `n1n2n3` dominates GW wall-time.
 
-## Run-time `-v` overrides
+## Run-time `--ctrlg:` overrides
 
+A key of `ctrlg.<sname>.toml` is overridden for one run by
+`--ctrlg:<dotted.path>=<value>`, processed in-memory by `m_toml_override.f90`.
 The legacy `-v<NAME>=<VAL>` (where `<NAME>` was a `%const` symbol baked
-into `ctrl.<sname>`) is replaced by **bracketed dotted-path syntax**
-processed in-memory by `m_toml_override.f90`:
+into `ctrl.<sname>`) makes the programs stop with a message:
 
 ```bash
-# OLD (legacy ctrl + %const)
+# OLD (legacy ctrl + %const; the programs stop)
 lmf si -vnk=8 -vmetal=3 -vnspin=2 -vso=0
 
 # NEW (ctrlg.toml + path syntax)
 lmf si --ctrlg:bz.nkabc=[8,8,8] --ctrlg:bz.metal=3 --ctrlg:ham.nspin=2 --ctrlg:ham.so=0
 ```
 
-The bracketed key is the dotted TOML path (`[section.key]` or
-`[section.subkey]`); the right-hand side parses as TOML
+The path is the dotted TOML path (`section.key`; `spec.1.r` for a key of
+the first `[[spec]]` table; a top-level key such as `verbose` has no
+section); the right-hand side parses as TOML
 (`[8,8,8]` for an integer vector, `1` for an int, `1.0` for a float,
-`"r4z r3d r2x"` for a string).  No on-disk rewrite of the .toml file
-takes place.
+`true` / `false` for a logical, `"r4z r3d r2x"` for a string).  No on-disk
+rewrite of the .toml file takes place.
 
 ## Legacy `ctrl.<sname>` ↔ TOML path map
 
@@ -318,25 +329,26 @@ lower-casing.  A few are renamed or restructured:
 | `HAM_NSPIN` / `HAM_SO` / `HAM_XCFUN` / `HAM_GMAX` / `HAM_PWMODE` / `HAM_PWEMAX` | `[ham].nspin` etc. | |
 | `HAM_FORCES` / `HAM_OVEPS` / `HAM_FRZWF` / `HAM_REL` | `[ham].forces` etc. | |
 | `HAM_ScaledSigma` | `[ham].scaledsigma` | lowercase |
-| `HAM_READP` / `HAM_PNUFIX` / `HAM_V0FIX` | `[ham].readp` etc. | |
+| `HAM_READP` / `HAM_PNUFIX` | `[ham].readp` / `.pnufix` | `HAM_V0FIX` is the command-line option `--v0fix` |
 | `esm_input.dat` (separate positional file) | **`[esm]`** section | retired 2026-09-16; not read — `ctrlg_absorb.py <sname>` converts it, see [ESM](#esm-effective-screening-medium) |
 | `ITER_NIT` / `ITER_MIX` / `ITER_CONV` / `ITER_CONVC` / `ITER_UMIX` / `ITER_TOLU` | `[iter].nit` / `.mix` / ... | |
-| `SYMGRP` / `SYMGRPAF` | top-level `symgrp = "..."` (and `symgrp_af`) | not nested in a section |
+| `SYMGRP` / `SYMGRPAF` | top-level `symgrp = "..."` (and `symgrpaf`) | not nested in a section |
 | `EWALD_TOL` | `[ewald].tol` | rarely touched |
 | `DYN_MODE` / `DYN_NIT` / `DYN_HESS` / ... | `[dyn].mode` etc. | |
 | `IO_VERBOS` / `IO_TIM` | top-level `verbose` / `time` | promoted out of `[io]` (section dropped) |
 | `<Worb>...</Worb>` block | `[mlo].mlo_lm = """ ... """` | multi-line string |
 | `<QforEPS>...</QforEPS>` block | `[gw].QforEPS = """ ... """` (likewise `QforGW`) | |
 | `n1n2n3` (GWinput) | `[gw].n1n2n3 = [k1,k2,k3]` | int vector |
-| `HistBin_dw` / `HistBin_ratio` / `niw` / `delta` / `esmr` / `GaussSmear` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names, lowercased |
+| `HistBin_dw` / `HistBin_ratio` / `niw` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names (upper and lower case as in GWinput) |
+| `esmr`, `SmearX0` / `GaussianFilterX0`, `GaussSmear`, `delta`, `dw`, `omg_c`, `WgtQ0P` (GWinput) | `[gw].t_sigmaw` and `[gw].t_tetrakbt` (K; `t_tetrakbt` is required) | the old keys and what happens to them: [gwinput](./gwinput) Table 1 (表 1), [kBT](./kBT) §2.5 Table 2 (表 2) |
 | product-basis cut-offs (`tolerance`, `lcutmx` from `<PRODUCT_BASIS>`) | `[product_basis].pb_tolerance` / `.pb_lcutmx` | |
 | product-basis per-atom tables (`nlx`, `valence`, `core`) | `[product_basis].nlx` / `.valence` / `.core` (end of the file; a separate `PB.<sname>.toml` before 2026-09) | |
 
 The full schema lives in
-[`SRC/exec/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/ctrl_schema.py)
+[`SRC/exec/pylib/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/pylib/ctrl_schema.py)
 (the conversion source of truth).  Annotations / inline comments are
 applied by
-[`SRC/exec/toml_comments.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/toml_comments.py).
+[`SRC/exec/pylib/toml_comments.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/pylib/toml_comments.py).
 
 
 ---
@@ -534,18 +546,18 @@ atom    = "Nd"
 z       = 60
 r       = 3.00
 p       = [0.0, 0.0, 0.0, 5.2]    # treat 4f as core, 5f as valence
-c_hole  = "4f"                     # core channel to perturb
-c_hq    = [-11.0]                  # excess electron charge in that channel
-# c_hq    = [-7.0, 7.0]            # optional 2nd entry = spin moment
+c-hole  = "4f"                     # core channel to perturb
+c-hq    = [-11.0]                  # excess electron charge in that channel
+# c-hq    = [-7.0, 7.0]            # optional 2nd entry = spin moment
 ```
 
 Charge bookkeeping:
 ```
-Q(spin1) = full_core_count + c_hq[1]/2 + c_hq[2]/2
-Q(spin2) = full_core_count + c_hq[1]/2 - c_hq[2]/2
+Q(spin1) = full_core_count + c-hq[1]/2 + c-hq[2]/2
+Q(spin2) = full_core_count + c-hq[1]/2 - c-hq[2]/2
 ```
-Negative `c_hq[1]` removes electrons (a hole); the optional `c_hq[2]`
-polarises the core (used e.g. for the Gd 4f trick — `c_hq = [-7, 7]`
+Negative `c-hq[1]` removes electrons (a hole); the optional `c-hq[2]`
+polarises the core (used e.g. for the Gd 4f trick — `c-hq = [-7, 7]`
 freezes 7-up / 0-down in the 4f core while 5f remains valence).
 
 Confirm neutrality with `lmfa <sname> | grep -i 'add core hole'`.  See
@@ -603,7 +615,7 @@ In TOML the space-group spec is the top-level `symgrp` string:
 
 ```toml
 symgrp     = "find"           # auto-detect from lattice + species (default)
-symgrp_af  = "R4z*I"          # extra generator for AF symmetry (optional)
+symgrpaf   = "find"           # AF symmetry (optional): spglib finds it from the af labels; generators only for the old search
 ```
 
 `symgrp` either takes the literal string `"find"` (auto-detect) or a
@@ -624,9 +636,10 @@ Example (cubic):
 symgrp = "R4X MX R3D"        # 4-fold around X, mirror in X, 3-fold around (1,1,1) ⇒ 48 symops
 ```
 
-Mix-and-find:
+Generators with `find` (an old form, still accepted): spglib finds the whole group, and the generators must be operations
+of it (lmf stops otherwise); they do not change the group.
 ```toml
-symgrp = "R4X find"          # force 4-fold around X then let lmf find the rest
+symgrp = "R4Z*I MX*I R3D find"   # zinc blende: the same 24 operations as symgrp = "find"
 ```
 
 Disable symmetry entirely:
@@ -638,6 +651,27 @@ symgrp = "e"
 use it to verify the symmetry was parsed as intended.  The inversion is
 implicit in the DFT path when the potential is local; pay attention to
 the inversion-related notes in the console banner.
+
+## Symmetry from spglib: `symmetry.<sname>.json` (2026-10)
+
+With `symgrp = "find"` (the default), lmf, lmchk and the MLO programs find the space group with spglib, which is built
+into ecalj (`SRC/external/spglib`, version 2.6.0; no Python needed). The operations $x' = Rx + t$, in the fractional
+coordinates of `plat` ($R$ integer), are written to `symmetry.<sname>.json` in the working directory together with the
+space-group number and symbol and the structure they belong to. The next run reads this file; when the structure differs
+(alat, plat, species, `af` labels or positions, also through `--ctrlg:` overrides), the operations are found again and
+the file is rewritten. The console tells which: `mksym: N operations, read from ...` or `found by spglib, <symbol>
+(<number>), written to ...`.
+
+* Pure translations of a supercell (a cell larger than the primitive one, e.g. the 8-atom cubic cell of Si) are operations
+  too: 192 for Si8. Total energies, MLO bands and QSGW quasiparticle energies agree with those of the primitive operations.
+* AF: with `af = ±k` on the sites of the AF pairs, the magnetic symmetry of spglib gives the operations; those with time
+  reversal exchange up and down. `symgrpaf = "find"` switches the AF mode on with these operations (2026-10-02). Generators in
+  `symgrpaf` (the old form, e.g. `"i:( 1 1 1 )"` for NiO) are accepted and must be among these AF operations. Use `pwmode = 11` with it.
+* `symgrp` with generators (to lower the symmetry on purpose, e.g. `"r4z"` for an orbital-ordered 4f state) uses the
+  generators: the group they generate, as before, and writes no file. With such a `symgrp`, `symgrpaf` needs generators (not `"find"`).
+* The old search of ecalj (the operations of the lattice and those leaving the crystal invariant, `ECALJ_SYMFIND=ecalj`) was removed
+  on 2026-10-02; spglib is the only finder. The input forms above are all still accepted.
+* `symfind.py <sname>` (Python spglib) makes the same file outside lmf.
 
 # Q: Should the Harris-Foulkes and Hohenberg-Kohn Sham functionals agree at self-consistency?
 (due to Mark van Schilfgaarde)

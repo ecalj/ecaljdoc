@@ -371,7 +371,7 @@ For more details, see the upstream memo: [ecalj/GetSyml/README.org](https://gith
   └── Samples/
       ├── TestInstall : Root of install tests (testecalj --all)
       ├── EPS / PROCAR / MLOsamples : modernized topical tests
-      └── Legacy/     : pre-2026-05 directories awaiting Legacy2toml.py
+      └── Legacy/     : older examples that are not rebuilt (Samples/README.md, table 2)
   ```
 
   All Fortran codes are in `SRC/main/` and `SRC/subroutines/`.

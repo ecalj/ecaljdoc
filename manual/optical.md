@@ -25,13 +25,14 @@ Local-field corrections are enabled with `job_eps --lcf` (legacy name: `eps_lmfh
 
 ### Examples of `job_eps`
 It is instructive to learn things from samples as 
-* ecalj/Samples/EPS/GaAsEps
-* ecalj/Samples/EPS/CuEpsPP0
+* ecalj/Samples/EPS/EPS_GaAs
+* ecalj/Samples/EPS/EPS_Cu
+* ecalj/Samples/EPS/EPS_Ag
 
-Follow `job` files in these directories(`bash job` should work). 
-We explain the steps in `job` in the following steps.
+Follow `test.py` in these directories (`testecalj EPS_Cu -np 4` in `ecalj/Samples/EPS` runs it in `EPS_Cu_work/`). 
+We explain the steps in `test.py` in the following steps.
 
-You can start from `ctrlg.<sname>.toml` (or, for legacy directories, `ctrl.<sname>` + `GWinput` after running `Legacy2toml.py <sname>`). Then
+You can start from `ctrlg.<sname>.toml` (or, for legacy directories, `ctrl.<sname>` + `GWinput` after running `Legacy2toml.py <sname>`). After `job_eps cu -np 4 --decompose`,
 ```
 gnuplot -p epsinter.glt 
 gnuplot -p epsintra.glt 
@@ -39,7 +40,7 @@ gnuplot -p epsall.glt
 ```
 Note that we usually need many k points if you like to have 0.1 level of error for 
 dielectric constants (at the limit of ${\bf q}=\omega =0$)
-(e.g, reasonable results for GaAs may require `[gw].n1n2n3 = [20, 20, 20]` in `ctrlg.<sname>.toml`; legacy: `n1n2n3 20 20 20` in `GWinput`.)
+(e.g, reasonable results for GaAs may require `[gw].n1n2n3 = [20, 20, 20]` in `ctrlg.<sname>.toml`.)
 
 * NOTE: to calculate $\epsilon({\bf q},\omega)$ without LFC accurately,
 the best basis set for the expansion of the Coulomb matrix within MT
@@ -53,16 +54,15 @@ corresponding to the plane waves $\exp(i{\bf q r})$. We include such a basis in 
 
 ### step2: GW driver パラメータを設定
 
-旧 `GWinput` の設定は今は `ctrlg.<sname>.toml` の `[gw]` / `[blocks]` セクションに移っています。
+設定は `ctrlg.<sname>.toml` の `[gw]` セクションに書きます。
 
-- `ctrlg.<sname>.toml` の `[blocks].QforEPS` を編集してください
-  (legacy: `GWinput` の `<QforEPS>...</QforEPS>`)。
+- `ctrlg.<sname>.toml` の `[gw]` の `QforEPS` を編集してください
+  (`[blocks]` に書いた `QforEPS` は、`[gw]` に `QforEPS` が無いときだけ読まれます)。
     // defaultではこのように書かれている
     ```toml
     [gw]
-    QforEPSau = true   # legacy: "QforEPSau on"
+    QforEPSau = true
 
-    [blocks]
     QforEPS = """
     0 0 0.00050
     0 0 0.00100
@@ -72,14 +72,14 @@ corresponding to the plane waves $\exp(i{\bf q r})$. We include such a basis in 
     * この部分は誘電関数を計算するときの**q**ベクトルを設定しています。
     この値を変えることで誘電関数の**q**方向の依存性を調べることができます。
 
-    * QforEPSau onがあるので、単位はa.u.になっています。すなわち、0 0 0.001であれば
+    * `QforEPSau = true` があるので、単位はa.u.になっています。すなわち、0 0 0.001であれば
     ${\bf q}$ = (0,0,0.001) bohr^{-1}です
 
-    * もしQforEPSau onがない場合、**q**の単位は $\frac{2 \pi }{a}$ です。$a$は=`alat`でctrlで定義したものです。あるいはSiteInfo.chkに表示されています。
+    * もし `QforEPSau = true` がない場合、**q**の単位は $\frac{2 \pi }{a}$ です。$a$は `[struc] alat` で定義したものです。
 
 
     光学応答の場合は**q**=**0**としたいですが、そうすると今のコードでは数値的に不安定です。
-    なので適宜小さくとってください。この不安定性は以下の図、ecalj/Samples/EPS/GaAsEpsでgnuplot -p epsinter.gltで100eVs弱のところに現れています。なのでたとえばGaAsEpsだと0,0,0.00050(EPS0001に対応）だとすこしにおおきくなっておりよろしくない、ということになります。gnuplotファイルepsinter.gltを見てください。
+    なので適宜小さくとってください。この不安定性は以下の図、ecalj/Samples/EPS/EPS_GaAsでgnuplot -p epsinter.gltで100eVs弱のところに現れています。なのでたとえばEPS_GaAsだと0,0,0.00050(EPS0001に対応）だとすこしにおおきくなっておりよろしくない、ということになります。gnuplotファイルepsinter.gltを見てください。
 <!-- ![alt text](image.png) -->
 <!-- また後述のバンド内・間遷移を分けて計算を行う場合は、2つ以上の座標を書く必要があります。 -->
 
@@ -87,8 +87,8 @@ corresponding to the plane waves $\exp(i{\bf q r})$. We include such a basis in 
 - エネルギーメッシュの取り方
 誘電関数を計算する際のメッシュは対数メッシュでとられており、`ctrlg.<sname>.toml` の `[gw]` セクション内で
 ```toml
-    HistBin_dw = 2e-3       # legacy GWinput: HistBin_dw 2d-3
-    HistBin_ratio = 1.08    # legacy GWinput: HistBin_ratio 1.08
+    HistBin_dw = 2e-3
+    HistBin_ratio = 1.08
 ```
 の値を変えることで、誘電関数のエネルギーメッシュを増やす(減らす)ことができます。メッシュを細かくとれば、誘電関数の構造がより現れるようになります。ただし、細かすぎると計算コストがすこし増えます。計算法はまずは虚部のウエイトをヒストグラム的に蓄積したあと、実部はヒルベルト変換の方法で求めています。なので数値的にはまあまあ安定です。
 
@@ -97,40 +97,40 @@ corresponding to the plane waves $\exp(i{\bf q r})$. We include such a basis in 
 ```toml
 [gw]
 KeepEigen = false
-KeepPbp = false
+KeepPpb = false      # (default)
 ```
-等を適宜書き込んで下さい (legacy: 同名 keys を `GWinput` に書く)。（we have to explain details...）
+等を適宜書き込んで下さい ([gwinput](./gwinput))。
 
 
-* QforEPSau on
-これはQforEPSのqをa.u.ではかるという意味になります。
-たとえば`<QforEPS>に0d0 0d0 0.00005`とあれば、これは
-q=(0d0 0d0 0.00005)/bohrと読んでください。
-（過去のQforEPSunita on と同じ意味）。
+* `QforEPSau = true`
+これは `QforEPS` のqをa.u.ではかるという意味になります。
+たとえば `QforEPS` に `0 0 0.00005` とあれば、これは
+q=(0 0 0.00005)/bohrと読んでください。
 確認するには,2pi/alatをEPSファイル最初の3つの数字に乗じて
-`<QforEPS>`にかかれているqになるのをみます。
+`QforEPS` にかかれているqになるのをみます。
 
 * 以前の--zmel0のオプションは2025-5-8で廃止しました。
 これはGramSchmidt2をsugw.f90に挿入して
 すこし正確な直行化が可能になったためです。
 
-* `job_eps` (legacy `epsPP0`) は最後に readeps.py を呼んで答えをまとめ上げてます。
+* `job_eps` は最後に gnuplot のスクリプト（`--decompose` のとき `eps_interbandonly_<sname>.glt`、`eps_intrabandonly_<sname>.glt`、`eps_total_<sname>.glt`）と図（pdf）を書きます。`--nognuplot` で図を省きます。
 
 
 * Cuの場合だと、qがあまりにゼロに近いと計算が不安定です。たとえば
+```toml
+[gw]
+QforEPSau = true
+QforEPS = """
+ 0 0 0.00005
+ 0 0 0.0001
+ 0 0 0.0002
+ 0 0 0.0004
+ 0 0 0.0008
+ 0 0 0.0016
+ 0 0 0.0032
+"""
 ```
-QforEPSau on
-<QforEPS>
- 0d0 0d0 0.00005
- 0d0 0d0 0.0001
- 0d0 0d0 0.0002
- 0d0 0d0 0.0004
- 0d0 0d0 0.0008
- 0d0 0d0 0.0016
- 0d0 0d0 0.0032
-</QforEPS>
-```
-などとすると、 0d0 0d0 0.00005のグラフがおかしいです。
+などとすると、 0 0 0.00005のグラフがおかしいです。
 それ以外のグラフはほぼ重なります。だた、0.0032ぐらいになるとomega=0での実部がいくらかずれてきます。
 
 * Cu (Samples/EPS/EPS_Cu) ではフェルミ面の寄与もあり、
@@ -145,7 +145,7 @@ gnuplot -p epsall.glt
 ```
 
 
-* `job_eps` (legacy `epsPP0`) の計算が終わると `EPS000*.nlfc.dat` というファイルが `[blocks].QforEPS` で設定したq点の数分作られます (legacy: `<QforEPS>` in `GWinput`)。この中は
+* `job_eps` (legacy `epsPP0`) の計算が終わると `EPS000*.nlfc.dat` というファイルが `[gw]` の `QforEPS` で設定したq点の数分作られます。この中は
 
 ```
     // example EPS0001.nlfc.dat
@@ -177,8 +177,6 @@ But we need checks and may be modification of `job_eps --lcf`.
 
 ** スピンゆらぎを計算するにはモデルを経由するべき
   
-** 要チェック(古いノート): We can use small enough delta. Use small enough delta (=-1e-8 a.u.) for spin wave modes (also you can use it for dielectric function and GW).  This can be meaningful because pole is too smeared if you use larger delta.
-
 ## old convergence test (2010)
 * Convergence test for number of k point(specified by n1n2n3) test at 2010. 
    Roughly speaking, 20x20x20 is required for not-so-bad results for Fe and Ni.
@@ -263,6 +261,7 @@ epsPP0 cu -np 4
 
 いくつかのｑ点で計算してｑ＝＞０を取るのです。そのためにctrlには
 ーーーーーーーーーーーーーーーーーー
+```
 QforEPSunita on
 <QforEPS>
  0d0 0d0 0.00001
@@ -272,16 +271,19 @@ QforEPSunita on
  0d0 0d0 0.0028284
  0d0 0d0 0.004
 </QforEPS>
+```
 ーーーーーーーーーーーーーーーーーー
 などと書いておく必要があります。
 
 
 最低でも、2行入ります。
+```
 QforEPSunita on
 <QforEPS>
  0d0 0d0 0.00001
  0d0 0d0 0.001
 </QforEPS>
+```
 ーーーーーーーーーーーーーーーーーー
 が、いります.できれば後何行かあったほうがいいです。
 

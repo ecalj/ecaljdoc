@@ -1,13 +1,13 @@
 # gwsc: a script to run QSGW calculation
 
-> ⚠️ **TOML migration (2026-05)** — `gwsc` now reads `ctrlg.<sname>.toml` only. The legacy `GWinput` text file referenced below is auto-converted by `Legacy2toml.py <sname>` (run once per directory). See [TOML migration](./toml_migration) and the migrated [Samples/TestInstall/*_gwsc/](https://github.com/tkotani/ecalj/tree/main/Samples/TestInstall) directories as templates.
+> ⚠️ `gwsc` reads `ctrlg.<sname>.toml` only, and stops when the file is missing. A directory with the legacy `ctrl.<sname>` + `GWinput` is converted by `Legacy2toml.py <sname>` (run once per directory). See [TOML migration](./toml_migration) and the [Samples/TestInstall/*_gwsc/](https://github.com/tkotani/ecalj/tree/main/Samples/TestInstall) directories as templates.
 
 gwscがQSGW計算実行スクリプトである。
 QSGW計算は，複数のfortran実行ファイルを呼び出して実行される．
-入力は `ctrlg.<sname>.toml` (legacy: [GWinput](./gwinput.md)) から読み込まれる。
+入力は `ctrlg.<sname>.toml` から読み込まれる(GW の設定は `[gw]`。キーの説明は [gwinput](./gwinput.md))。
 
 ## Usage
-**Usage**: ` gwsc -np NP [-np2 NP2] [--gpu] [--mp] [--fp32] nloop extension [Options]`
+**Usage**: ` gwsc -np NP [-np2 NP2] [--gpu] [--prec=tf32|fp32|fp64] [--mp] [--fp32] nloop extension [Options]`
 
 ### `-np NP`
 MPI並列数を指定する。
@@ -19,26 +19,36 @@ GPU版を使用する場合のみ指定する。GPUで実行される計算のMP
 ### `--gpu`
 GPU版を使用する場合のみ指定する。
 
+### `--prec=tf32|fp32|fp64` (2026-09)
+GW 部分の精度。`fp64` は倍精度版、`fp32` は混合精度版で単精度の積を FP32 で（`--mp --fp32` と同じ）、`tf32` は `fp32` のうち
+Σc の最後の積だけ入力の仮数を 10 ビット（TF32 か FP16、GPU ごとの表が選ぶ）にする（LiTi₂O₄ 6³ で E_F ±1 eV の Re Σc は倍精度と 1.3 meV 以内、RTX 5090 の `hgw` は fp32 の約半分の時間: 173 対 367 秒、2026-09-27 夜の版）。旧来の `--mp` だけの指定は `tf32` と同じ
+（2026-09-27 まではすべての積が TF32 だった。誤差が 6 倍で、時間は 1 割しか縮まない）。
+GPU でどの方法で積や逆行列を計算するかは、インストール時に測った表（`<bindir>/ecalj_linalg_policy.toml`）で自動的に決まる。
+詳細は [GPU 版マニュアル § 精度の選び方と行列演算の自動選択](./ecaljgpu#精度の選び方と行列演算の自動選択-2026-09)。
+`--mp`・`--fp32` と一緒に書くときは矛盾しないこと（矛盾すると止まる）。
+
+### `--prec-final=<prec>[:N]` (2026-09)
+その回の最後の N 反復（省略時 1）だけ別の精度にする。例: `gwsc 10 --prec=tf32 --prec-final=fp32:2 ...` は 8 反復を tf32、最後の 2 反復を fp32 で回す。
+
+### `--no-tetwt-helper` (2026-09)
+`--gpu` のとき、四面体の重みを CPU で先に計算する補助の実行（`hgw --tetwt_write`）を使わない。
+既定では使う（[GPU 版マニュアル § 四面体の重み](./ecaljgpu#四面体の重みを-cpu-で先に計算する)）。
+
 ### `--mp`
-GPU-MP版(混合精度)を使用する場合のみ指定する。GEMM の compute_type が既定で TF32
-(`CUBLAS_COMPUTE_32F_FAST_TF32`、仮数10bit、相対誤差 ~1e-3) になる。通常の QSGW
-では十分高速かつ安全だが、悪条件な誘電行列 (重元素 + 分子アニオン NO3 / N3 / ClO
-など) では TF32 誤差が増幅され $W$ / $\Sigma^c$ が破壊されることがある — その場合は
-下の `--fp32` を追加。詳細は [GPU 版マニュアル § 混合精度](./ecaljgpu#混合精度-mp-と-fp32-2026-06)。
+混合精度版を使う。2026-09-27 から `--prec=tf32` と同じ意味（Σc の最後の積だけ入力の仮数 10 ビット、ほかの単精度の積は FP32）。
+それまでは GPU のすべての単精度の積が TF32 で、悪条件な誘電行列（重元素 + 分子アニオン NO3 / N3 / ClO など）では TF32 の誤差が
+$W$ / $\Sigma^c$ で増幅された。精度の選び方は上の `--prec` と [GPU 版マニュアル § 精度の選び方](./ecaljgpu#精度の選び方と行列演算の自動選択-2026-09)。
 
 ### `--fp32` (2026-06)
-`--gpu --mp` と併用する。GEMM の compute_type を真の FP32
-(`CUBLAS_COMPUTE_32F`、仮数23bit、相対誤差 ~1e-7) に切替える。TF32 比 ~7% 減速で
-ストレージは単精度のまま。`--mp` で QSGW が発散 / NaN になる悪条件系の fallback。
-ecalj_auto の GW1500 バッチ (`gwscconv --gpu --mp --fp32 --conv-tol 0.1`) は
-これを既定で使用。失敗事例の再現は [`Samples/mptf32problem/`](https://github.com/tkotani/ecalj/tree/main/Samples/mptf32problem)。
+`--mp` と併用し、`--prec=fp32` と同じ意味（Σc の積も FP32）。ecalj_auto の GW1500 バッチ（`gwscconv --gpu --mp --fp32 --conv-tol 0.1`）は
+これを既定で使う。TF32 で壊れた事例の再現は [`Samples/mptf32problem/`](https://github.com/tkotani/ecalj/tree/main/Samples/mptf32problem)。
 
 
 ### `nloop`
 QSGWのイテレーション数を指定する。
 
 ### `extension`
-ctrl ファイルの拡張子を指定する。
+`ctrlg.<sname>.toml` の `<sname>` を指定する。
 
 ### `Options`
 追加のオプションを指定する。
@@ -46,21 +56,16 @@ ctrl ファイルの拡張子を指定する。
 またlmfへのTOML override (`--ctrlg:ham.so=1` など、`--ctrlg:<toml-path>=<value>` 形式) もここに書く。
 
 ------
-#### `--keepwv`
-`--gpu` を指定した場合に自動で付け加わる．
-自己エネルギー(相関部分)を計算する際に, 遮蔽クーロン相互作用の行列要素をメモリ上に保持する．
-GPU計算ではファイルIO, データ転送が特に律速になるが, それを回避するため．ただし十分なGPUおよびCPUメモリが必要となる．
+#### メモリの使い方と MPI の分け方
+遮蔽クーロン相互作用 $W$ は `hgw`（`--gpu` では `hgw_gpu`、`hgw_mp_gpu`）の中でメモリに持ち、ファイルには書かない
+（解析のために `__WVR.<iq>`・`__WVI.<iq>` に書き出すのは `--dumpW`）。MPI ランクの分け方（$q$ 点の組と、その中の $\omega$・$k$ の並列）は
+使えるメモリの量から自動で決まり、`lgw` の `MPI layout:` に出る。調整はコマンドラインのオプションではなく、`ctrlg.<sname>.toml` の `[gw]` のキーで行う。
 
-#### `--nb=X`
-* Xは整数 `--nb=4`のように指定する。
-遮蔽クーロン相互作用(W)計算`hrcxq` or `hrcxq_gpu` で使用される。分極関数のMPB基底並列数を指定する。
-GPU計算において`hrcxq(_gpu)`計算でメモリ不足になる場合に使用する。`--np2` で指定した並列数を割り切れる値を入れる必要がある。
+- `KeepWV`: 自己エネルギー(相関部分)を計算する際に, $W$ を GPU のメモリに載せておく。GPU 版の既定は `true`、CPU 版は `false`。`false` では $W$ を周波数ごとに主記憶から送る（GPU のメモリは減るが遅くなる）
+- `zmel_batch_gb`: 行列要素を一度に作るバッチの大きさ（[gwinput](./gwinput.md)）
+- `mpi_worker_exch`、`mpi_worker_corr`: 交換・相関の計算で、1 つの $q$ 点の組に割り当てるランクの数。0（既定）は自動。全ランク数の約数を書く
 
-#### `--nwpara=X`
-* Xは整数 `--nwpara=2`のように指定する。
-相関部分の自己エネルギー計算`hsfp0_sc --job=2` or `hsfp0_sc_gpu --job=2` で使用される。$ω'$積分の並列数を指定する。
-`--keepwv` 使用時(GPU版ではデフォルトで使用される) __WVR.X (X=1,...)ファイルがメモリに乗らりきらずメモリ不足になる場合に使用する。
-`--np2` で指定した並列数を割り切れる値を入れる必要がある。
+`--keepwv`、`--nwpara=X` というオプションは無い（書くとプログラムが止まる）。`--nb=X` は受け付けるが、`gwsc` の計算では使われない。
 
 #### `--tetwtk`
 指定すると, 分極関数を計算する際に, 結合状態間の四面体重みをメモリ上に保持しない。$k$点が多い計算でメモリ不足になる場合に使用する。
@@ -97,7 +102,11 @@ In principle, the number is determined by
 * QPU.[number]runをチェックして、number回のQSGWイテレーションが終了している、と認識する。
 (初期状態から実行したいときはすべての`*run*`ディレクトリ、ファイルを消すこと）。
 
-* QSGW.[number]runディレクトリには、QSGWのnumber回目の結果 `rst`, `sigm` (加えて `atmpnu`, `ctrlg.<sname>.toml`; legacy: `ctrl`, `GWinput`) が格納されており、これを用いてバンドプロットなどができる。
+* QSGW.[number]runディレクトリには、QSGWのnumber回目の結果 `rst`, `sigm` (加えて `atmpnu`, `ctrlg.<sname>.toml`, `QPU`, `efermi.lmf`, その反復のログ) が格納されており、これを用いてバンドプロットなどができる。
+
+* 途中経過とメモリの使用量は、各段のログ（`lgw`、`lsxC`、`lvcc` など）で見る。GW のプログラムはランク 0 の画面出力をそこに書き、
+  ほかのランクの出力は捨てる（2026-09-27 から）。ランクごとの出力が要るときは `--fullstdo`（`STDOUT/stdout.<rank>.<prog>` になる）。
+  どのランクのエラーも、ランク番号付きで `gwsc` の標準エラーに出る。
 
 
 
@@ -110,8 +119,11 @@ In principle, the number is determined by
 `gwscconv`: `gwsc` を自動収束まで回すラッパー。`--conv-tol <eV>` (例 `0.1`) で
 QSGW 反復の停止条件を指定する。**収束判定 (2026-06 改定)**: 直近 3 イテレーションの
 ギャップ振れが連続して 2 回 `conv-tol` 以下になったら停止 (一発の偶然収束で止まる
-のを防ぐ)。`--gpu --mp --fp32` を渡せばそのまま `gwsc` に流される。
-ecalj_auto の GW1500 バッチもこの script を呼んでいる ([auto.md](./auto))。
+のを防ぐ)。**金属 (2026-09-30)**: `lmf` がギャップを出さない反復は、固有値の変化で判定する。
+`QPU.<n>run` と `QPU.<n-1>run` の `eQP` (E_F 基準) のうち |e| < 5 eV の状態について、変化の最大が
+`--conv-qp <eV>` (既定 0.03) 未満の反復が 2 回続いたら停止。以前のようにギャップが無いところで止める (exit 3) には
+`--no-metal`。`--gpu --mp --fp32` を渡せばそのまま `gwsc` に流される。
+ecalj_auto の GW1500 バッチもこの script を呼んでいる (`MD/auto.md`)。
 
 `qsgw_status` (2026-06): 走行中の `gwsc` (または gwscconv) 反復の進行
 ダッシュボード。実行ディレクトリで以下のように使う:
@@ -128,9 +140,9 @@ ETA、`gwsc` ログ末尾から現在の step (`hgw` 等) と step 内経過時�
 
 `gw_lmfh`: The one-shot \GW calculation. Lifetime(impact ionization rate) of QPs.
 
-`epsPP0`: dielectric function. No local field corrections
+`job_eps`: dielectric function. No local field corrections ([optical](./optical))
  
-(`eps_lmfh` : Dielectric function with local-field corrections. computationally expensive. Need some modifications. Old versions)
+(`job_eps --lcf` : Dielectric function with local-field corrections. computationally expensive.)
 
 
 <!-- \item
@@ -139,11 +151,11 @@ One-degree of freedom like Rigid moment approx.
 After it ends, you need to do \verb#calj_nlfc_metal# and/or \verb#calj_summary_mat#
 to get the full spin susceptibility. -->
 
-`genMLWF` : Wannier function and its matrix elements of the Screened Coulomb interaction.
+`job_mloW` : the MLO model and the matrix elements of v, W and the cRPA W (`--crpa`) in it ([MLO](./mlo) section 6). (`genMLWFx`, the Wannier functions, was removed 2026-10-02.)
 
 
 # Files used in gwsc
-Temporary files are with `__*`. Thus we can delete __* (or use `cleargw`) after you finish `gwsc/epsPP0` and so on.
+Temporary files are with `__*`. Thus we can delete __* (or use `cleargw`) after you finish `gwsc/job_eps` and so on.
 
 To repeat a small test for gwsc:
 
@@ -157,28 +169,32 @@ This is one of the install tests. `testecalj` creates
 After that, `ls -rlt si_gwsc_work/` roughly shows which step generates
 which files.
 
+The console output of `gwsc 1 si -np 2` for the same input is
 ```text
-===== Ititial band structure ======
---> No sigm. LDA caculation for eigenfunctions
-0:00:00.990833   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/lmfa si     >llmfa
-0:00:03.067381   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/lmf  si     >llmf_lda
-===== QSGW iteration start iter 1 ===
-0:00:06.584919   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/lmf si     --jobgw=0 >llmfgw00
-0:00:08.953914   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/qg4gw    --job=1 > lqg4gw
-0:00:11.026268   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/lmf si     --jobgw=1 >llmfgw01
-0:00:14.276866   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/heftet --job=1    > leftet
-0:00:16.342115   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/hbasfp0 --job=3    >lbasC
-0:00:18.457527   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hvccfp0 --job=3    > lvccC
-0:00:20.400344   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hsfp0_sc --job=3    >lsxC
-0:00:22.459518   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/hbasfp0 --job=0    > lbas
-0:00:24.614140   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hvccfp0 --job=0    > lvcc
-0:00:26.884440   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hsfp0_sc --job=1    >lsx
-0:00:28.964117   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hrcxq   > lrcxq
-0:00:31.358625   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/hsfp0_sc --job=2    > lsc
-0:00:33.682640   mpirun --bind-to core --map-by core -np 1 /home/takao/bin/hqpe_sc    > lqpe
-0:00:35.517672   mpirun --bind-to core --map-by core -np 4 /home/takao/bin/lmf si     >llmf
+===== Ititial band structure ====== 
+--> No sigm. LDA caculation for eigenfunctions 
+00:00:00.007   mpirun -np 1 /home/takao/bin/lmfa si stdout='llmfa'  Elap. 1.5s
+00:00:01.481   mpirun -np 2 /home/takao/bin/lmf si --ctrlg:iter.b=0.5 stdout='llmf_lda'  Elap. 6.1s
+lmf successful with b=0.5
+Removing __mixm.si
+00:00:07.563   mpirun -np 2 /home/takao/bin/lmf si --jobgw=0 stdout='llmfgw00'  Elap. 1.8s
+00:00:09.335   mpirun -np 1 /home/takao/bin/qg4gw si --job=1 stdout='lqg4gw'  Elap. 1.0s
+===== QSGW iteration start iter 1 === (GW precision fp64)
+00:00:10.381   mpirun -np 2 /home/takao/bin/lmf si --jobgw=1 stdout='llmfgw01'  Elap. 3.7s
+00:00:14.042   mpirun -np 1 /home/takao/bin/heftet si --job=1 stdout='leftet'  Elap. 1.1s
+00:00:15.193   mpirun -np 1 /home/takao/bin/hbasfp0 si --job=3 stdout='lbasC'  Elap. 1.4s
+00:00:16.570   mpirun -np 2 /home/takao/bin/hvccfp0 si --job=3 stdout='lvccC'  Elap. 1.4s
+00:00:17.966   mpirun -np 2 /home/takao/bin/hsfp0_sc si --job=3 stdout='lsxC'  Elap. 1.9s
+00:00:19.862   mpirun -np 1 /home/takao/bin/hbasfp0 si --job=0 stdout='lbas'  Elap. 2.1s
+00:00:21.973   mpirun -np 2 /home/takao/bin/hvccfp0 si --job=0 stdout='lvcc'  Elap. 2.5s
+00:00:24.472   mpirun -np 2 /home/takao/bin/hgw si --jobgw=1 stdout='lgw'  Elap. 4.8s
+00:00:29.276   mpirun -np 1 /home/takao/bin/hqpe_sc si stdout='lqpe'  Elap. 1.5s
+Using cached b-value 0.5 for /home/takao/bin/lmf
+00:00:30.814   mpirun -np 2 /home/takao/bin/lmf si --ctrlg:iter.b=0.5 stdout='llmf'  Elap. 8.0s
+lmf successful with b=0.5
 ===== QSGW iteration end   iter 1 ===
 ```
+`lmf --jobgw=0` and `qg4gw` are run once, before the iterations; the other steps are repeated in every iteration.
 
 ## `lmfa`
 ### atmpnu*
@@ -199,7 +215,7 @@ QPLIST.lmf.chk  (no jobgw option) is for human. Irreducible q points for lmf sel
 ### __HAMindex
 q points table and so on for generating Hamiltonian
 
-### `__mix.<sname>`
+### `__mixm.<sname>`
 mixing file for lda
 
 ## `lmf --jobgw=0`
@@ -207,7 +223,7 @@ mixing file for lda
 This is for human. It shows index to expand eigenfunctions in MTs.
 
 ### __HAMindex0
-Generated at L96:main_lmf.f90 L96: call m_hamindex0_init()
+Generated by `m_hamindex0_init` called in main_lmf.f90.
 Index of MTOs, space-group symmetries and so on.
 
 ### QBZ.chk
@@ -273,15 +289,15 @@ radial functions.
 ### __MTOindex
 MTO index
 
-### __vxcevec*
+### __VxcEvec*
  Coefficients of eigenfunctions and  eigenvalues for $\langle F_i|H^0|\psi F_j$ in the basis of PMT$\{F_i\}$.
 
-### GEIG,__CPHI,__EValue
-GEIG: Coefficients of eigenfunctions. IPW part
-CPHI: Coefficients of eigenfunctions. MT  part
-EValue: eigenvalue
+### __GEIG,__CPHI,__EValue
+__GEIG: Coefficients of eigenfunctions. IPW part
+__CPHI: Coefficients of eigenfunctions. MT  part
+__EValue: eigenvalue
 
-### PPOVLGG, PPOVLI, PPOVLG, PPOVL0
+### __PPOvlp, __PPOvlpG, __PPOvlpGG
 overlap matrix of IPW.
 
 ### __VXCFP
@@ -293,6 +309,9 @@ Used at hsfp0 but not essential (only for convenience of presentantion).
 ### EFERMI
 The Fermi energy in the tetrahedron method
 
+### EFERMI_kbt
+Written when `[gw] t_tetrakbt` > 0: the Fermi energy at that temperature, used for $\chi_0$ and $\Sigma$ ([kBT](./kBT) §2.3).
+
 
 ## hbasfp0 (we have --job=3 for core and --job=0 for valence)
 ### __BASFP* 
@@ -303,35 +322,35 @@ The Fermi energy in the tetrahedron method
 ## `hvccfp0` 
 We call two times one for core, and the other for valence.
 
-### __Vcoud* , __WV.d
+### __Vcoud*
 the Coulomb matrix (eigenvalues and eigenfunctions of the Coulomb matrix in the expansion of MPB)
 
-## `hx0fp0`
+## `hgw`
+`hgw --jobgw=1` calculates the valence exchange, the screened Coulomb interaction $W$ and the valence correlation in one run.
+$W-v$ in the expansion of mixed product basis (along the real axis and along the imag axis) is kept in memory and handed to the
+calculation of the correlation $q$ by $q$; it is not written to files.
 Note that we use a technique to define $W-v$ at ${\bf q}=0$ as an average of the Gamma cell.
 
 ### __WV.d
 Size of the dielectric function
 
-### __WVR
-W-v in the expansion of mixed product basis along the real axis.
-
-### __WVI
-W-v in the expansion of mixed product basis along the imag axis.
+### __WVR.*, __WVI.*
+Only with `gwsc --dumpW` (for analysis): $W-v$ along the real axis and along the imag axis, a file for each $q$.
 
 ### freq_r
 human readable: energy mesh to accumrate imaginary parts of W-v.
 
 
-## `hsfp0_sc` (Core exhcange --job=3, valence exchange --job=1, and valence correlation --job=2)
+## `hsfp0_sc --job=3` (core exchange) and `hgw` (valence exchange and valence correlation)
 These are moved to SEBK at the end of gwsc iteration cycle.
 
 ### SEXcoreU,SEXcore2U :  
-core exchange --job=3 . SEXcoreU is diagonal part for human check but not used so much. 
+core exchange by `hsfp0_sc --job=3` . SEXcoreU is diagonal part for human check but not used so much. 
 We have *D for down spin (isp=2)as well.
-### SEU,SEX2U 
-valence exchange --job=1 .       SECU is diagonal part for human check but not used so much. 
+### SEXU,SEX2U 
+valence exchange by `hgw` .       SEXU is diagonal part for human check but not used so much. 
 ### SECU,SEC2U:  
-valence correlation --job=2 .     SECU is diagonal part for human check but not used so much. 
+valence correlation by `hgw` .     SECU is diagonal part for human check but not used so much. 
 ### XCU
 LDA exchange correlation
 ## `lqpe`
@@ -526,16 +545,14 @@ container changed):
   distinction of PRB 76, 165106 (2007). Historical: modern runs leave
   every core row all-zero.
 
-Site order in both files = `[[site]]` order in `ctrlg.<sname>.toml`;
+The site index `iatom` follows the order of `[[site]]` in `ctrlg.<sname>.toml`;
 `lmchk` prints the order at the top of its console output.
 
-> **Legacy reference.** The pre-TOML `<PRODUCT_BASIS>` block from
-> `GWinput` is reproduced verbatim in
-> [legacy GWinput page](./gwinput#product-basis-block) for users
-> migrating old decks. `Legacy2toml.py` translates that block into the
-> two TOML files above automatically.
+> **Legacy input.** `Legacy2toml.py` translates the pre-TOML
+> `<PRODUCT_BASIS>` block of `GWinput` into the `[product_basis]` section
+> above.
 
 
 # MEMO
 * We need to explain how to set Gamma-cell averaged $\tilde{W}({\bf q}=0,\omega)$.
-* [ecaljdetails](https://ecalj.github.io/ecaljdoc/ecaljdetails/ecaljdetails.pdf) Details of ecalj algorithm. This should be revised.
+* 旧い開発者向けの理論メモ ecaljdetails（2015〜2022、offset-Γ 法・クーロン行列・EIBZ など）は 2026-10-02 に外した。今も通じる要点は ecalj の `MD/past_log.md` §14、原文は ecaljdoc のコミット `3284d0b` の `ecaljdetails/ecaljdetails.tex`。

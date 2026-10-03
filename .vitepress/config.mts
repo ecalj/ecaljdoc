@@ -9,6 +9,7 @@ export default withMermaid({
   description: "document of ecalj",
   cleanUrls: true,
   ignoreDeadLinks: true,
+  srcExclude: ['trash/**'],
   lastUpdated: true,
   // markdown: {
   //   math: true,
@@ -39,6 +40,7 @@ export default withMermaid({
     sidebar: [
       {
         items: [
+          { text: 'GetStarted with AI (New!)', link: '/manual/getstartedAI' },
           { text: 'MainDocument', link: '/manual/README_tutorial' },
         ]
       },
@@ -53,15 +55,16 @@ export default withMermaid({
       {
         text: 'Manual',
         items: [
+          { text: '更新履歴（要約）/ What\'s new', link: '/manual/whatsnew' },
           { text: 'TOML migration (2026-05)', link: '/manual/toml_migration' },
           { text: 'Samples (where what lives)', link: '/manual/samples' },
           { text: 'DFT  calculation : lmf part', link: '/manual/lmf' },
           { text: 'Command-line options (--foo) catalogue', link: '/manual/cmdopts' },
           { text: 'QSGW calculation: gwsc part', link: '/manual/gwsc' },
           { text: 'GPU version of QSGW',link: '/manual/ecaljgpu.md' },
-          { text: 'kBT — 有限温度の自己エネルギー (tetrakbt / t_sigmakbt)', link: '/manual/kBT' },
+          { text: 'kBT — 有限温度と均し方 (t_tetrakbt / t_sigmaw)', link: '/manual/kBT' },
           { text: 'MLO — 最大局在化などに代わる自動モデル化法', link: '/manual/mlo' },
-          { text: 'MLO — 経緯と作業記録 (backup)', link: '/manual/mlo_backup' },
+          { text: 'MLO-gwsc — Sigma を MLO 表現で内挿する QSGW（開発中）', link: '/manual/mlo_gwsc' },
           { text: 'UsageDetailed ', link: '/manual/UsageDetailed' },
           // { text: 'Density of states', link: '/manual/dos' },
           // { text: 'Band dispersion plot', link: '/manual/band' },
@@ -71,8 +74,7 @@ export default withMermaid({
           // { text: 'Structural optimization', link: '/manual/opts' },
           // { text: 'Quasi-particle\'s life time', link: '/manual/lifetime' },
           // { text: 'Spectrum function', link: '/manual/spec' },
-          { text: 'developer', link: '/manual/developer' },
-          { text: 'ecalj auto', link: '/manual/auto' }
+          // developer pages (ForDevelopers, developer, auto, kBT_history, mlo_backup, implementation) moved to ecalj/MD on 2026-10-02 (not on the site)
         ]
       },
       {
@@ -97,13 +99,6 @@ export default withMermaid({
           { text: 'Optical properties', link: '/theory/optical_properties' },
           { text: 'Basic  I', link: '/theory/basic' },
           { text: 'Basic II', link: '/theory/basic2' },
-        ]
-      },
-      {
-        text: 'Implementation',
-        items: [
-          { text: 'hrcxq/hx0fp', link: '/implementation/hx0fp' },
-          { text: 'hsfp0_sc', link: '/implementation/hsfp0' },
         ]
       },
     ],

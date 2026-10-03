@@ -62,11 +62,12 @@ To install ecalj, look into [install](../install/install.md), as well as [instal
 3. **Dielectric functions and magnetic susceptibilities**
     We can calculate GW-related quantities such as dielectric functions, spectrum function of the Green's functions, Magnetic fluctuation, and so on. Since our QSGW can generate eigenfunctions and eigenvalues at any k points.
 
-4. **The Model Hamiltonian with Wannier functions** 
-   We can generate the effective model (Maxloc Wannier and effective interaction between Wannier funcitons). 
-   This is originally from codes by Dr.Miyake, Dr.Sakuma, and Dr.Kino. The cRPA given by Juelich group is implemented. 
-   Here is a latest paper to using this, https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.035141.
-   * We are now replacing MLWF with MLO (MuffinTinOrbail-based Localized Orbitals), where we can easily throw away (downfolding) the APW degree of freedom. 
+4. **The Model Hamiltonian with MLO** 
+   We generate the effective model with MLO (muffin-tin based localized orbitals): the model Hamiltonian, and the effective
+   interaction v, W and the cRPA W between MLOs (`job_mlo`, `job_mloW --crpa`; [MLO](./mlo)).
+   * Until 2026-10-02 ecalj had maximally localized Wannier functions with cRPA (Juelich group's formulation), originally from
+     codes by Dr. Miyake, Dr. Sakuma and Dr. Kino (a paper using it: https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.035141).
+     MLO replaced them; they are at the git tag `last-wannier`. 
 
 5. **Singleton pattern in fortran**
    The main part of our codes is in fortran. Our codes have the object-oriented structures respecting the singlton design pattern. We think this is a step to replace our fortran codes with those in modern languages such as JAX/PyTorch. Inevitably, we still have legacy codes but encapsulated as possible, and going to be replaced.
@@ -131,7 +132,7 @@ GW法でのバンドプロットが直接に可能。
 QSGWでは現状全エネルギー計算ができない。バンド構造（固有値、波動関数）のみ。
 * 線形応答などの計算。
 RPAでの誘電率計算、スピンゆらぎ計算 （改良の余地。金属でもできる。ドルーデウエイト(q→0）
-MaxlocWannier(内蔵している）、MLO（新しいモデル化法：まだ余地あり）。 自動化がすこしできてないところがある。
+MLO による模型化（模型のハミルトニアン、v・W・cRPA。2026-10-02 に最局在 Wannier から置き換えた）。 自動化がすこしできてないところがある。
 その他の物理量についても応用できるはず。
 * かなりの部分で自動計算が可能。QSGW法ではMaterial Projectから1500個程度の構造ファイルを持ってきて自動化でQSGW計算しているが
 ほぼ問題なく可能。個別にセッティングを手動でいじらなくても良い（4f,5fについては自動化がまだ設定できてないが基本的に可能）
@@ -301,7 +302,7 @@ SPEC
 . If you like to use antiferro symmetry (only calculate up band only, and generate down band). 
 See [AFsymmetry](./UsageDetailed.md#antiferro-symmetry-without-soc).  MMOM is the initial condition of magnetic moments at sites.
 The numbers (here 1.2) can be not so accurate (just integers or so).
-Samples are in [minidatabase](#jobmaterialspy-mini-database-for-computational-tests). Simple materials first. But it is not so difficult
+Samples are in [Samples/MATERIALS](#samples-materials-lda-and-mlo-samples-of-65-materials). Simple materials first. But it is not so difficult
 to reproduce results by VASP or in MP from your POSCAR file.
 
 
@@ -400,10 +401,10 @@ Common edits in `ctrlg.<sname>.toml`:
 7. LDA+U: add `idu / uh / jh` arrays inside `[[spec]]`; see the
    [LDA+U section in `lmf.md`](./lmf).
 
-For the run-time `-v` syntax, see [TOML migration](./toml_migration):
+A key is overridden for one run by `--ctrlg:<section.key>=<value>` on the command line, see [TOML migration](./toml_migration#run-time-ctrlg-overrides):
 
 ```bash
-# OLD (legacy ctrl + %const)
+# OLD (legacy ctrl + %const; the programs stop)
 lmf si -vnk=8 -vmetal=3 -vnspin=2
 
 # NEW (TOML path; processed in-memory, no on-disk rewrite)
@@ -412,11 +413,11 @@ lmf si --ctrlg:bz.nkabc=[8,8,8] --ctrlg:bz.metal=3 --ctrlg:ham.nspin=2
 
 > ⚠️ **CAUTION** — `-v` *used to* override a `%const NAME=...` symbol
 > declared inside the legacy `ctrl.<sname>` (`{NAME}` then expanded
-> wherever it was referenced). Under TOML, **`-v` points directly at
+> wherever it was referenced). Under TOML, **the override points directly at
 > a TOML path** (`--ctrlg:section.key=val`); there is no `%const`
-> indirection. So habits like `-vmetal=3` silently do nothing —
-> use `--ctrlg:bz.metal=3`. See the
-> [CAUTION block on toml_migration](./toml_migration#run-time-v-overrides).
+> indirection. With `-vmetal=3` the programs stop with a message that
+> names the new form — use `--ctrlg:bz.metal=3`. See the
+> [CAUTION block on toml_migration](./toml_migration#run-time-ctrlg-overrides).
 
 * `lmchk mp-2534 --ctrlg:verbose=60` allows you to check the recognized symmetries.
   (Legacy `lmchk --pr60 mp-2534` is retired — the `--pr=N` shortcut now aborts
@@ -430,12 +431,12 @@ At this point, you can visually check:
 [Detailed reference for every key in `ctrlg.<sname>.toml`](./lmf).
 
 > **`ctrlgenToml.py` ↔ `ctrlgenM1.py` (legacy)** — `ctrlgenToml.py`
-> shares the periodic-table defaults with `ctrlgenM1.py` (atomlist
-> extracted at runtime), so both produce equivalent physics.  The
-> legacy two-step path
-> `ctrlgenM1.py <sname> → ctrlgenM1.ctrl.<sname> → cp to ctrl.<sname> → Legacy2toml.py <sname>`
-> is preserved for migrating old directories that already have
-> hand-edited `ctrl.<sname>` (or `ctrl.<sname>` + `GWinput`) decks.  See
+> takes the periodic-table defaults from the file `ctrlgenM1.py` (atomlist
+> extracted at runtime).  `ctrlgenM1.py` itself does not generate
+> `ctrl.<sname>` any more: it prints a pointer to `ctrlgenToml.py` and
+> exits.  Old directories that already have
+> hand-edited `ctrl.<sname>` (or `ctrl.<sname>` + `GWinput`) decks are
+> converted by `Legacy2toml.py <sname>`.  See
 > Step 2-Migration below.
 
 ### Step 2-Migration. Existing `ctrl.<sname>` (and optional `GWinput`)
@@ -563,7 +564,7 @@ As for the console out put, you see
 ```
 , where we see the Hamiltonian dimensions. When PWMODE=11, we have q-dependent energy cutoff of APWs by |q+G|^2< pwemax. (In our code, we use Rydberg $2m=\hbar=e^2/2=1$). 
 
-* NOTE: In defaults given by ctrlgenM1.py, all the calculation are by  
+* NOTE: In defaults given by ctrlgenToml.py, all the calculation are by  
    >No empty spheres. 
    >EH=-1,EH=-2, MT radius is -3% untouching.
    >RSMH=RSMH2=R/2
@@ -610,7 +611,7 @@ https://ecalj.sakura.ne.jp/BZgetsyml/
 ## Step 5. band plot
 （this is a case for ba2pdo2cl2 ）
 ```
->job_band ctrl.ba2pdo2cl2 -np 8
+>job_band ba2pdo2cl2 -np 8
 ```
 
 A gnuplot script can be created. Edit it if necessary. If you edit syml.ba2pdo2cl2 before `job_band`, you can adjust the symmetry line and mesh size.
@@ -654,20 +655,27 @@ In the similar manner, we can run job_pdos, job_tdos, job_fermisurface. -->
 We now run QSGW calculations. QSGW is computationally very expensive,
 so we recommend running smaller systems first.
 
-> Since 2026-05 the GW driver inputs are **inside** the same
-> `ctrlg.<sname>.toml`, in sections `[gw]`, `[product_basis]`, and
-> `[blocks]`. The legacy separate `GWinput` text file is no longer
+> The GW driver inputs are **inside** the same
+> `ctrlg.<sname>.toml`, in sections `[gw]`, `[mlo]`, `[blocks]` and
+> `[product_basis]`; `ctrlgenToml.py` (Step 2) has written them. The legacy
+> separate `GWinput` text file is not
 > parsed by Fortran.  If you started from an old directory with
-> `ctrl.<sname>` + `GWinput`, `Legacy2toml.py <sname>` (Step 2.5)
-> already merged the GW content for you.  If you have only `ctrl.<sname>`
-> (no `GWinput`) and want a default GW set-up, run:
+> `ctrl.<sname>` + `GWinput`, `Legacy2toml.py <sname>` (Step 2-Migration)
+> already merged the GW content for you.  If `ctrlg.<sname>.toml` has no GW
+> sections (made with `--skipgw`, or converted from a directory with only
+> `ctrl.<sname>`) and you want a default GW set-up, run:
 >
 > ```bash
-> mkGWinput mp-2534                  # produces a legacy GWinput template
-> Legacy2toml.py mp-2534             # re-emit ctrlg.mp-2534.toml with [gw] etc.
+> ctrlgenToml.py mp-2534 --addgw     # appends [gw]/[mlo]/[blocks]/[product_basis] to ctrlg.mp-2534.toml
 > ```
 
-The single key you most often tweak before launching QSGW is the GW
+`[gw]` carries two temperatures in kelvin, `t_sigmaw` (Fermi-Dirac width
+of the levels in the self-energy) and `t_tetrakbt` (how $\chi_0$ is
+smeared; **required**, the programs stop without it). The generated file
+has 300 for both. For semiconductors and insulators use `t_tetrakbt = 0`
+(the tetrahedron method at T=0); for metals see [kBT](./kBT).
+
+The key you most often tweak before launching QSGW is the GW
 k-mesh, `[gw].n1n2n3`, kept smaller than `[bz].nkabc` (typically 1/2
 or 2/3 of it) since it dominates wall-time:
 
@@ -682,8 +690,7 @@ n1n2n3 = [6, 6, 6]        # GW k-mesh (smaller -> faster)
 For Si, `n1n2n3 = [6, 6, 6]` is good; the rest of `[gw]` rarely needs
 touching for non-magnetic semiconductors. The legacy GWinput key
 mapping lives in [`lmf.md` § Legacy ctrl.&lt;sname&gt; ↔ TOML path map](./lmf#legacy-ctrl-lt-sname-gt-toml-path-map),
-and the historical `GWinput` text format is documented (as a reference
-only) in [`gwinput.md`](./gwinput).
+and the keys of `[gw]` are described in [`gwinput.md`](./gwinput).
 Here is a convergence behavior of the band gap for GaAs  taken from Ref.[3],
 ![convGaAs](./gaasnk.png) 
 From this picture, I may say 4 4 4 is not so bad if we assume ~0.1eV accuracy. 6 6 6 is good. More than 8 8 8 is for numerical check(not fruitful for practical applications).
@@ -696,48 +703,55 @@ QSGW is to obtain band structures (or one-body Hamiltonian), the total energy is
 `QPU` file contains diagonal components of GW calculations.
 Note that our `Mixed Produce basis` is a key technology for the GW calculation.
 ```
-gwsc -np NP [--gpu] [--mp] nloop extension
+gwsc -np NP [-np2 NP2] [--gpu] [--prec=tf32|fp32|fp64] nloop extension
 ```
-(For magnetic materials wanting the same basis for up and down, set
+(`--gpu` uses the GPU programs, and `--prec` chooses their precision; see [gwsc](./gwsc).
+For magnetic materials wanting the same basis for up and down, set
 `[ham] phispinsym = true` in `ctrlg.<sname>.toml`, or pass
 `--ctrlg:ham.phispinsym=true` at run time.)
 
 
 Then console outputs of `gwsc` is somthing like
 ```text
-### START gwsc: ITERADD= 1, MPI size=  4, 4 TARGET= si
-===== Ititial band structure ======
----> No sigm. LDA caculation for eigenfunctions
-0:00:00.226245   mpirun -np 1 /home/takao/bin/lmfa si     >llmfa
-0:00:00.807062   mpirun -np 4 /home/takao/bin/lmf  si     >llmf_lda
-===== QSGW iteration start iter 1 ===
-0:00:03.071054   mpirun -np 1 /home/takao/bin/lmf si     --jobgw=0 >llmfgw00
-0:00:03.904403   mpirun -np 1 /home/takao/bin/qg4gw    --job=1 > lqg4gw
-0:00:04.431022   mpirun -np 4 /home/takao/bin/lmf si     --jobgw=1 >llmfgw01
-0:00:05.918216   mpirun -np 1 /home/takao/bin/heftet --job=1    > leftet
-0:00:06.444439   mpirun -np 1 /home/takao/bin/hbasfp0 --job=3    >lbasC
-0:00:07.064558   mpirun -np 4 /home/takao/bin/hvccfp0 --job=3    > lvccC
-0:00:07.812283   mpirun -np 4 /home/takao/bin/hsfp0_sc --job=3    >lsxC
-0:00:08.545956   mpirun -np 1 /home/takao/bin/hbasfp0 --job=0    > lbas
-0:00:09.156775   mpirun -np 4 /home/takao/bin/hvccfp0 --job=0    > lvcc
-0:00:09.884064   mpirun -np 4 /home/takao/bin/hsfp0_sc --job=1    >lsx
-0:00:10.644292   mpirun -np 4 /home/takao/bin/hrcxq   > lrcxq
-0:00:11.482931   mpirun -np 4 /home/takao/bin/hsfp0_sc --job=2    > lsc
-0:00:12.460776   mpirun -np 1 /home/takao/bin/hqpe_sc    > lqpe
-0:00:13.019735   mpirun -np 4 /home/takao/bin/lmf si     >llmf
+--- Start gwsc ---
+option= []
+gwsc: using ctrlg.si.toml (TOML mode)
+### START gwsc: ITERADD= 1, MPI size=  2, 2 TARGET= si
+===== Ititial band structure ====== 
+--> No sigm. LDA caculation for eigenfunctions 
+00:00:00.007   mpirun -np 1 /home/takao/bin/lmfa si stdout='llmfa'  Elap. 1.5s
+00:00:01.481   mpirun -np 2 /home/takao/bin/lmf si --ctrlg:iter.b=0.5 stdout='llmf_lda'  Elap. 6.1s
+lmf successful with b=0.5
+Removing __mixm.si
+00:00:07.563   mpirun -np 2 /home/takao/bin/lmf si --jobgw=0 stdout='llmfgw00'  Elap. 1.8s
+00:00:09.335   mpirun -np 1 /home/takao/bin/qg4gw si --job=1 stdout='lqg4gw'  Elap. 1.0s
+===== QSGW iteration start iter 1 === (GW precision fp64)
+00:00:10.381   mpirun -np 2 /home/takao/bin/lmf si --jobgw=1 stdout='llmfgw01'  Elap. 3.7s
+00:00:14.042   mpirun -np 1 /home/takao/bin/heftet si --job=1 stdout='leftet'  Elap. 1.1s
+00:00:15.193   mpirun -np 1 /home/takao/bin/hbasfp0 si --job=3 stdout='lbasC'  Elap. 1.4s
+00:00:16.570   mpirun -np 2 /home/takao/bin/hvccfp0 si --job=3 stdout='lvccC'  Elap. 1.4s
+00:00:17.966   mpirun -np 2 /home/takao/bin/hsfp0_sc si --job=3 stdout='lsxC'  Elap. 1.9s
+00:00:19.862   mpirun -np 1 /home/takao/bin/hbasfp0 si --job=0 stdout='lbas'  Elap. 2.1s
+00:00:21.973   mpirun -np 2 /home/takao/bin/hvccfp0 si --job=0 stdout='lvcc'  Elap. 2.5s
+00:00:24.472   mpirun -np 2 /home/takao/bin/hgw si --jobgw=1 stdout='lgw'  Elap. 4.8s
+00:00:29.276   mpirun -np 1 /home/takao/bin/hqpe_sc si stdout='lqpe'  Elap. 1.5s
+Using cached b-value 0.5 for /home/takao/bin/lmf
+00:00:30.814   mpirun -np 2 /home/takao/bin/lmf si --ctrlg:iter.b=0.5 stdout='llmf'  Elap. 8.0s
+lmf successful with b=0.5
 ===== QSGW iteration end   iter 1 ===
 OK! ==== All calclation finished for  gwsc ====
 ```
 ... 
 
-The console outputs are redirected to log files `l*`. `lsxC` is the exchange self-energy due to cores. `lsx` is for exchange. `lsc` is correlation. `lvcc` is for Coulomb matrix。
-In this calculation we run `gwsc -np 8 1 si`, where 1 is the number of QSGW iteration.
+The console outputs are redirected to log files `l*`. `lsxC` is the exchange self-energy due to cores. `lgw` is for the program `hgw`, which calculates the exchange self-energy of the valence electrons, the screened Coulomb interaction $W$ and the correlation self-energy in one run ($W$ is kept in memory). `lvcc` is for Coulomb matrix。
+In this calculation we run `gwsc -np 2 1 si`, where 1 is the number of QSGW iteration.
 If you repeat gwsc, we have additional QSGW iterations on top the previous calculations.
 
 #### a case of La2CuO4
-For La2CuO4, I had (verbatim log from 2025-06; the legacy `-vssig=0.8`
-form recorded below is no longer parsed — today the same override is
-`--ctrlg:ham.scaledsigma=0.8`):
+For La2CuO4, I had (verbatim log from 2025-06; with the legacy `-vssig=0.8`
+form recorded below the programs stop today — the same override is
+`--ctrlg:ham.scaledsigma=0.8` — and the three steps `hsfp0_sc --job=1`, `hrcxq`,
+`hsfp0_sc --job=2` are the one step `hgw --jobgw=1`):
 ```
 2025-06-27 19:09:01.465241   mpirun -np 1 echo --- Start gwsc ---
 --- Start gwsc ---
@@ -773,16 +787,15 @@ Since I had 5th-QSGW iteration finished (checked  by the existence of QPU.5run),
 #### a case study of ba2pdo2cl2.
 
 If you started from a pre-2026-05 directory with only `ctrl.<sname>`,
-generate the GW driver settings and merge them into TOML in two steps:
+convert it and add the GW driver settings in two steps:
 
 ```bash
-mkGWinput ba2pdo2cl2          # produces a legacy GWinput.tmp template
-cp GWinput.tmp GWinput        # copy and (optionally) edit
-Legacy2toml.py ba2pdo2cl2     # ctrl.<sname> + GWinput -> ctrlg.<sname>.toml
+Legacy2toml.py ba2pdo2cl2            # ctrl.<sname> -> ctrlg.<sname>.toml (no GW sections without GWinput)
+ctrlgenToml.py ba2pdo2cl2 --addgw    # appends [gw]/[mlo]/[blocks]/[product_basis]
 ```
 
-After conversion, the only key you usually need to tweak before
-running QSGW is the GW k-mesh:
+After that, the keys you usually need to look at before
+running QSGW are `t_tetrakbt` (above) and the GW k-mesh:
 
 ```toml
 [gw]
@@ -822,9 +835,9 @@ is not implemented in the whole gwsc cycle, we have to include SOC just at the e
 
 * If you run 
 ```
-gwsc -np 32 5 ba2pdo2cl2 -vssig=0.8
+gwsc -np 32 5 ba2pdo2cl2 --ctrlg:ham.scaledsigma=0.8
 ```
-, this overide ssig, which is defined in ctrl.ba2pdo2cl2, in lmf calculations. (Check it in save.ba2pdo2cl2)
+, this overides `[ham] scaledsigma` of `ctrlg.ba2pdo2cl2.toml` in lmf calculations. (Check it in save.ba2pdo2cl2 and at the top of `llmf`)
 
 #### a case of KTaO3
 Example of QSGW for KTaO3 (perovskite,mp-3614）
@@ -842,7 +855,7 @@ Example of QSGW for KTaO3 (perovskite,mp-3614）
 If you have less symmetry rather than the symmetry of lattice for magnetic systems,
 you have to set crystal symmetry by hand.
 
-This can be done by adding space group symmetry generator to SYMGRP (instead of `find`).
+This can be done by writing space group symmetry generators to `symgrp` of `ctrlg.<sname>.toml` (instead of `find`).
 We need to pay attention for this point in the case of SOC.
 
 ### how to write space-group operation 
@@ -850,50 +863,31 @@ For example r3x means 3-fold axis along x. How to express space-group operations
 
 
 ## How to start over calcualtions
-Remove mix* rst* (mix* is mixing files)
+Remove rst* (the mixing file `__mixm.<sname>` of the previous run is discarded by `lmf` at start)
 If MT radius are changed, start over from lmfa (remove atm* files)
 
 - As long as converged, no problem. 
 - If you have 3d spagetti-like entangled bands at Ef, need caution.
 
 
-# jobmaterials.py: mini database for computational tests
-At ecalj/MATERIALS/, type `./jobmaterials.py`. It shows a help with a list of materials.
-It contains samples of simple materials. It performs LDA calculations and generates GW driver settings (now in `[gw]` of `ctrlg.<sname>.toml`; legacy `GWinput` for un-migrated materials).
-(I think MATERIALS/ is not organaized well. We are going to clean up)
-* How to run 
-  ```
-  ./job_materials.py
-  ``` 
-  gives a help, showing a list of materials as
-  ```
-   === Materials in Materials.ctrls.database are:===
-   2hSiC 3cSiC 4hSiC AlAs AlN AlNzb AlP AlSb Bi2Te3 C
-   CdO CdS CdSe CdTe Ce Cu Fe GaAs GaAs_so GaN
-   GaNzb GaP GaSb Ge HfO2 HgO HgS HgSe HgTe InAs
-   InN InNzb InP InSb LaGaO3 Li MgO MgS MgSe MgTe
-   Ni NiO PbS PbTe Si SiO2c Sn SrTiO3 SrVO3 YMn2
-   ZnO ZnS ZnSe ZnTe ZrO2 wCdS wZnS
-   ```  
+# Samples/MATERIALS: LDA and MLO samples of 65 materials
+ecalj `Samples/MATERIALS/` holds one directory per material: 62 simple materials (Si, GaAs, ZnO, MgO, SrTiO3, NiO, EuO, Bi2Te3, ...)
+and La2CuO4, the InAs/GaSb superlattice of 16 atoms and BaTiO3. Each has `ctrls.<sname>` and `ctrlg.<sname>.toml`.
+They are samples of LDA calculations and of MLO models; the LDA bands and the MLO models of all 65 were computed and compared on
+2026-10-01 (how to choose the MLO model and the results: [mlo](./mlo) §9; the list of materials: ecalj
+[Samples/MATERIALS/README.md](https://github.com/tkotani/ecalj/blob/main/Samples/MATERIALS/README.md)). They are not tests.
 
-Run Si for example:
+Run Si for example (copy the directory first):
   ```
-  ./job_materials.py Si 
-  ``` 
-  performs LDA calculation of Si at ecalj/MATERIALS/Si/. '--all' works as well instead of 'Si'.
-  >job_materials.py works as follows for given names.
-  Step 1. Generate ctrls.* file for Materials.ctrls.database. (names are in DATASECTION:)
-  Step 2. Generate `ctrlg.<sname>.toml` by `ctrlgenToml.py`
-          (legacy path: `ctrlgenM1.py` + `Legacy2toml.py`)
-  Step 3. Make directory such as Si/ and copy ctrls.si plus the generated TOML pair
-          (legacy: ctrls.si, ctrl.si, GWinput)
-  Step 4. run lmfa and lmf
-  We can skip step 4 with `--noexec`. 
-  Run "job_materials --all --noexec" is an idea to generate all input files for materials in the database.  Watch no strange erros appear.
-
+  cp -r ~/ecalj/Samples/MATERIALS/Si ~/work/ && cd ~/work/Si
+  mpirun -np 1 lmfa si
+  mpirun -np 8 lmf si
+  ```
+(Until 2026-10-01 these inputs were made on the fly by `jobmaterials.py` from `Materials.ctrls.database` in the top-level
+`MATERIALS/`, which is gone; its contents are described in ecalj `MD/past_log.md` §9.)
 
 * Key input files are
-```ctrls.si,ctrl.si```
+```ctrls.si,ctrlg.si.toml```
 . See sections below. ```rst.si``` contains self-consistent electron density. Check iterations with the output file `save.si`. The console output of lmf is in llmf. Not need to know all the console outputs. 
 
 * Before QSGW, it is better to confirm the LDA level calculations are fine. In order to do the confirmation, band plot is convenient.
