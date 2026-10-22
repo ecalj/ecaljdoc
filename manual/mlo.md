@@ -1647,7 +1647,11 @@ GW の k 点は、間隔の規則で 3 段（low・middle・high が Si の 4×4
 回し方:
 
 1. QSGW80: [`ecalj_auto/gw1500_rerun.sh`](https://github.com/tkotani/ecalj/tree/main/ecalj_auto/gw1500_rerun.sh)
-   （POSCAR → `ctrlgenToml.py --ssig=0.8` → `ES_RMIN=auto` なら `gw1500_addes.py` で ES → `gwscconv` → `job_band`）
+   （POSCAR → `ctrlgenToml.py --ssig=0.8` → `ES_RMIN=auto` なら `gw1500_addes.py` で ES → `gwscconv` → `job_band`）。
+   規則で置けない ES は手で置く: `ES_CUSTOM_DIR` の `ctrlg.<mpid>.toml` に E* の `[[site]]`・`[[spec]]` を書けば `gw1500_addes.py` がそれを使う。
+   空隙を探すのは `ctrlg_addes.py <sname> --rmin <a.u.> [--rfloor <a.u.>] [--rsp <a.u.>] --dry-run`（`--rfloor`: 軌道ごとに置く ES の半径の下限、既定 1.5 a.u.。
+   空隙はあっても ES がこれより小さくなる軌道は置かない。そのときは空隙の数と大きさを表示する）。板（規則 es-d）は、表面の外の ES "E" と真空の中央の ES "E2" を
+   手で置いた入力から `ecalj_auto/gw1500_es_slab_layers.py <in> <out> [--r 2.6] [--nlayer 1]` で層 "E3" を足し、全部の ES を s,p にする（重なりを確かめる）
 2. MLO: [`ecalj_auto/gw1500_mlo_std.sh`](https://github.com/tkotani/ecalj/tree/main/ecalj_auto/gw1500_mlo_std.sh) `<src> <out> [np]`。
    `<src>` は 1 の `PlotBand/` に QSGW の最後の `efermi.lmf` を足したもの。版ごとに `gw1500_mlo.sh`（`[mlo]` を今の `gwinit` で書き直し、
    `job_mlo`、`mlo_bandcheck.py`、`gw1500_mlo_grade.py`）を回し、採った版と判定を `best.txt` に書く。ctrlg の `[ham] scaledsigma = 0.8` により QSGW80 の模型になる
@@ -1669,8 +1673,8 @@ Rb₈（mp-1179832。原子を大きな胞に間隔を置いて並べたもの�
 |---|---|---|---|
 | es-a | 2026-10-05 00:00 | ワイコフの軌道ごと、すき間の 0.9 倍（上限 4.0 a.u.）。距離は分数座標ごとに折り返して測った（斜めの胞で重なりうる） | 63 |
 | es-b | 2026-10-06 12:12 | 距離を最も近い像で測り、格子の最短ベクトルでも抑える | 4 |
-| es-c | 2026-10-06 13:09 | es-b で半径の上限を 3.5 a.u. に | 172 |
-| es-d | 2026-10-07 23:50 | 板: 表面の外の ES と、真空を埋める ES の層（空き 2 a.u. 程度以下）、全部 s,p。いまは手で置く（es_custom）。`ctrlg_addes.py` に入れるのはこれから | 1 |
+| es-c | 2026-10-06 13:09 | es-b で半径の上限を 3.5 a.u. に | 171 |
+| es-d | 2026-10-07 23:50 | 板: 表面の外の ES と、真空を埋める ES の層（空き 2 a.u. 程度以下）、全部 s,p。いまは手で置く（es_custom、層は `ecalj_auto/gw1500_es_slab_layers.py`）。`ctrlg_addes.py` に入れるのはこれから | 2 |
 
 *表 M10*. 手で ES を置いた物質（`es_custom/ctrlg.<mpid>.toml` を `gw1500_addes.py` が取り込む）
 
@@ -1681,12 +1685,12 @@ Rb₈（mp-1179832。原子を大きな胞に間隔を置いて並べたもの�
 | C₄O₄ mp-11875 | 2.5 a.u.、s だけ | 規則の 3.5 a.u. ではギャップが 7.7〜9.6 eV で振れた |
 | K₄BeP₂ mp-9872 | 2.2 a.u. を 1 つ | 規則の 2.9 a.u. では大きい K の球の間で LDA が壊れた |
 | PbS mp-726184（板） | 両方の表面のすぐ外（2.6 a.u.）と真空の中央（2.9 a.u.） | 真空の中央だけでは伝導帯の下端の状態（表面のすぐ外にしみ出す）を取れなかった |
-| SnS mp-554134（板） | 両方の表面の外と真空の中央に 2 つ（2.65 a.u.） | 同上 |
+| SnS mp-554134（板、規則 es-d） | 両方の表面の外（1.9 a.u.）、両側にもう 2 層（1.9 a.u.、表面の ES の組が近いので小さく）、真空の中央に 2 つ（2.65 a.u.）の 14 個、全部 s,p | 表面の外と中央だけ（s）では FAIR 0.24 eV、es-d で PASS 0.007 eV |
 | PbS mp-561320（板、規則 es-d） | 両方の表面の外（2.35 a.u.）、両側にもう 1 層（2.6 a.u.）、真空の中央（3.0 a.u.）の 9 個、全部 s,p | 表面の外と中央だけ（s）では、真空の空いた層（約 4 Å）に広がった一本を模型が取れなかった（0.38 eV）。表 M11 |
 
-**MLO**: 1546 物質で PASS 1538、FAIR 4、OK 2、SKIPPED 2（2026-10-08）。採った版は b1 989、b2 420、b2all 107、b2d 28、手作り 1（固体 H₂ の
+**MLO**: 1546 物質で PASS 1539、FAIR 3、OK 2、SKIPPED 2（2026-10-09）。採った版は b1 989、b2 420、b2all 107、b2d 28、手作り 1（固体 H₂ の
 `x_s_only`: H の s、EH2 の s、ES の s だけ。処方の EH2 の p で MLO の重なりの行列が特異になった）。FAIR（最大のずれ 0.3 eV 以下、
-データベースの表示だけの区分。提示してよい）は H₂ 0.11、H₈ 0.15、BN mp-685145 0.24、SnS mp-554134 0.24 eV。FAIL は無い。
+データベースの表示だけの区分。提示してよい）は H₂ 0.11、H₈ 0.15、BN mp-685145 0.24 eV（シートの間の 2.56 a.u. の空隙に小さな ES 1.25 a.u. を置くと、かえって価電子帯で 0.55 eV 外れた。2026-10-09）。FAIL は無い。
 SKIPPED は Rb₈ と Sr（mp-1056418、1 原子で 462 Å³ の胞）。
 
 *表 M11*. 板の ES の入れ方と MLO（PbS mp-561320、真空 19.4 Å。QSGW80、MLO の標準の処方の b1。外れは CBM + 1.8 eV の真空の一本、2026-10-08）
@@ -1699,7 +1703,7 @@ SKIPPED は Rb₈ と Sr（mp-1056418、1 原子で 462 Å³ の胞）。
 | 同じ 9 個、全部 s,p（採った版） | 4.149 | 0.006 PASS |
 
 効くのは真空を ES の層で埋めることで、p だけでは直らない。層で埋めたうえで p を足すと、さらに一桁良くなる（表面の外の状態は面の法線の方向の形、p_z を持つ）。
-ギャップは ES の入れ方によらない。同じ型の SnS mp-554134（FAIR 0.24 eV、真空 19.5 Å）は、この規則での回し直しがまだ。
+ギャップは ES の入れ方によらない。同じ型の SnS mp-554134（真空 19.5 Å）も、この規則で FAIR 0.24 → PASS 0.007 eV（2026-10-09）。
 
 模型がうまくいかなかったものの多くは、比べる相手の QSGW80 のバンドの側の問題だった。ES の無い真空・すき間に広がる状態と、
 大きな MT 球の偽の準位（Rb₂Sc₂O₄、[mtradius.md](./mtradius.md)）である。基底が足りなかったのではない。
