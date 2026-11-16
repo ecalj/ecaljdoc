@@ -3,24 +3,39 @@
 ecalj の新しい機能と、結果が変わる修正の要約。新しい順。詳しい記録（全部の変更）は ecalj の
 [Changes.md](https://github.com/tkotani/ecalj/blob/main/Changes.md)。各項目の説明はリンク先のページ。
 
+## 2026-11: 古い ctrlg は GW で止まる（直し方）
+
+::: warning 使い方が変わった（2026-11-14）
+`[gw]` の `t_sigmaw`、`HistBin_dw`、`HistBin_ratio`、`QforEPSau`、`EMAXforGW` を必須にした。
+これらの無い古い `ctrlg.<sname>.toml` では、GW のプログラム（`gwsc` など）がその旨を表示して止まる。
+次の一行で足せる。足す値はそれまでのコードの既定値なので、**結果は変わらない**。
+
+```bash
+ctrlg_update.py ctrlg.<sname>.toml      # 元のファイルは ctrlg.<sname>.toml.bak_update に残る
+```
+
+古い `esmr`・`t_sigmakbt` は読まなくなり、`ctrlg_update.py` が `t_sigmaw` に換算する。
+キーの意味は [GW の設定](./gwinput.md)、温度のキーは [kBT](./kBT.md)。
+:::
+
 ## 最近の大きな話題（2026-09〜10）
 
-### 1. 温度と均し方は `t_tetrakbt` と `t_sigmaw` の 2 つだけ、LiTi₂O₄ の反復の結果（tf32・fp32・fp64）
+### 温度と均し方は `t_tetrakbt` と `t_sigmaw` の 2 つだけ、LiTi₂O₄ の反復の結果（tf32・fp32・fp64）
 
 - **温度と均し方の指定は、`[gw]` の 2 つのキー `t_tetrakbt` と `t_sigmaw` だけになった**（単位は K）→ [kBT](./kBT.md) 表 4
   - `t_tetrakbt`（χ0 側、必須）: 0 は T = 0 のテトラヘドロン法（均さない）、正の値 T は温度 T の有限温度のテトラヘドロン法、
-    負の値 −T は T = 0 のテトラヘドロン法で作った Im χ0 を、温度 T の Fermi–Dirac と同じ幅の Gaussian で均す → [kBT](./kBT.md) §2
-  - `t_sigmaw`（Σ 側、既定 1000）: Σx・Σc の中間準位を均す Fermi–Dirac 核の幅 → [kBT](./kBT.md) §3
+    負の値 −T は T = 0 のテトラヘドロン法で作った Im χ0 を、温度 T の Fermi–Dirac と同じ幅の Gaussian で均す → [kBT](./kBT.md) §3
+  - `t_sigmaw`（Σ 側、2026-11-14 から必須）: Σx・Σc の中間準位を均す Fermi–Dirac 核の幅 → [kBT](./kBT.md) §4
   - 以前のキー `SmearX0`・`esmr`・`tetrakbt = true`・`t_sigmakbt` は使わない（`SmearX0` が残っていると止まり、`ctrlg_update.py` が書き換える。
-    キーの変遷は [kBT](./kBT.md) §2.5 の表 2）
+    キーの変遷は [kBT](./kBT.md) §3.5 の表 2）
   - `wcsmear`（既定 true）は温度ではなく、Σc の実軸の極の項で極の位置にも同じ核を使うスイッチ。既定のままでよい。
-    金属で反復や k メッシュによってバンドが荒れる原因（小さい q の W のプラズモン極を Σc の実軸の極の項が拾う）をこれで均す → [kBT](./kBT.md) §3.5
+    金属で反復や k メッシュによってバンドが荒れる原因（小さい q の W のプラズモン極を Σc の実軸の極の項が拾う）をこれで均す → [kBT](./kBT.md) §5
 - **LiTi₂O₄（金属スピネル、14 原子）の MLO-QSGW を LDA から 40 反復**（6³ と 9³、`gwsc --mlo`）。GPU の行列積の精度（`gwsc --prec=tf32|fp32|fp64`）を変えても、
   MLO バンドの差は数 meV 以下（6³ の 10 反復で tf32 と fp32 が t2g で 0.8 meV、1 反復目の fp64 と fp32 が 1 meV）で、反復やメッシュによる差（数十 meV）より
   1 桁小さい。速い tf32 で回してよい（1 反復: 6³ で tf32 3.7 分、fp64 17 分。kt1、RTX 5090 × 2）。反復を 10 回で止めると収束の途中で、30〜40 反復が要る
   → [LiTi₂O₄ のまとめ](https://github.com/tkotani/ecalj/blob/main/Samples/kBT/LiTi2O4/README.md)（表 3〜5、図 1・2）、[MLO-gwsc](./mlo_gwsc.md)、[GPU version](./ecaljgpu.md)
 
-### 2. MLO とマグノン
+### MLO とマグノン
 
 - **MLO は Löwdin で直交化した関数（射影 Wannier 関数）を標準にした**（2026-10-02）。軌道の名前と対称性を保ち、模型は直交した基底の $H(\mathbf R)$ だけ。
   $U$・$J$・cRPA（`job_mloW`）とマグノン（`job_mlo_magnon`）もこの基底で、Wannier 関数（最大局在化）の経路は外した → [MLO](./mlo.md) §6
@@ -56,7 +71,7 @@ ecalj の新しい機能と、結果が変わる修正の要約。新しい順�
 
 ## 2026-10-01
 
-- **MLO の模型の既定を整理した**（基準 1・2・3）。半内殻の局所軌道は帯の位置から自動で選ぶ（入力のキーは無い）。gwinit は 4f の原子の f と、
+- **MLO の模型の既定を整理した**（基準 1・2・3。基準 1 は EH と自動の局所軌道、基準 2 はそれに陽イオンの s,p の EH2、基準 3 は空隙の空格子球を足す。[MLO](./mlo.md) §9 表 M3）。半内殻の局所軌道は帯の位置から自動で選ぶ（入力のキーは無い）。gwinit は 4f の原子の f と、
   `!` 付きの `mlo_lm2`（外せば基準 2、空隙の大きい MgTe・ZnTe・CdTe・AlN などが合う）を書く → [MLO](./mlo.md) §1・§9
 - **模型の検査** `mlo_bandcheck.py`（`job_mlo`・`job_mlo_soc` が最後に回し、CHECK PASS/FAIL を出す）→ [MLO](./mlo.md) §9
 - `job_mlo_soc` は、スピン軌道ありの DFT のバンドも描いて比べる → [MLO](./mlo.md) §4
@@ -69,7 +84,7 @@ ecalj の新しい機能と、結果が変わる修正の要約。新しい順�
     この間の `pwmode = 11` の LDA+U の SCF は誤り
   - `[[spec]]` の `idu = 10 + mode`（4f の `idu = 12` など）は、`sigm` が無いとき二重計数の項を引かない LDA+U になっていた（2023-09 から）
   - 反強磁性の対称性（`symgrpaf`）の QSGW が止まっていた → 両方のスピンを計算して動く
-- `--ctrlg:<path>=<value>` で、ファイルに無いキーも書き足して効かせる（これまで既定値のまま走った）→ [TOML migration](./toml_migration.md)
+- `--ctrlg:<path>=<value>` で、ファイルに無いキーも書き足して効かせる（これまで既定値のまま走った）→ [Input file](./toml_migration.md)
 - `gwscconv`: 金属・半金属は固有値の変化で収束を判定する → [gwsc](./gwsc.md)
 - サンプルを組み直した（SOC の磁気異方性、LDA+U、有効質量、構造緩和、DOS、IIR、箱の中の分子、電子温度のスキャンなど）→ [Samples](./samples.md)
 
@@ -82,4 +97,4 @@ ecalj の新しい機能と、結果が変わる修正の要約。新しい順�
 | 2026-09 | GW の GPU 高速化（精度の切り替え `--prec=tf32\|fp32\|fp64`、方法は表で自動） | [GPU version](./ecaljgpu.md) |
 | 2026-09 | MLO の自動の窓（`mlo_method = 4`）、局所軌道の扱い | [MLO](./mlo.md) |
 | 2026-06 | 有限温度の四面体法、`gw_lmfh` の GPU | [kBT](./kBT.md)、[gwsc](./gwsc.md) |
-| 2026-05 | 入力は `ctrlg.<sname>.toml` 一本に（TOML）、上書きは `--ctrlg:` | [TOML migration](./toml_migration.md) |
+| 2026-05 | 入力は `ctrlg.<sname>.toml` 一本に（TOML）、上書きは `--ctrlg:` | [Input file](./toml_migration.md) |

@@ -1,48 +1,50 @@
-# Basis set in the 𝘎𝘞 calculation
+# GW で用いる波動関数の表現
 
-## Representation of one-particle wave functions
-The wave functions are expands by two types of basis set as follows:
+::: warning 工事中
+このページは書きかけです。記号の定義と式は、[ecalj のバンド計算法](./pmt) と、[QSGW](./qsgw) の第一の文献（Obata, Kotani, Oda 2025）の §2 のほうが新しく正確です。
+:::
+
+## 一粒子の波動関数の表現
+波動関数は、次の 2 種類の基底関数で展開する。
 $$
 \ket{Ψ_{𝒌n}} = \sum_{𝑹u} α_{𝑹u}^{𝒌n} \ket{φ^𝒌_{𝑹u}} + \sum_{𝑮} β_{𝑮}^{𝒌n} \ket{P^𝒌_{𝑮}},
+\tag{B1}
 $$
-where
-$\ket{φ_{𝑹u}}$ is atomic LMTO basis and $\ket{P^𝒌_{𝑮}}$ is interstitial plane wave to comprised interstitial area.
+ここで $\ket{φ_{𝑹u}}$ は、$𝑹$ にある MT 球の中だけで値を持つ関数（動径関数と球面調和関数の積。MT の外では 0）、$\ket{P^𝒌_{𝑮}}$ は格子間領域の平面波（IPW。MT の中では 0）である。MTO と APW で展開した `lmf` の固有関数を、GW の計算のためにこの 2 種類の関数で展開し直す。
 
-### Detail of $\ket{φ^𝒌_{𝑹u}}$
+### $\ket{φ^𝒌_{𝑹u}}$ の詳細
 
-The $\ket{φ^𝒌_{𝑹u}}$ is generated from bloch sum of atomic orbital $\ket{φ_{𝑹u}}$ to satisfy the bloch symmetry on basis functions, i.e.:
+$\ket{φ^𝒌_{𝑹u}}$ は、$\ket{φ_{𝑹u}}$ の Bloch 和である。
 $$
 φ^𝒌_{𝑹u}(𝒓) = \sum_{𝑻} φ_{𝑹u}(𝒓 - 𝑹 - 𝑻) \exp(i𝒌⋅𝑻)
+\tag{B2}
 $$
-The radial part of atomic orbital are constructed from $φ_{lν}(r)$, $\dot φ_{lν}(r)$, and $φ^{z}_{l}(r)$ based on argumentation of Smooth Henkel functions.
+$φ_{𝑹u}$ の動径部分は、$φ_{lν}(r)$、$\dot φ_{lν}(r)$、$φ^{z}_{l}(r)$ のどれか（スムーズ Hankel 関数の augmentation に使う関数）である。$u$ は動径関数と $lm$ を表す添字である。
 <!-- ::: details $\braket{φ^𝒌_{𝑹u}|φ^𝒌_{𝑹'u'}}$ -->
 <!---->
 <!-- ::: -->
 
-The index of atom is omitted for simplify. Each $l$ has 2 or 3 reference energy of $ϵ_{lν}$.
-$φ_{lν}(r)$ is the $l$ channel orbital of solution on radial Scrhödinger equation at energy $ϵ_{lν}$
-,$\dot φ_{lν}(r)$ is energy derivative of $φ_{lν}(r)$, $φ^{z}_{l}(r)$ is local orbital which is the also solution on radial Scrhödinger equation but the given energy is far from $ϵ_{lν}$.
-The energy of $ϵ_{lν}$ is set as the center of gravity for occupied states.
-This means that this basis set is not fixed in the QSGW cycle.
+簡単のため原子の添字は省く。各 $l$ は 2 つか 3 つの参照エネルギー $ϵ_{lν}$ を持つ。
+$φ_{lν}(r)$ は、エネルギー $ϵ_{lν}$ での動径 Schrödinger 方程式の $l$ 成分の解、$\dot φ_{lν}(r)$ は $φ_{lν}(r)$ のエネルギー微分、$φ^{z}_{l}(r)$ は局所軌道で、これも動径 Schrödinger 方程式の解だが、$ϵ_{lν}$ から離れたエネルギーでのものである。
+`[ham].readp = true` と `[ham].pnufix = true`（どちらも `ctrlgenToml.py` が書く）では、MT 半径での $φ_{lν}$ の境界条件（対数微分）を `lmfa` の結果から読み（`readp`）、固定する（`pnufix`）。そのため QSGW の反復の間、基底は変わらない。
 
-::: warning ?? About radial equation??
-- Is LDA used?
+::: info 動径方程式について
+- 動径関数 $φ_{lν}$、$\dot φ_{lν}$ は、MT の中の LDA（GGA）のポテンシャルの球対称部分で動径方程式を解いて作る。QSGW の反復の中でも同じで、QSGW の非局所なポテンシャルは動径方程式には入れない。
 $$
-\left[ -\frac{1}{2} \frac{d^2}{dr^2} + V_\mathrm{eff}[n(r)] - \frac{Z}{r} + \frac{l(l+1)}{2r^2}  -ϵ_{nlν} \right] φ_{nlν}(r) = 0
+\left[ -\frac{1}{2} \frac{d^2}{dr^2} + V_\mathrm{eff}(r) - \frac{Z}{r} + \frac{l(l+1)}{2r^2}  -ϵ_{lν} \right] r φ_{lν}(r) = 0
+\tag{Bq1}
 $$
-
+- ポテンシャルを決める電子密度は、波動関数から占有状態の和として決まる（動径方程式ではその MT の中の球対称部分を使う）。
 $$
-n(r) = 2\sum_{nl} (2l+1) |φ_{nl}(r)|^2/r^2
+n(𝒓) = \sum_{𝒌n}^{\mathrm{occ}} |Ψ_{𝒌n}(𝒓)|^2
+\tag{Bq2}
 $$
-
- - In the $n(r)$ in radial equation obtained from self-consistent calculation?
- - What is the boundary conditions of radial equation.
- - $ϵ_{lν}$ is not the solution of radial equation, the $φ_{lν}(r)$ does not satisfy the some boundary conditions, for example $φ_{lν}(r) → 0 (r → 0)$
- - how to set the reference energy in the case of $φ^{z}_{l}(r)$?
+- 境界条件: 原点で正則な解をとり、MT 半径での対数微分（$P$）を与えて解く。$ϵ_{lν}$ はその対数微分に合うエネルギーで、動径方程式の固有値（無限遠で 0 になる解）ではない。対数微分は `lmfa` の球対称な原子の計算で決めて `atmpnu.*` に書き、`lmf` はそれを読んで（`[ham].readp = true`）反復の間固定する（`[ham].pnufix = true`）。[ecalj のバンド計算法](./pmt) の §2 の注と §6 を参照。
+- ローカル軌道 $φ^{z}_{l}$ も、MT 半径での対数微分（$P_z$）で決める。$P_z$ も `lmfa` が `atmpnu.*` に書いたものを読み、固定する。（`pnufix = false` のときは `pnunew` が $P$ を更新し、ローカル軌道の無い $l$ では占有状態の重心（部分状態密度の中心）のエネルギーで解く。以前はこれを使っていたが、不安定だった。）
 :::
 
-### Detail of $\ket{P^𝒌_{𝑮}}$
-The interstitial plane wave is expressed as follows:
+### $\ket{P^𝒌_{𝑮}}$ の詳細
+格子間領域の平面波は次のように書ける。
 $$
 \begin{align}
 {P^𝒌_{𝑮}}(𝒓) = 
@@ -50,21 +52,25 @@ $$
 0    & \text{if}~ 𝒓 \in \text{any MT} \\
   \exp(i (𝒌 + 𝑮)⋅𝒓)& \text{otherwise}
 \end{cases}
+\tag{B3}
 \end{align}
 $$
-Since the hollow out the MT region, these basis have overlap matrix between them, i.e.:
+MT の領域を切り抜いているので、これらの関数は直交しない。重なり行列は
 $$
-\braket{P^𝒌_{𝑮}|P^𝒌_{𝑮'}} = \delta_{𝑮,𝑮'} - \sum_{𝑹_I} \int_{MT_I} e^{i(𝒓+𝑹_I) ⋅(𝑮'-𝑮)} d𝒓
+\braket{P^𝒌_{𝑮}|P^𝒌_{𝑮'}} = \Omega\,\delta_{𝑮,𝑮'} - \sum_{𝑹_I} \int_{MT_I} e^{i(𝒓+𝑹_I) ⋅(𝑮'-𝑮)} d𝒓
+\tag{B4}
 $$
-where,
+である。$\Omega$ は単位胞の体積で、
 $$
 \int_{MT_I} e^{i(𝒓+𝑹_I) ⋅(𝑮'-𝑮)} d𝒓
- = \frac{4\pi e^{i𝑹_I ⋅(𝑮'-𝑮)}}{|𝑮'-𝑮|} \int_0^{R_I} dr r \sin(|𝑮'-𝑮|r)
+ = \frac{4\pi e^{i𝑹_I ⋅(𝑮'-𝑮)}}{|𝑮'-𝑮|} \int_0^{R_I} dr\, r \sin(|𝑮'-𝑮|r)
+\tag{B5}
 $$
 
-### Formula of inner product
-This is for checking the orthonormality of wave function, but it is good for better understanding.
+### 内積の式
+波動関数の規格直交性を確かめるためのもので、理解の助けになる。
 $$
 \braket{Ψ_{𝒌n}|Ψ_{𝒌m}} = \sum_{𝑹uu'} α_{𝑹u}^{𝒌n*} α_{𝑹u'}^{𝒌m}\braket{φ^𝒌_{𝑹u}|φ^𝒌_{𝑹u'}} + \sum_{𝑮𝑮'} β_{𝑮}^{𝒌n*} β_{𝑮'}^{𝒌m}\braket{P^𝒌_{𝑮}|P^𝒌_{𝑮'}}
+\tag{B6}
 $$
-The cross term are vanished.
+$φ_{𝑹u}$ は MT の外で 0、$P^𝒌_{𝑮}$ は MT の中で 0 なので、交差項は消える。

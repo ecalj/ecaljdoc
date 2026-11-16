@@ -143,3 +143,89 @@
   font-weight: 600;
   color: var(--vp-c-text-1);
 }
+
+/* A side note as a block that can be skipped: smaller, gray, a rule on the left (theory/pmt.md, 2026-11-13). */
+.vp-doc div.note { font-size: .88em; color: var(--vp-c-text-2); border-left: 3px solid var(--vp-c-divider); padding-left: 1em; margin: .6em 0; }
+.vp-doc div.note p { margin: .3em 0; }
+/* Marks where a theory page departs from the published paper and needs checking (theory/pmt.md, 2026-11-13). */
+.vp-doc span.chk { color: #c0392b; font-weight: 600; }
+
+/* The front pages are dark, the other pages white (2026-11-13). The dark colours of the default theme are set only inside
+   the front page (pageClass home-dark in index.md and en/index.md); appearance is off in config.mts. */
+.home-dark {
+  --vp-c-bg: #1b1b1f; --vp-c-bg-alt: #161618; --vp-c-bg-elv: #202127; --vp-c-bg-soft: #202127;
+  --vp-c-text-1: rgba(255, 255, 245, .86); --vp-c-text-2: rgba(235, 235, 245, .6); --vp-c-text-3: rgba(235, 235, 245, .38);
+  --vp-c-divider: #2e2e32; --vp-c-border: #3c3f44; --vp-c-gutter: #000;
+  --vp-c-default-1: #515c67; --vp-c-default-2: #414853; --vp-c-default-3: #32363f; --vp-c-default-soft: rgba(101, 117, 133, .16);
+  --vp-c-brand-1: #a8b1ff; --vp-c-brand-2: #5c73e7; --vp-c-brand-3: #3e63dd; --vp-c-brand-soft: rgba(100, 108, 255, .16);
+  /* variables that the default theme defines from other variables at :root have to be set again here */
+  --vp-button-alt-bg: var(--vp-c-default-3); --vp-button-alt-text: var(--vp-c-text-1); --vp-button-alt-border: transparent;
+  --vp-button-alt-hover-bg: var(--vp-c-default-2); --vp-button-alt-hover-text: var(--vp-c-text-1); --vp-button-alt-hover-border: transparent;
+  --vp-button-brand-bg: var(--vp-c-brand-3); --vp-button-brand-hover-bg: var(--vp-c-brand-2); --vp-button-brand-text: #fff;
+  --vp-home-hero-name-color: var(--vp-c-brand-1); --vp-nav-bg-color: var(--vp-c-bg); --vp-local-nav-bg-color: var(--vp-c-bg);
+  background: var(--vp-c-bg); color: var(--vp-c-text-1); min-height: 100vh;
+}
+html:has(.home-dark), html:has(.home-dark) body { background: #1b1b1f; }
+
+/* Red-pen corrections by Claude (2026-11-14): the old text is struck through (<del class="clfix">), the new text is red
+   (<span class="clfix"> inline, <div class="clfix"> for blocks) and starts with a small "Claude" mark. Kept until the
+   maintainer accepts them; then the markup is removed. */
+.vp-doc span.clfix, .vp-doc div.clfix { color: #c0392b; }
+.dark .vp-doc span.clfix, .dark .vp-doc div.clfix { color: #ff8a7a; }
+.vp-doc span.clfix::before, .vp-doc div.clfix::before {
+  content: "Claude"; font-size: .68em; font-weight: 700; border: 1px solid currentColor; border-radius: 3px;
+  padding: 0 .25em; margin-right: .3em; vertical-align: .15em;
+}
+.vp-doc div.clfix { border-left: 3px solid currentColor; padding-left: .8em; }
+.vp-doc del.clfix { color: var(--vp-c-text-3); text-decoration-color: #c0392b; }
+.vp-doc div.clfix-old { color: var(--vp-c-text-3); text-decoration: line-through; text-decoration-color: #c0392b; border-left: 3px solid var(--vp-c-divider); padding-left: .8em; }
+
+/* Sidebar groups without a heading (GetStarted with AI and the license at the top; the main document, a link of its own,
+   which VitePress also puts into a group without a heading) have their items set like the group headings: bold, in the text
+   colour; the page being shown keeps the brand colour (2026-11-14). */
+#VPSidebarNav > .group > .VPSidebarItem.level-0:not(:has(> .item)) > .items > .VPSidebarItem.level-1 > .item .text { font-weight: 700; }
+#VPSidebarNav > .group > .VPSidebarItem.level-0:not(:has(> .item)) > .items > .VPSidebarItem.level-1:not(.is-active) > .item .text { color: var(--vp-c-text-1); }
+/* The two entrances, GetStarted with AI and the main document, stand out in the sidebar (both languages) (2026-11-14). */
+#VPSidebarNav a.VPLink[href$="/manual/getstartedAI"],
+#VPSidebarNav a.VPLink[href$="/manual/README_tutorial"] {
+  display: block; margin: 2px 0; padding: 2px 8px; border-radius: 6px; background: var(--vp-c-brand-soft);
+}
+#VPSidebarNav a.VPLink[href$="/manual/getstartedAI"] .text,
+#VPSidebarNav a.VPLink[href$="/manual/README_tutorial"] .text {
+  font-size: 15px; font-weight: 700; color: var(--vp-c-brand-1) !important;   /* over the bold-black rule for groups without a heading */
+}
+/* The notes for writing this site, last in the sidebar, in small type (2026-11-14). */
+#VPSidebarNav a.VPLink[href$="/manual/writing_docs"] .text {
+  font-size: 12px; font-weight: 400 !important; color: var(--vp-c-text-3) !important;
+}
+
+/* Code blocks in a smaller font than VitePress's 14px (user 2026-11-15) */
+.vp-doc div[class*='language-'] code {
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+/* Inline code smaller too (VitePress 0.875em; user 2026-11-15) */
+:root { --vp-code-font-size: 0.8em; }
+
+/* ---------------------------------------------------------------------------
+   Section numbers for discussion (user 2026-11-15): h2 -> "1.", h3 -> "1.2",
+   on the page and in the outline on the right (outline shows h2 and h3).
+   Only headings directly in the page body are counted, so that the numbers
+   agree with the outline. A page whose headings already carry numbers by hand
+   sets `pageClass: secnum-manual` in its frontmatter and gets no automatic ones.
+--------------------------------------------------------------------------- */
+.vp-doc > div { counter-reset: sec2 sec3; }
+.vp-doc > div > h2 { counter-increment: sec2; counter-set: sec3 0; }   /* counter-set, not counter-reset: a reset on a sibling h2 starts a new nested counter and the h3 numbers ran on (4.3 for 4.1, fixed 2026-11-15) */
+.vp-doc > div > h3 { counter-increment: sec3; }
+.vp-doc > div > h2::before { content: counter(sec2) ". "; }
+.vp-doc > div > h3::before { content: counter(sec2) "." counter(sec3) " "; }
+.VPDocAsideOutline ul.root { counter-reset: out2; }
+.VPDocAsideOutline ul.root > li { counter-increment: out2; }
+.VPDocAsideOutline ul.root > li > a::before { content: counter(out2) ". "; }
+.VPDocAsideOutline ul.nested { counter-reset: out3; }
+.VPDocAsideOutline ul.nested > li { counter-increment: out3; }
+.VPDocAsideOutline ul.root > li > ul.nested > li > a::before { content: counter(out2) "." counter(out3) " "; }
+.secnum-manual .vp-doc > div > h2::before,
+.secnum-manual .vp-doc > div > h3::before,
+.secnum-manual .VPDocAsideOutline a::before { content: none !important; }

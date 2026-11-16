@@ -1,35 +1,33 @@
-# GWinput (legacy)
+# GW の設定（`[gw]` などのキー） {#gwinput-legacy}
 
-> ⚠️ The Fortran programs do not read the `GWinput` text file. The settings of this page are keys of `ctrlg.<sname>.toml` (sections `[gw]` / `[mlo]` / `[blocks]` / `[product_basis]`; the last one also holds the per-atom tables), written in TOML syntax (`key = value`). For a directory with the legacy `ctrl.<sname>` + `GWinput`, run `Legacy2toml.py <sname>` to convert. See [TOML migration](./toml_migration) for the key mapping.
+`ctrlg.<sname>.toml` の `[gw]`・`[mlo]`・`[blocks]`・`[product_basis]` の区分が、GW/QSGW の計算の条件を決めます。このページはそのキーの説明です。
+ファイル全体の説明と、古い `GWinput` からの変換は [入力ファイル](./toml_migration) を見てください。
 
-The `[gw]` section of `ctrlg.<sname>.toml` sets the computatioanl conditions for  GW/QSGW calculations.
-
-## mkGWinputによる自動生成
-- GW の設定（`ctrlg.<sname>.toml` の `[gw]`・`[mlo]`・`[blocks]`・`[product_basis]`）は自動生成することができ、殆どのパラメータはデフォルト設定で使用できる。
+## 自動生成 {#mkgwinput}
+- GW の設定（`ctrlg.<sname>.toml` の `[gw]`・`[mlo]`・`[blocks]`・`[product_basis]`）は自動で作られ、ほとんどのパラメータは既定値のまま使える。
 
 `ctrls.<sname>` から始めるとき（`<sname>` は物質名）は
 ```bash
 ctrlgenToml.py <sname>
 ```
-が GW の設定も含めて `ctrlg.<sname>.toml` を書く。すでにある `ctrlg.<sname>.toml` に GW の設定を付けるには
+が GW の設定も含めて `ctrlg.<sname>.toml` を書く（内部で `lmfa`、`lmf --jobgw=0`、`gwinit` を走らせる）。GW の区分の無い `ctrlg.<sname>.toml` に足すときは
 ```bash
-mkGWinput <sname>                # GW の設定を作り直す。元のファイルは ctrlg.<sname>.toml.bakup に残る
-ctrlgenToml.py <sname> --addgw   # [gw] の無いファイルに足す（[gw] があれば止まる）
+ctrlgenToml.py <sname> --addgw   # [gw] があれば止まる
 ```
-> [!INFO]
-> どちらも内部で ecalj package の実行ファイル（`lmfa`、`lmf --jobgw=0`、`gwinit`）を `mpirun` で実行する。
-> 実行ファイルはスクリプトと同じディレクトリ(ecalj package のバイナリinstall ディレクトリ)のものが使われる。
+とする（[入力ファイル](./toml_migration)）。
 
-生成される `[gw]` は `n1n2n3 = [4, 4, 4]`、`t_sigmaw = 300`、`t_tetrakbt = 300` である。計算に合わせて書き換える
-（絶縁体・半導体で $\chi_0$ を均さないなら `t_tetrakbt = 0`）。
+`t_tetrakbt`、`t_sigmaw`、`HistBin_dw`、`HistBin_ratio`、`QforEPSau`、`EMAXforGW` は必須で、`[gw]` に無いとプログラムは止まる（`t_tetrakbt` は 2026-09-28、ほかは 2026-11-14 から）。
+古いファイルは `ctrlg_update.py ctrlg.<sname>.toml` で足す。足すのはそれまでのコードの既定値なので、結果は変わらない。
 
+生成される `[gw]` は `n1n2n3 = [4, 4, 4]`、`t_sigmaw = 300`、`t_tetrakbt = 300` である。計算に合わせて書き換える。
+絶縁体・半導体では、ギャップが $k_BT$ より十分大きいので、温度は 300 K のままで結果に効かない（[kBT](./kBT) §7）。
 
 ## Format
 - TOML の文法で書く。`#` から行末まではコメント
 - `key = value` の形式であり記載順序は問わないが, 同じkeyを複数記述しないようにする。論理値は `true` / `false`、
   リストは `[4, 4, 4]`、実数は `1e-5`（`1d-5` とは書けない）、複数行の表（`QforGW` など）は `"""` で囲む
 
-## Parameters in GWinput
+## 主なキー {#parameters-in-gwinput}
 生成された `[gw]` に, パラメータの意味は記載されていますが, 以下に重要な変数と記載がない変数について記述します。
 
 ### `n1n2n3`
@@ -70,16 +68,16 @@ MT内の積基底とMT内波動関数基底の行列要素(`ppb`変数)を、対
 
 ### `t_tetrakbt`  *(必須、2026-09-28)*
 $\chi_0$ をどう均すかを温度 (K) の符号で選ぶ。書かないと止まる。
-- `0`: 均さない(T=0 のテトラヘドロン)。絶縁体・半導体。
-- `T > 0`: 有限温度のテトラヘドロン。$\chi_0$ の占有数が温度 $T$ の Fermi-Dirac になり、Fermi 準位は `EFERMI_kbt`($\Sigma$ 側も)。[kBT](kBT) §2。
-- `-T`: T=0 のテトラヘドロンのまま、$\mathrm{Im}\chi_0$ を周波数方向に Gaussian で均す。幅は温度 $T$ の Fermi-Dirac と同じ(標準偏差 $\pi k_BT/\sqrt3$、$-1000$ K = 0.00574 Ha = 0.156 eV)。金属で $W$ のプラズモン極が荒れるときに使う(LiTi₂O₄ の実用の設定は $-992.4$。[kBT](kBT) の「実用の設定」)。$W(i\omega)$ や静的 $W(0)$ にも効く。
+- `0`: 均さない(T=0 のテトラヘドロン)。絶縁体・半導体はテンプレートの 300 のままでもよい(ギャップ ≫ $k_BT$ なら効かない。[kBT](kBT) §7)。
+- `T > 0`: 有限温度のテトラヘドロン。$\chi_0$ の占有数が温度 $T$ の Fermi-Dirac になり、Fermi 準位は `EFERMI_kbt`($\Sigma$ 側も)。[kBT](kBT) §3。
+- `-T`: T=0 のテトラヘドロンのまま、$\mathrm{Im}\chi_0$ を周波数方向に Gaussian で均す。幅は温度 $T$ の Fermi-Dirac と同じ(標準偏差 $\pi k_BT/\sqrt3$、$-1000$ K = 0.00574 Ha = 0.156 eV)。金属で $W$ のプラズモン極が荒れるときに使う(LiTi₂O₄ の実用の設定は $-992.4$。[kBT](kBT) の冒頭「LiTi₂O₄ の設定」)。$W(i\omega)$ や静的 $W(0)$ にも効く。
 gwinit のテンプレートは 300 を書く。
 - **type**: float (K)
 - **default**: 無し(必須)
 
 古い入力に出てくるキーの扱いは表 1 のとおり。`ctrlg_update.py ctrlg.<sname>.toml` は `SmearX0`(Ha、$\mathrm{Im}\chi_0$ の
 Gaussian の標準偏差)を同じ幅の `t_tetrakbt = -T` に書き換え(0.0057 Ha → $-992.4$ K)、`t_tetrakbt` の無いファイルには
-`t_tetrakbt = 0` を足す。計算は変わらない。`Legacy2toml.py` も変換のときに同じ書き換えをする。キーの変遷は [kBT](kBT) §2.5 の表 2。
+`t_tetrakbt = 0` を足す。計算は変わらない。`Legacy2toml.py` も変換のときに同じ書き換えをする。キーの変遷は [kBT](kBT) §3.5 の表 2。
 
 **表 1**. `[gw]` の古いキーと今の扱い
 
@@ -87,29 +85,28 @@ Gaussian の標準偏差)を同じ幅の `t_tetrakbt = -T` に書き換え(0.005
 |---|---|
 | `SmearX0`、`SmearX0q0` | 書いてあれば止まる。`t_tetrakbt = -T` を書く |
 | `tetrakbt`(論理値) | 読まれない。有限温度は `t_tetrakbt > 0` |
-| `esmr`(Ry、Gaussian) | `t_sigmaw` が無ければ、同じ標準偏差の `t_sigmaw` に換算して読まれる |
-| `t_sigmakbt`(K) | `t_sigmaw` が無ければ、値がそのまま `t_sigmaw` になる |
+| `esmr`(Ry、Gaussian) | 読まれない(2026-11-14 から)。`ctrlg_update.py` が同じ標準偏差の `t_sigmaw` に換算して書く(それまでは `t_sigmaw` が無いとき換算して読んでいた) |
+| `t_sigmakbt`(K) | 読まれない(2026-11-14 から)。`ctrlg_update.py` が値をそのまま `t_sigmaw` として書く |
 | `GaussianFilterX0`、`GaussSmear`、`delta`、`dw`、`omg_c`、`WgtQ0P`、`MEMnmbatch` | 読まれない(書いてあっても効かない) |
 | `zmel_max_size` | `zmel_batch_gb` として読まれる |
 
-## `t_sigmaw`  *(2026-09-20、旧 `esmr` / `t_sigmakbt`)*
-自己エネルギー $\Sigma = G(W)$ の中間準位(G の極)を均す Fermi-Dirac 核の幅。単位 K。
-$\Sigma_x = Gv$ の占有重み、$\Sigma_c = G(W-v)$ の実軸極項の窓重みと極の位置(`wcsmear`)の
+### `t_sigmaw`  *(2026-09-20、旧 `esmr` / `t_sigmakbt`)*
+自己エネルギー $\Sigma = iGW$ の中間準位(G の極)を均す Fermi-Dirac 核の幅。単位 K。
+$\Sigma_x = iGv$ の占有重み、$\Sigma_c = iG(W-v)$ の実軸極項の窓重みと極の位置(`wcsmear`)の
 すべてに同じ核 $-\partial f/\partial\varepsilon$($k_BT$ = `t_sigmaw`)が使われる。
 **これは数値的な幅であって完全な有限温度自己エネルギーではない**(Bose 因子などは入らない)。
-Fermi 準位は `t_tetrakbt > 0`($\chi_0$ も有限温度)なら `EFERMI_kbt`、そうでなければ k メッシュの上の準位を数えて決める([kBT](kBT) §0 の表 5)。
+Fermi 準位は `t_tetrakbt > 0`($\chi_0$ も有限温度)なら `EFERMI_kbt`、そうでなければ k メッシュの上の準位を数えて決める([kBT](kBT) §1 の表 5)。
 中間状態の候補窓と実軸 $\omega$ メッシュの余裕は $E_F \pm 15\,k_BT$。同じ核が $\Sigma_c$ の虚軸積分の
-半留数の段差にも入る(契約: 占有重み・極項の窓重み・虚軸の段差の 3 か所が同じ核。[manual/kBT](kBT) §3.6)。
+半留数の段差にも入る(契約: 占有重み・極項の窓重み・虚軸の段差の 3 か所が同じ核。[manual/kBT](kBT) §6)。
 
-- 既定 1000 K は旧 `esmr = 0.01` Ry(Gaussian $\sigma$)に近い幅(同じ標準偏差になるのは 872 K。FD の std は
-  $\pi k_BT/\sqrt3 = 1.81\,k_BT$)。旧 `esmr = 0.003` Ry(Si など TestInstall の値)は 262 K に相当。
+- 必須(2026-11-14 から)。テンプレートは 300 K。それまでのコードの既定値は 1000 K で、旧 `esmr = 0.01` Ry(Gaussian $\sigma$)に近い幅
+  (同じ標準偏差になるのは 872 K。FD の std は $\pi k_BT/\sqrt3 = 1.81\,k_BT$)。旧 `esmr = 0.003` Ry(Si など TestInstall の値)は 262 K に相当。
 - 絶縁体: 幅はバンドギャップより十分小さければ結果に効かない(Si で 262 K と 1000 K の差は数 meV)。
 - 金属: 原理的には $n_1n_2n_3 \to \infty$、`t_sigmaw` $\to 0$ の極限だが、有限の幅が収束に要る。
   細かい k メッシュと合わせて 300〜1000 K。物質ごとに選ぶ(LiTi₂O₄ は 1000 K)。
-- `esmr` が ctrlg に残っていれば `t_sigmaw = esmr[Ry]·13.6057/(1.81·8.617e-5)` に換算して読む
-  (`t_sigmaw` があればそちらが優先)。`t_sigmakbt` は値をそのまま `t_sigmaw` に写す。
+- 古い `esmr` と `t_sigmakbt` は読まない。`ctrlg_update.py` が `t_sigmaw = esmr[Ry]·13.6057/(1.81·8.617e-5)`(`t_sigmakbt` は値をそのまま)を書く。
 - **type**: float (K)
-- **default**: 1000.0(gwinit のテンプレートは 300 を書く)
+- **default**: 無し(必須、2026-11-14 から。テンプレートは 300、それまでのコードの既定値は 1000)
 
 ### `wcsmear`  *(2026-09-19、2026-09-20 から既定 true)*
 $\Sigma_c$ の実軸極項で、中間準位の Fermi-Dirac 核(`t_sigmaw`)を極の位置 $\omega_\varepsilon$ にも
@@ -143,7 +140,7 @@ PRB76,165106 Eq.58)。$W_c$ が滑らかな系では両者はほぼ同じ(Si で
 エネルギー(Ry)にするには**2する。
 
 波動関数のIPWのカットオフは `[ham] pwemax` とも関係する。pwemaxとしては2,3を試すことが多い
-(こちらの単位は**2のエネルギーカットオフになっていて単位Ryd)。
+(pwemax は Ry 単位のエネルギーのカットオフで、$|\mathbf q+\mathbf G|^2 \lt {\rm pwemax}$($|\mathbf q+\mathbf G|$ は 1/a.u.)。)
 
 ### `QpGcut_cou`
 積基底のIPW部分のカットオフ~~エネルギー: 単位 Ryd~~ 
@@ -159,21 +156,26 @@ PRB76,165106 Eq.58)。$W_c$ が滑らかな系では両者はほぼ同じ(Si で
 - **type**: float
 - **default** : 3.0
 
+## `HistBin_dw`、`HistBin_ratio` — 分極関数の実軸のメッシュ {#change-histbin-for-high-resolution-energy-mesh-near-ef-for-metal}
+This defines histogram bins to accumulate weight (imaginary part) of the polarization functions. `m_freq.f90` の `getfreq` がこのメッシュを作る。
 
-## Change `HistBin` for high resolution energy mesh near Ef for metal 
-This defines histogram bins to accumulate weight (imaginary part) of the polarization functions.
+どちらも必須（2026-11-14 から）。テンプレート（`ctrlgenToml.py` が `gwinit` を通して `[gw]` に書く値）は `HistBin_dw = 1e-4`、`HistBin_ratio = 1.05`。
+2026-11-14 までは、キーを書かないとコードの既定値 `1e-5`、`1.03` が使われていた。古いファイルには `ctrlg_update.py` がこの値を書き足すので、結果は変わらない。
 
-For metal, it might be better to test
-```toml
-HistBin_dw    = 1e-5   # 1e-5 is fine mesh (good for metal?)  (a.u.) BinWidth along real axis at omega=0.
-HistBin_ratio = 1.03   # 1.03 maybe safer. frhis(iw)= b*(exp(a*(iw-1))-1), where a=ratio-1.0 and dw=b*a
-```
-m_freq.f90のgetfreqでこのメッシュを作っている。
+テンプレートの値の変遷:
 
-* HistBin_dw and HistBin_ratio specify real space bins which we accumulate imaginary part weight of polarization functions. The bins are (see frhis in m_freq.f90) 
-$\omega_i = {{dw}} ∗ (\exp({\rm ratio} ∗ (i − 1)) − 1) $
+| 期間 | `HistBin_dw` | `HistBin_ratio` |
+| --- | --- | --- |
+| 2025-08-19 まで | 2e-3 | 1.08 |
+| 2025-08-22 から | 1e-4 | 1.05 |
+
+メッシュを細かくする（`HistBin_dw` を小さく、`HistBin_ratio` を 1 に近く）ほど、$\omega\sim 0$ の近くのエネルギーの分解能は上がるが、計算は重くなる。
+ふつうは GW の結果はこの選び方にあまりよらない（下の説明）。$W(\omega)$ を $\omega\sim 0$ の近くで細かく描くときなどに細かくする。
+
+* HistBin_dw and HistBin_ratio specify bins along the real frequency axis which we accumulate imaginary part weight of polarization functions. The bins are (see frhis in m_freq.f90) 
+$\omega_i = b\,(e^{a(i-1)}-1)$, $a={\rm HistBin\_ratio}-1$, $b={\rm HistBin\_dw}/a$
 where $[\omega_i, \omega_{i+1}]$ $(i = 1, 2, ...,\verb#nwhis#+1)$ is the i-th bin. HistBin_dw is bin width at ω = 0.
-The ratio ω(i + 1)/ω(i) for large ω is exp(a)=HistBin_ratio. This choice of getting coarser at high energy is because we think W (ω) around ω ∼ 0 gives most important contribution to the GW approximation. If histogram bins are too wide, dielectric function can be less accurate, but results may be not so much affected.
+The ratio ω(i + 1)/ω(i) for large ω is $e^{a}\approx$ HistBin_ratio. This choice of getting coarser at high energy is because we think W (ω) around ω ∼ 0 gives most important contribution to the GW approximation. If histogram bins are too wide, dielectric function can be less accurate, but results may be not so much affected.
 In GW calculation, the Plasmon pole is important. It is determined not by the Drude weight; it usually gives small contribution to the Plasmon pole (for example, Si is described well by a Plasmon pole model, but Si has no Fermi surface). We expect that the GW results are not so sensitive to the choice of HistBin_dw, HistBin_ratio usually. We may use fine mesh when we plot quantities such as W (ω) near ω = 0.
 <!-- The ecalj gives ¯W (ω = 0) ∼ 0 for metal; where ¯W (ω) is the effective interaction averaged in
 the Γ-cell [?]. And ¯W (ω get closer to v for larger ω. -->
@@ -195,7 +197,6 @@ real (a.u.) only for one-shot case.
 deltaw is the interval for the numerical derivative ∂Σ(ω)/∂ω.  We calculate $\Sigma(\omega),\Sigma(\omega\pm {\rm deltaw})$.
 From these values, we can calculate two Z (or second-derivative of Σ(ω)). 
 
-
 ## `<QforGW>` section
 This is only for one-shot/spectrum function mode. 
 In `[gw]`, `QforGW` gives the q vectors, one per line between `"""` (in the unit of `2pi/alat`. See BZ.html and syml file to check):
@@ -209,8 +210,8 @@ If no `QforGW` (or `QforGWIBZ = true`), all irreducible q points are used.
 
 ## EMAXforGW
 one-shot GW. Set this (eV,above the Fermi energy) to specify up to which bands you calculate. 
+必須（2026-11-14 から）。テンプレートは 15。99999 は上限なし（それまでのコードの既定値で、`ctrlg_update.py` が書き足す値）。
 (we have EMINforGW).
-
 
 ## `--readQforGW` option
 We can use any q in the QforGW section
@@ -229,21 +230,103 @@ QforEPS = """
 Because of the shifted-mesh method, we can use any q point which is not on the mesh points.
 ### QforEPSau 
 Whether q is in the unit of `2pi/alat` or in the unit of a.u.(=`bohr^{-1}`). I think `QforEPSau = true` might be convenient.
+必須（2026-11-14 から）。テンプレートは true。それまでのコードの既定値は false（`ctrlg_update.py` が書き足す値）。
 
+## 積基底 `[product_basis]` {#product-basis}
 
+積基底（MT の中の局所的な積と、格子間領域の平面波の和集合）は、ecalj が遮蔽されたクーロン相互作用 $W$ を表す要です
+（[波動関数の積を展開する積基底](../theory/gw_product_basis)）。
+`ctrlg.<sname>.toml` の **`[product_basis]` の節**（いつもファイルの最後）で指定します（表 PB1）。
 
-## `Smaller lcutmx to reduce computatinal time`
-  To reduce the computational time, we reduce number of MPB (mixed product basis).
-  One is lcutoff of Product Basis (PB) within MT. Use lcutmx=2 for oxygen or something (s,p block atoms). 
-  Thus it  is like
+表 PB1. `[product_basis]` のキー
+
+| キー | 内容 |
+|---|---|
+| `pb_tolerance`、`pb_lcutmx` | 全体の上限。調整してよいのはこちら |
+| `nlx`、`valence`、`core` | 原子ごとの動径関数の表。`gwinit` が（`ctrlgenToml.py` / `Legacy2toml.py` を通して）`[[spec]]` から書く。手で直すことはまずない |
+
+（2026-09 までは、三つの表は別の `PB.<sname>.toml` でした。いまのプログラムはそのファイルを読まず、止まって `ctrlg_absorb.py <sname>` を案内します。
+`ctrlg_absorb.py` はその表を `[product_basis]` に足し、元のファイルを `.bk` として残します。）
+
+積基底のもとは F. Aryasetiawan と O. Gunnarsson によるもの（[PRB 49, 16214](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.49.16214)）で、
+混合積基底（[Solid State Commun. 2002](https://doi.org/10.1016/S0038-1098(02)00028-5)）はその後継です。
+
+### 上限: `pb_tolerance`、`pb_lcutmx`
+
 ```toml
 [product_basis]
-pb_lcutmx = [4, 4, 4, 2, 2, 2]   # maximum l-cutoff for the product basis, one per atom. 4 is required for atoms with valence d
+pb_tolerance = [0.001]   # cut off of linear dependency (default 1e-3)
+                         #   larger => fewer product basis. 1d-2 is OK
+                         #   when you want a cheaper calculation.
+pb_lcutmx    = [4, 4]    # per-site l-cutoff for the product basis.
+                         #   4 needed when valence 3d exists (Ni, Ga, ...);
+                         #   2 OK for oxygen; 6 needed for 4f / 5f atoms.
+                         #   site order = [[site]] order; see lmchk SiteInfo.
 ```
-in `ctrlg.<sname>.toml`. The atoms are in the order of the `[[site]]` tables (`lmchk` shows it, also in `SiteInfo.lmchk`).
 
-* NOTE: we need lcutmx =6 is requied for 4f/5f atoms, while 2 is enough for Oxygen (probably other species on the same row).
+- `pb_tolerance`: 一次従属に近い積を除く基準。大きいほど積基底は少なくなります。安く計算したいときは 1e-2 でもかまいません。
+- `pb_lcutmx`: サイトごとの、MT の中の積基底の $l$ の上限。計算の時間を減らすには、酸素などの s、p の原子で 2 にします（同じ周期のほかの元素もおそらく同じ）。
+  価電子に 3d がある原子（Ni、Ga など）では 4、4f / 5f の原子では 6 が要ります。例:
+  ```toml
+  [product_basis]
+  pb_lcutmx = [4, 4, 4, 2, 2, 2]
+  ```
+  原子の順は `[[site]]` の表の順です（`lmchk` が表示し、`SiteInfo.lmchk` にもあります）。
 
+直したら、`lmf --jobgw=1`（または `gwsc` の次の段）を走らせ直してください。`hbasfp0` がこの値を使い、できた積基底の大きさを `lbas` / `lbasC` に出します。
+
+### 原子ごとの表（`nlx`、`valence`、`core`）
+
+上限の後に、同じ `[product_basis]` の中に続きます。どの行もサイトの番号 `iatom`（`[[site]]` の順）で始まります。
+`gwinit` が `[[spec]]` の `rsmh`/`eh`/`pz` から書き、行ごとにラベルを付けます。下の説明はファイルの中にもコメントとして書かれ、三つの表は `# ----` の罫線で区切られます。
+
+```toml
+[product_basis]
+pb_tolerance = [1e-3]
+pb_lcutmx    = [4]
+# ----------------------------------------------------------------
+# nlx [iatom, l, nnvv, nnc]: one row per (iatom, l) ...
+nlx = [
+  [1, 0, 2, 3],
+  [1, 1, 2, 2],
+  [1, 2, 2, 0],
+  [1, 3, 2, 0],
+  [1, 4, 2, 0],
+]
+# ----------------------------------------------------------------
+# valence [iatom, l, n, occ, unocc]: one row per valence radial function ...
+valence = [
+  [1, 0, 1, 1, 1],   # 4s_phi
+  [1, 0, 2, 0, 0],   # 4s_phidot
+  [1, 1, 1, 1, 1],   # 4p_phi
+  [1, 1, 2, 0, 0],   # 4p_phidot
+  [1, 2, 1, 1, 1],   # 3d_phi
+  [1, 2, 2, 0, 0],   # 3d_phidot
+  [1, 3, 1, 0, 1],   # 4f_phi
+  [1, 3, 2, 0, 0],   # 4f_phidot
+  [1, 4, 1, 0, 0],   # 5g_phi
+  [1, 4, 2, 0, 0],   # 5g_phidot
+]
+# ----------------------------------------------------------------
+# core [iatom, l, n, occ, unocc, forX0, forSxc]: one row per core level ...
+core = [
+  [1, 0, 1, 0, 0, 0, 0],   # 1S
+  [1, 0, 2, 0, 0, 0, 0],   # 2S
+  [1, 0, 3, 0, 0, 0, 0],   # 3S
+  [1, 1, 1, 0, 0, 0, 0],   # 2P
+  [1, 1, 2, 0, 0, 0, 0],   # 3P
+]
+```
+
+意味（古い `<PRODUCT_BASIS>` のブロックと同じで、入れ物が変わっただけ）:
+
+- `nlx` の行 `[iatom, l, nnvv, nnc]`: そのサイトの各 `l` に、ecalj がいくつの動径関数を持つか。`nnvv = 2` は `{phi, phidot}`、`nnvv = 3` はローカル軌道 `phiz` を加えたもの。`nnc` はその `l` のコアの準位の数。導かれる値なので直さない。
+- `valence` の行 `[iatom, l, n, occ, unocc]`: 動径関数ごとに一つ。`n = 1` は phi、`2` は phidot、`3` は phiz。
+  `occ` / `unocc` は、その関数を「占有」/「非占有」の組に入れるかの 0/1 のスイッチ。積基底は（占有の組）×（非占有の組）の積から作り、`pb_tolerance` で間引く。
+  `phidot` は、速さのためにふつうは外す（`0 0`）。入れると積基底はより正確になる。
+- `core` の行 `[iatom, l, n, occ, unocc, forX0, forSxc]`: コアの準位ごとに一つ（`n = 1` がいちばん深い）。`forX0` / `forSxc` は PRB 76, 165106 (2007) の CORE1/CORE2 の区別から来たもの。昔のもので、いまの計算ではどのコアの行もすべて 0。
+
+`Legacy2toml.py` は、TOML より前の `GWinput` の `<PRODUCT_BASIS>` のブロックを、この `[product_basis]` の節に直します。
 
 ## `Smaller IPW related part to reduce computational time`
 To reduce compuational time, we may reduce MPB coming from IPS, reduce the size of IPW for psi, reduce emax_sigm and pwemax as follows.

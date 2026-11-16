@@ -1,7 +1,5 @@
 # ecalj GPU version の使い方
 
-> ⚠️ GPU 版 `gwsc` も `ctrlg.<sname>.toml` だけを読みます。Legacy `ctrl.<sname>` / `GWinput` directory は `Legacy2toml.py <sname>` で変換してから実行してください。See [TOML migration](./toml_migration).
-
 ecalj ではGPUによるQSGW計算が可能です。
 * GPUは自己エネルギーおよび遮蔽クーロン相互作用の計算に使用されます。
 * 現状では`lmf` (DFT計算) はCPUで実行されます。
@@ -9,6 +7,7 @@ ecalj ではGPUによるQSGW計算が可能です。
 > CPUで実行される部分とGPUで実行される部分で、それぞれ並列数を指定する必要があります。
 
 * GPU の使用には NVIDIA のコンパイラでecaljのGPUバージョンをコンパイルする必要があります。
+必要なもの: NVIDIA の GPU と NVHPC（cuBLAS、cuSOLVER を含む）。コンパイルは `python3 InstallAll.py --fc nvfortran --gpu`（CPU 版も一緒に作られる）。GPU の計算は 1 ノードで走らせるのを勧めます。複数ノードで使うときは、MPI のプロセスがノードに正しく割り振られているか確かめてください。
 Kugui でのインストール、初期設定、GPUテスト計算は[installISSP](../install/installISSP.md) を参照してください。
 
 ## おすすめ設定 in ISSP Kugui
@@ -24,8 +23,10 @@ Kugui でのインストール、初期設定、GPUテスト計算は[installISS
 #PBS -l select=1:ncpus=64:mpiprocs=64:ompthreads=1
 
 ulimit -s unlimited
-gwsc -np 64 -np2 4 --gpu 2 inas2gasb2 > lgwsc
+gwsc 2 -np 64 -np2 4 --gpu inas2gasb2 > lgwsc
 ```
+
+`--gpu` は引数を取らない。最初の数 `2` は反復の回数（`gwsc` の第 1 引数）。
 
 `i1accs` はテストキュー(最大時間30分)ですので、プロダクトランでは`F1accs`等を使用してください。
 
@@ -42,7 +43,7 @@ zmel_batch_gb = 4
 
 それぞれの意味は [gwinput](../manual/gwinput.md) を参照してください。
 
-### 混合精度: `--mp` と `--fp32`
+### 混合精度: `--mp` と `--fp32` {#gpu-mp-fp32}
 
 `--mp` と `--mp --fp32` は `--prec=tf32` と `--prec=fp32` の古い書き方で、今も同じ意味で使えます
 （対応は下の「精度の選び方と行列演算の自動選択」の節の表）。
@@ -59,7 +60,7 @@ $(1-v\chi_0)^{-1}$ で増幅され、$W$ / $\Sigma^c$ が破壊されて QSGW �
 gwsc 5 -np 64 -np2 4 --gpu --prec=fp32 inas2gasb2 > lgwsc
 ```
 
-### 精度の選び方と行列演算の自動選択 (2026-09)
+### 精度の選び方と行列演算の自動選択 (2026-09) {#gpu-precision}
 
 `gwsc --prec=tf32|fp32|fp64` で GW 部分の精度を選ぶ。旧来の `--mp`、`--mp --fp32` と同じもので、どちらの書き方でもよい。
 
@@ -81,7 +82,7 @@ gwsc 5 -np 64 -np2 4 --gpu --prec=fp32 inas2gasb2 > lgwsc
 
 QSGW の 1 反復（`gwsc`、LiTi2O4 6³、tf32、GPU 2 枚・CPU 60 本）は約 212 秒で、その 8 割が `hgw`。
 
-`--mp` だけの指定も `tf32` と同じにした。tf32 の誤差の大半は Σc の一様な縮み（Re Σc の −5×10⁻⁵〜−1×10⁻⁴ 倍）で、
+`--mp` だけの指定も `tf32` と同じにした。tf32 の誤差の大半は Σc の一様な縮み（Re Σc の相対的な変化 ΔΣ/Σ が −5×10⁻⁵〜−1×10⁻⁴）で、
 テンソルコアの和の取り方（途中の和の切り捨て）から来る。入力の丸めは最近接で、これ以上は安くは減らせない。
 tf32 は途中の反復に使い、最後の反復は `--prec-final=fp32:N` で fp32 にするのが前提（誤差は乱雑ではなく一様な縮みなので、最後の fp32 の反復で消えるはず。
 **2026-09-28 の時点ではこの使い方を実際に走らせて確かめていない**。6³ では tf32 だけの 10 反復でもバンドは fp32 と rms 0.3 meV で一致した）。
@@ -103,10 +104,10 @@ tf32 は途中の反復に使い、最後の反復は `--prec-final=fp32:N` で 
   Σc の積の精度が TF32 の 3e-4 から 1e-5 に上がる（そのぶん遅い）。Ozaki は分解数 1 つで精度が約 1 桁変わる
 - 例（RTX 5090 ×2、LiTi2O4 の `hgw` 1 回）: 表は fp32 で「単精度の複素積は組み替え、倍精度の積は GEMMul8 14、逆行列は mixed1」、
   tf32 の行（Σc の積）は FP16 の組み替え（`realhgemm`）になる。6³ は以前の 833 秒が fp32 367 秒・tf32 173 秒（2026-09-27 夜）、
-  9³ は 5004 秒が fp32 2990 秒・tf32 1975 秒（同日午前の版、四面体の重みの補助あり）。倍精度の計算との差も Re Σc で 2.4e-4 → 4.2e-5 eV に減る
+  9³ は 5004 秒が fp32 2990 秒・tf32 1975 秒（同日午前の版、四面体の重みの補助あり）。fp32 の 6³ の `hgw` 1 回で, 倍精度の計算との差（全状態の Re Σc の最大）も, 09-26 までの版（cuBLAS の複素積）の 2.4e-4 eV から組み替え（`realsgemm`）で 4.2e-5 eV に減る（2026-09-27 朝。E_F ±1 eV に限ると上の表の 0.02 meV）
 - GEMMul8 は小さな積（どれかの辺が 64 未満、または m·n·k < 1e8）には表に関係なく使わない（分解の固定費が積より大きい）
 
-### 同じ機械で複数のジョブを走らせるとき
+### 同じ機械で複数のジョブを走らせるとき {#gpu-multijob}
 
 `gwsc` は GPU を使う実行ファイルを走らせる前に、GPU ごとのロック（`/tmp/ecalj_res/gpu<N>.lock`、`flock`）を必要な枚数だけ取り、
 取れた GPU だけを `CUDA_VISIBLE_DEVICES` で渡す。空きが足りなければ待つ（何を待っているかを表示する）。
@@ -127,7 +128,7 @@ GW のプログラム（`hvccfp0`、`hsfp0_sc`、`hgw` など）は、ランク 
 `gwsc` がそれを `STDOUT/` に移す。どのランクのエラーも、ランク番号付きで標準エラー（`gwsc` の出力）に出る。
 （2026-09-27 までは、全ランク（ランク 0 も）が `stdout.<rank>.<prog>` を書いていた。）
 
-### 四面体の重みを CPU で先に計算する
+### 四面体の重みを CPU で先に計算する {#gpu-tetwt-cpu}
 
 `gwsc --gpu` は、GPU が `hvccfp0` と `hgw` を回している間に、空いている CPU コア（`-np` の数）で同じ `hgw` を GPU なしで走らせ（`--tetwt_write`）、
 各 q の四面体の重みを `__TETWT.<iq>.<isp>` に書く。`hgw` はそれを読み、重みの計算（LiTi2O4 6³ で 1 q あたり約 6 秒）を省く。
@@ -144,51 +145,3 @@ if which nvidia-cuda-mps-control > /dev/null 2>&1 ; then
   nvidia-cuda-mps-control -d
 fi
 ```
-
---------------
-
-# Using the GPU Version
-
-The GPU can be utilized in QSGW calculations:
-- The GPU is used for the calculation of self-energy and screened Coulomb interaction.
-- `lmf` is executed on the CPU.
-
-## Requirements:
-1. NVIDIA GPU
-2. Compiler: NVHPC with GPU-accelerated libraries: cuBLAS, cuSolver
-
-## Compilation
-```bash
-python3 InstallAll.py --fc nvfortran --gpu
-```
-
-## Execution
-- The GPU version can be used by specifying the `--gpu` option with `gwsc`.
-- The number of MPI processes for the GPU code can be specified with `-np2`. This should typically match the number of GPUs available.
-Example:
-```
-gwsc -np 64 -np2 4 --gpu 1 $id > lgwsc
-```
-
-## Tips
-
-1. The GPU version uses fewer MPI processes compared to the CPU version, so the available memory per MPI process is larger
-   This allows for larger batch sizes in the calculation, potentially improving computation speed.
-   The variable controlling the batch size is `zmel_batch_gb` in the `[gw]` section of `ctrlg.<sname>.toml`.
-   For GPU calculations, set the value to around 4 (representing 4GB).
-   ```toml
-   [gw]
-   zmel_batch_gb = 4
-   ```
-   > [!TIP]
-   > If not set (or set below 2), 2 GB is used in GPU calculations.
-
-2. When handling large systems, add the following to `[gw]` to prevent memory exhaustion:
-   ```toml
-   [gw]
-   KeepEigen = false
-   ```
-
-## Notes
-- It is recommended to run GPU calculations on a single node.
-- When using multiple nodes, ensure that MPI processes are correctly distributed across nodes.

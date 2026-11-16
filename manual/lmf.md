@@ -1,112 +1,108 @@
 # `lmf,lmfa,lmchk`
 
-> ⚠️ `lmf`, `lmfa`, `lmchk` read **`ctrlg.<sname>.toml`** only. A directory with the legacy `ctrl.<sname>` is converted with `Legacy2toml.py <sname>` before invoking these binaries (the legacy syntax is described in [Legacy `ctrl.<sname>` reference](./lmf_legacy_ctrl)). See [TOML migration](./toml_migration) for the full guide and [Samples/](https://github.com/tkotani/ecalj/blob/main/Samples/README.md).
+入力ファイルは `ctrlg.<sname>.toml`（古い形式では `ctrl.<sname>`）です。
+`<sname>` はプログラムに渡す**位置引数**で（例えば `lmf si` は `ctrlg.si.toml` を読みます）、このページでは、
+`ctrlgenToml.py` や `Legacy2toml.py` で決めた物質の名前を `<sname>` と書きます。
 
-We need an input file `ctrlg.<sname>.toml` (legacy: `ctrl.<sname>`).  
-`<sname>` is the **positional** argument passed to the binary
-(e.g. `lmf si` reads `ctrlg.si.toml`); the rest of this page uses
-`<sname>` as a placeholder for whatever material extension the user
-chose at `Legacy2toml.py` / `ctrlgenToml.py` time.
-
-## lmfa: spherical atom calculations
-Example:` 
+## lmfa: 球対称な原子の計算
+例:
 ```
-lmfa si 
+lmfa si
 ```
-It finishes instantaneously.
+数秒で終わります。
 ```
 lmfa si |grep conf
 ```
-shows electronic configurations. It gives electron densities of spherical atoms
-contained in the primitive cell specified by .
-With the superposition of the densities From which, we construct initial electronic density for lmf.
-In addition,`lmfa` generates  
+で電子配置が分かります。`lmfa` は、単位胞に含まれる原子について、球対称な原子の電子密度を計算します。
+その重ね合わせから、`lmf` の電子密度の初期値を作ります。
+また `lmfa` は、MT 半径での動径関数の対数微分を `atmpnu.*.<sname>` に書きます（[`[ham].readp`](#readp-option)）。
 
-## lmchk: Check crystal symmetry.
-lmchk gives useful information of space group symmetry recognized by lmf. In addition, it determines MT radius.The space-group operations are explained at [SYMGRP](#symgrp).
+## lmchk: 結晶の対称性を確かめる
+`lmchk` は、`lmf` が認識した空間群の対称性を表示します。MT 半径も決めます。空間群の操作の書き方は [SYMGRP](#symgrp) にあります。
 
-### MT radius determined by lmchk
-The ideal choice of sphere radii best approximates a potential that is spherical within the MT spheres and flat outside. Program lmchk has implemented one algorithm that makes a reasonable initial choice for MT radii. The algorithm works by computing the (electrostatic) potential obtained from overlapping free-atom densities along all connecting vectors between a given site and its relatively near neighbors. The MT radius is taken as the first potential maximum along any ray. This choice is a pretty reasonable estimate for the potential being approximately spherical inside. Also, note that for a completely symmetric bond, the potential maximum will fall exactly midway between the bond, so for that case the two sphere radii will exactly touch and have equal potentials. To tell lmchk to find these radii, invoke lmchk as
-`lmchk --getwsr`. This is performed automatically in `ctrlgenToml.py`.
-* In addition, `ctrlgenToml.py` enforces upper limits of the radius (a.u.): H 1.4, Li and Be 2.7, Na and Mg 2.4, K and Ca 2.6, Rb and Cs 2.4,
-  Sr and Ba 2.8, others 3.0 (`r_upper_limit`; H, Rb and Cs from 2026-10-07, before H had none and Rb, Cs 2.8).
-  A large sphere around an atom whose valence states are spread out (alkali s, H 1s) gains nothing: those states are carried by the
-  envelope functions outside. It can instead make ghost levels, because the part of the envelope functions that augmentation throws
-  away inside the sphere is left undetermined (Rb2Sc2O4 with Rb 2.8 a.u. had them in LDA). Atoms with a bound d (Sr 4d, Ba 5d) keep a
-  larger sphere: the d must sit inside it. The example and the scan: [mtradius.md](./mtradius.md).
+### lmchk で決める MT 半径
+理想的な球の半径は、MT の中では球対称、外では平らなポテンシャルをいちばんよく近似するものです。
+`lmchk` には、MT 半径の妥当な初期値を決める方法が一つ入っています。
+ある原子から比較的近くの原子へのすべての方向について、自由原子の密度を重ねて作った（静電）ポテンシャルを計算し、
+どの方向でも最初に現れるポテンシャルの極大までを MT 半径とします。
+中のポテンシャルがほぼ球対称になるという意味で、かなり妥当な見積もりです。
+完全に対称な結合では、ポテンシャルの極大はちょうど結合の中点に来るので、二つの球はちょうど接し、ポテンシャルも等しくなります。
+この半径を求めるには `lmchk --getwsr` とします。`ctrlgenToml.py` はこれを自動で行います。
+* `ctrlgenToml.py` は、一部の原子の半径に上限も設けます（`r_upper_limit`）。上限の値とその理由（偽の準位）は [MT 半径](./mtradius) にあります。
 
-* When we treat molecules (especially dimers), we have to use very small size of MT radius. T.Kotani checked PMT works well even for such systems. However, we need examination a little more.
+* 分子（特に二量体）を扱うときは、とても小さな MT 半径を使う必要があります。そのような系でも PMT がうまく働くことは確かめていますが、もう少し調べる必要があります。
 
+## lmf: 一体問題を解く
+LDA/GGA と LDA+U のバンド計算をします。QSGW のポテンシャルの項も `sigm.<sname>` で加えられます。
 
-## lmf: Solve one-body problem.
-This is for band calculation in LDA/GGA and LDA+U. In addition, we can add the potential term for QSGW via `sigm.<sname>`.
-
-Example:
+例:
 ```
 mpirun -np 4 lmf si [options] > llmf
 ```
-This is a case with `ctrlg.si.toml`.
+これは `ctrlg.si.toml` のある場合です。
 
-### options
-* quit option at some point: `--quit=show`, `--quit=ham`, `--quit=mkpot`, `--quit=dmat`, `--quit=band` (see [Command-line options](./cmdopts)).
-* `--tdos`
-total dos calculation. But we usually use `job_tdos'
-* `--ctrlg:<dotted.path>=<value>` : Runtime override of a key in `ctrlg.<sname>.toml`. The path uses dotted TOML syntax (e.g. `--ctrlg:bz.nkabc=[8,8,8]`, `--ctrlg:ham.scaledsigma=0.8`, `--ctrlg:ham.phispinsym=true`, `--ctrlg:verbose=50`, `--ctrlg:spec.1.r=2.5` for the 1st `[[spec]]`). Substituted into the in-memory TOML before parsing; the file on disk is untouched. Each applied override is logged on rank 0. Older syntaxes (`-vfoo=val`, `-v[<path>]=val`, `--[<path>]=val`, `--toml.<path>=val`, `--pr=N`, `--time=N,M`, `--phispinsym`) abort with a one-line migration hint.
+### オプション
+* 途中で止めるオプション: `--quit=show`、`--quit=ham`、`--quit=mkpot`、`--quit=dmat`、`--quit=band`（[コマンドラインのオプション](./cmdopts) を参照）。
+* `--tdos`: 全状態密度の計算。ふつうは `job_tdos` を使います。
+* `--ctrlg:<節.キー>=<値>`: 一回の実行だけキーを変えます。[コマンドラインのオプション](./cmdopts#run-time-ctrlg-overrides) を参照。
 
-We have some kinds of options for electron density plot, boltztrap and so on.
-(not yet described).
+電子密度の図や BoltzTraP などのためのオプションもあります（まだ説明していません）。
 
-### Input files
+### 入力ファイル
 
-(`<sname>` is the positional argument of `lmf`, e.g. `si` for
-`lmf si` reading `ctrlg.si.toml`.)
+- `syml.<sname>`: バンドプロットの対称ライン（ふつうは `job_band` が中で `lmf` を呼びます）
+- `sigm.<sname>`: QSGW の計算の一部
+- `atmpnu.{1,2,3}.<sname>`: `lmfa` が作ります（`[ham] readp = true` のとき）
 
-- `syml.<sname>`
-   symmetry line for band plot (usually `job_band` calls lmf internally)
-- `sigm.<sname>`
-    a part of QSGW calculation
-- `atmpnu.{1,2,3}.<sname>` generated by `lmfa` (when `[ham] readp = true`)
+#### `[ham].readp` と `[ham].pnufix` {#readp-option}
+`readp = true` のとき、`lmf` は `lmfa` が `atmpnu.*` に書いた、MT 半径での対数微分（価電子の $P$ とローカル軌道の $P_z$）を読みます。
+`pnufix = true` のとき、それを反復の間固定します。どちらも `ctrlgenToml.py` が書く既定です。そのため反復の間、基底は変わりません。
+詳しくは [GW で用いる波動関数の表現](../theory/gw_basis) の「動径方程式について」。
 
-### Output files
+### 出力ファイル
 * `rst.<sname>`
-  restart file, containing density and related information.
-  Together with `ctrlg.<sname>.toml`, `atmpnu*`, `sigm*`, and `rst*` we can resume an `lmf` calculation.
-  (`dmat*` is used for LDA+U.)
+  再開のためのファイルで、電子密度とそれに関わる情報が入っています。
+  `ctrlg.<sname>.toml`、`atmpnu*`、`sigm*`、`rst*` があれば、`lmf` の計算を再開できます
+  （LDA+U では `dmats*` も使います）。
 
 * `save.<sname>`
- Minimal iteration history for `lmf` / `lmfa` / `lmchk`, with total energies for each `lmf` SCF step.
+  `lmf`、`lmfa`、`lmchk` の最小限の履歴で、`lmf` の自己無撞着の反復ごとの全エネルギーが入ります（[下](#save-sname)）。
 
 * `__mixm.<sname>`
- mixing file for electron density.
- It retains prior iterations of sets
-        of input and output densities.  Used by the Anderson or
-        Broyden mixing scheme to accelerate convergence towards
-        self-consistency.  `lmf` discards the file of a previous run
-        at start (the option `--keepmixm` keeps it), so that it is not
-        used in a new calculation (such as changing the lattice constant).
+  電子密度の混合のファイルです。入力と出力の密度の組を前の反復の分まで持ち、自己無撞着への収束を速める Anderson や Broyden の混合に使います。
+  `lmf` は、前の実行のこのファイルを始めに捨てます（オプション `--keepmixm` で残せます）。格子定数を変えたときのような新しい計算に使わないためです。
+  磁性の無い解で終わった実行の履歴が残っていると、新しいスピン分極の計算が、最初の Broyden の一歩で磁性の無い解に引き込まれます（Fe: 2.13 → 0.02 μB）。
+  引き継ぐのは `rst.<sname>` だけです。すでにある `rst` の上で `nspin` を変えるときは、先に `rst.<sname>` を消してください。
 
+**主なソース**: [`SRC/subroutines/main_lmf.f90`](https://github.com/tkotani/ecalj/blob/main/SRC/subroutines/main_lmf.f90)
 
+## ctrlg.&lt;sname&gt;.toml — いまの入力の形式（2026-05〜）
 
-** Main Source** : [`SRC/main/lmf.f90`](https://github.com/tkotani/ecalj)
+`lmf`、`lmfa`、`lmchk` は、2026-05 から **TOML だけ**を読みます。
+一つのファイル `ctrlg.<sname>.toml` に、以前 `ctrl.<sname>` にあったものすべてと、以前 `GWinput` にあった GW の設定と積基底の節が入っています。
+ファイルの最後には、原子ごとの積基底の表があります。古い作業ディレクトリでは `Legacy2toml.py <sname>` で作ります。
 
+ファイルの最後の `[product_basis]` の表は GW のためのもので、`gwinit` が書き、ふつうは手で直しません。[GW の設定: 積基底](./gwinput#product-basis) を参照。
 
-# ctrlg.&lt;sname&gt;.toml — current input format (2026-05+)
+#### 画面の出力 {#reading-the-output}
+画面の出力は、いまは主にデバッグのためのものです。
+それでも、いくつかの値は画面の出力から読む必要があります（直していくつもりです）。
+収束の様子、バンドのエネルギー、フェルミエネルギー、`sigm` や `rst` を正しく読んだかどうかを、画面の出力で確かめられます。
 
-`lmf`, `lmfa`, `lmchk` read **TOML only** since 2026-05.  The single file
-`ctrlg.<sname>.toml` carries everything that used to live in
-`ctrl.<sname>` plus the GW driver and product-basis sections that used
-to live in `GWinput`, including the per-atom product-basis tables that
-close the file.  Run `Legacy2toml.py <sname>` inside any old working
-directory to generate it.
+#### `save.<sname>` と `log.<sname>` {#save-sname}
+* `save.<sname>` には、`lmf`、`lmchk`、`lmfa` を起動した履歴が残ります。さらに `lmf` の反復ごとに 1 行、全エネルギーを書きます。
+  各行の最初の文字は状態を表します。c: 収束、x: 収束しないまま反復の上限に達した、i: 反復の途中、
+  h: 最初の反復（自由原子の密度の重ね合わせからの Harris のエネルギー）、C: 構造の緩和の収束（`m_lmfp.f90` の `svflg='cxhiC'`）。
+* 使った `--ctrlg:` の上書きも記録します。
 
-> **The `[product_basis]` tables `nlx` / `valence` / `core` are for the GW
-> path** (consumed by `hbasfp0` / `hvccfp0` / etc. when generating the
-> mixed product basis). They are written by `gwinit` (through
-> `ctrlgenToml.py` or `Legacy2toml.py`) and **do not normally need hand
-> editing**; the cut-offs `pb_tolerance` / `pb_lcutmx` above them are what
-> you tune. (Before 2026-09 the tables were a separate `PB.<sname>.toml`.)
+* Kohn-Sham と Harris-Foulkes の二つの全エネルギーが出ます。[二つはほぼ同じになるはず](#q-should-the-harris-foulkes-and-hohenberg-kohn-sham-functionals-agree-at-self-consistency)ですが、
+  大きな系ではいくらか違うことがあります。どちらか一つを使ってください。
+* QSGW のモード（`sigm` のファイルを使う `lmf`）では、全エネルギーには意味がありません。`gwsc` の中の `lmf` の反復でも全エネルギーは出ますが、収束の目安としてだけ見てください。
 
-## File structure (sections)
+* ログのファイル
+  `lmf`、`lmchk`、`lmfa` が作る `log.<sname>` は、いまはデバッグのためのものです。
+
+### ファイルの構成（節） {#file-structure-sections}
 
 ```toml
 # Top-level scalars
@@ -128,22 +124,15 @@ time    = [0, 0]        # CPU timing log: [depth, on-the-fly]
 [product_basis]   pb_tolerance / pb_lcutmx + nlx / valence / core   (always the last section)
 ```
 
-> **Do not write `nbas` / `nspec`** (2026-09-28). The numbers of sites and
-> species are the numbers of `[[site]]` / `[[spec]]` tables, and `lmf`
-> stops if `[struc]` carries `nbas` or `nspec`. A count written beside the
-> tables used to win over them, so sites added to the tables were silently
-> left out. To leave a site out, comment out its whole `[[site]]` block.
-> For an older file, `ctrlg_update.py ctrlg.<sname>.toml` removes the
-> two lines; if `nbas` was smaller than the tables (the old way to use only
-> the first sites), it comments out the `[[site]]` blocks beyond it, so the
-> calculation stays the same.
+`[struc]` に `nbas` / `nspec` を書かないでください。[入力ファイル](./toml_migration#an-older-ctrlg-sname-toml-ctrlg-update-py) を参照。
 
-## Worked example: bcc-Cu (FCC, 1 atom, non-magnetic)
+### 例: fcc の Cu（1 原子、磁性なし）
 
-The full `ctrlg.cu.toml` from `Samples/EPS/EPS_Cu/` is shown below. Inline
-`#` comments document each key's role; copy-paste the file as a starting
-point for FCC monatomic metals and adjust [`spec`], [`bz`], [`ham`] to
-your case.
+`Samples/EPS/EPS_Cu/` の `ctrlg.cu.toml` の全体を下に示します。行末の `#` のコメントが、それぞれのキーの役割です。
+fcc の単体の金属の出発点として写し、`[spec]`、`[bz]`、`[ham]` をそれぞれの場合に合わせてください。
+このファイルはサンプルの古い入力から変換したものなので、いまの `ctrlgenToml.py` が書く値や既定値と違うものがあります
+（例えば、ここでは `pwmode = 1` だが既定は 11。`[iter] mix = "A2"`、`nit = 30`。`[gw] n1n2n3`、`QpGcut_*`、`t_sigmaw = 262`、`t_tetrakbt = 0`）。
+いまの雛形の値は、[GW の設定](./gwinput) と、新しく作った `ctrlg.<sname>.toml` のコメントを見てください。
 
 ```toml
 # Top-level scalars
@@ -237,7 +226,7 @@ mlo_lm     = """        # which lm channels of which atom make the model (1=s, 2
 pb_tolerance = [0.001]  # drop near-linear-dep products (default 1e-3)
 pb_lcutmx    = [4]      # max l-cutoff per atom
 # ----------------------------------------------------------------
-# nlx [iatom, l, nnvv, nnc] ... (per-atom tables written by gwinit; see manual/gwsc)
+# nlx [iatom, l, nnvv, nnc] ... (per-atom tables written by gwinit; see manual/gwinput)
 nlx = [
   [1, 0, 2, 3],
   [1, 1, 2, 2],
@@ -258,250 +247,79 @@ core = [
 ]
 ```
 
-(`QforEPS` / `QforGW`, the q-point lists, sit at the end of `[gw]` as
-multi-line strings; the example above shows them.) That's the entire input.
+（q 点の一覧 `QforEPS` / `QforGW` は、複数行の文字列として `[gw]` の最後に置きます。上の例にあります。）入力はこれで全部です。
 
-Layout convention of the generated files (`ctrlgenToml.py`, `gwinit`,
-`Legacy2toml.py` and the formatter `pylib/toml_tidy.py` all produce it): a
-blank line separates only the big headings — the `# === X ===` comment
-runs and single `[section]` headers — while everything inside a section
-(one `[[site]]` or `[[spec]]` table from the next, a multi-line block from
-its neighbours, the three product-basis tables) is divided by a
-`# ----` rule instead. The example above is abridged; real files carry the
-`# ===` headers and rules.
-A `[blocks]` section only appears for the few legacy `<...>` tags that have
-no better home (`QPNT`, `QforEPSL`, `hrotr`), kept as multi-line strings and
-parsed opaquely by the GW driver; when present it sits between `[mlo]` and
-`[product_basis]`, which always closes the file (`toml_tidy.py` enforces the
-order `[gw]` `[mlo]` `[blocks]` `[product_basis]`).
+生成されるファイルの体裁（空行、`# ----` の罫線、節の順）は [入力ファイル](./toml_migration#file-layout) にあります。
 
-### Per-physics deltas (from the Cu starting point)
+#### 物理ごとの差分（Cu を出発点として）
 
-- **Spin-polarized metal** (Fe, Ni, FeCo): set `[ham].nspin = 2` and
-  add `mmom = [0, 0, 2.5]` (or per-l guess) to each `[[spec]]`. Start from
-  a clean directory: `lmf` keeps its mixing history in `__mixm.<sname>`, and
-  a history left by a run that ended non-magnetic drags the new run onto the
-  non-magnetic solution at the first Broyden step (Fe: 2.13 → 0.02 μB).
-  Since 2026-09-18 `lmf` deletes `__mixm.<sname>` at start (the hidden
-  `--keepmixm` keeps it), so only the density `rst.<sname>` carries over;
-  if you change `nspin` on top of an existing `rst`, delete `rst.<sname>`
-  first. The default `mix = "B3"`, `b = 0.2` is fine.
-- **SOC** (`HAM_SO`): set `[ham].so = 1` (full L·S) or `2` (Lz·Sz only),
-  with `[ham].nspin = 2`.  See `Samples/MLOsamples/FeSoc/`.
-- **Insulator / semiconductor** (Si, GaAs): `[bz].metal = 0` and
-  `[bz].tetra = true`; smaller `[bz].nkabc`; `[ham].pwemax` ~3 is enough.
-- **LDA+U**: add `idu = [0, 0, 2, 2]`, `uh = [0, 0, 0.1, 0.632]`,
-  `jh = [0, 0, 0, 0.055]` to `[[spec]]`.  `dmatu.<sname>` is read
-  separately if present.
-- **Atomic-position relaxation**: `[dyn].mode = 4` (CG) or `6` (Broyden),
-  set `[[site]].relax = [1, 1, 1]` per atom.
-- **GW BZ mesh**: keep `[gw].n1n2n3` ≤ `[bz].nkabc` (often 1/2 or 2/3 of
-  it) — `n1n2n3` dominates GW wall-time.
+- **スピン分極**: `[ham].nspin = 2` とし、各 `[[spec]]` に `mmom` を書きます。[その他の説明](./UsageDetailed#spin-polarized-case-without-soc) を参照。きれいなディレクトリから始めてください（上の `__mixm.<sname>`）。
+- **SOC**: `[ham].nspin = 2` で、`[ham].so = 1`（L·S）または `2`（Lz·Sz だけ）。[その他の説明](./UsageDetailed#spin-orbit-coupling) と `Samples/MLOsamples/FeSoc/` を参照。
+- **絶縁体・半導体**（Si、GaAs）: `[bz].metal = 0`、`[bz].tetra = true`。`[bz].nkabc` は小さめでよく、`[ham].pwemax` は 3 くらいで足ります。
+- **LDA+U**: 下の [LDA+U](#lda-u-toml) を参照。
+- **原子位置の緩和**: [力と構造の緩和](./relax) を参照。
+- **GW の BZ のメッシュ**: `[gw].n1n2n3` ≤ `[bz].nkabc`。[GW の設定](./gwinput) を参照。
 
-## Run-time `--ctrlg:` overrides
+### 実行時の `--ctrlg:` による上書き
 
-A key of `ctrlg.<sname>.toml` is overridden for one run by
-`--ctrlg:<dotted.path>=<value>`, processed in-memory by `m_toml_override.f90`.
-The legacy `-v<NAME>=<VAL>` (where `<NAME>` was a `%const` symbol baked
-into `ctrl.<sname>`) makes the programs stop with a message:
+一回の実行だけキーを変えるには `--ctrlg:<節.キー>=<値>` を付けます（例 `lmf si --ctrlg:bz.nkabc=[8,8,8]`）。ファイルは書き換えません。書き方の細部、ファイルに無いキーの扱い、やめた古い書き方（`-v<NAME>=<VAL>` など。使うと止まります）は [コマンドラインのオプション](./cmdopts#run-time-ctrlg-overrides) にあります。
 
-```bash
-# OLD (legacy ctrl + %const; the programs stop)
-lmf si -vnk=8 -vmetal=3 -vnspin=2 -vso=0
+古い `ctrl.<sname>` のキーと TOML のパスの対応は [入力ファイル](./toml_migration#legacy-toml-map) にあります。
+ESM（真空のあるスラブ）の `[esm]` の節は [ESM](./esm) のページにあります。
 
-# NEW (ctrlg.toml + path syntax)
-lmf si --ctrlg:bz.nkabc=[8,8,8] --ctrlg:bz.metal=3 --ctrlg:ham.nspin=2 --ctrlg:ham.so=0
+### lmf の収束
+
+`lmf` 自身が収束しないときは、`[iter] b` を 0.015、0.01、0.005 のように小さくします。`gwsc` での自己エネルギーの混合（`[gw].mixbeta`、`mixpriorit`）は [gwsc](./gwsc#mixbeta-and-mixpriorit) にあります。
+
+### 使っている MTO を確かめる
+画面の出力の始めの方に、使っている MTO が表示されます（GaAs の場合）。
+ ```
+ sugcut:  make orbital-dependent reciprocal vector cutoffs for tol= 1.00E-06
+ spec      l    rsm    eh     gmax    last term    cutoff
+  Ga       0*   1.13  -1.00   6.579    1.19E-06    1459
+  Ga       1*   1.13  -1.00   7.028    1.26E-06    1807
+  Ga       2*   1.13  -1.00   7.475    1.09E-06    2109
+  Ga       3    1.13  -1.00   7.920    1.06E-06    2637
+  Ga       0*   1.13  -2.00   6.579    1.19E-06    1459
+  Ga       1*   1.13  -2.00   7.028    1.26E-06    1807
+  Ga       2    1.13  -2.00   7.475    1.09E-06    2109
+  As       0*   1.18  -1.00   6.300    2.13E-06    1243
+  As       1*   1.18  -1.00   6.720    1.26E-06    1471
+  As       2*   1.18  -1.00   7.140    1.37E-06    1837
+  As       3    1.18  -1.00   7.558    1.05E-06    2229
+  As       0*   1.18  -2.00   6.300    2.13E-06    1243
+  As       1*   1.18  -2.00   6.720    1.26E-06    1471
+  As       2    1.18  -2.00   7.140    1.37E-06    1837
+ ```
+
+#### ローカル軌道（`pz`）と `ecore>evalence` のメッセージ
+コアの電子のはみ出し（spillout）が小さくない（0.05 くらいより大きい）ときは、`pz`（ローカル軌道）を使い、そのコアを価電子として扱う方がよいです。
+Bi の 4d がその例で、`pz = [0.0, 0.0, 4.9]` などとします。
+
+メッセージ `ecore>evalence` は、コアの準位が価電子の準位より高いことを意味します。安全のため、これは許していません。
+ECORE のファイルと、ログや画面の出力にある価電子の準位を比べてください。
+
+### 分子
+`ctrlgenToml.py <sname> --systype=molecule` で、箱の中の分子の雛形を作ります（Γ 点だけ、`[bz] nkabc = [1, 1, 1]`）。
+分子では `[bz]` に次を書きます。
+```toml
+tetra = false
+n = -1        # Negative is the Fermi distribution function. w gives temperature.
+w = 0.001     # w=0.001 corresponds to T=157K as shown in console
 ```
-
-The path is the dotted TOML path (`section.key`; `spec.1.r` for a key of
-the first `[[spec]]` table; a top-level key such as `verbose` has no
-section); the right-hand side parses as TOML
-(`[8,8,8]` for an integer vector, `1` for an int, `1.0` for a float,
-`true` / `false` for a logical, `"r4z r3d r2x"` for a string).  No on-disk
-rewrite of the .toml file takes place.
-
-## Legacy `ctrl.<sname>` ↔ TOML path map
-
-Most legacy `Category_Token` keys map 1:1 onto `[section.key]` after
-lower-casing.  A few are renamed or restructured:
-
-| legacy `Category_Token` | TOML location | note |
-|---|---|---|
-| `STRUC_ALAT` / `STRUC_PLAT` | `[struc].alat` / `.plat` | |
-| `SITE_ATOM=`, `POS=`, `XPOS=` | `[[site]] atom = ...; pos = [...]` (or `xpos`) | one `[[site]]` table per atom |
-| `SPEC_ATOM=`, `Z=`, `R=`, `RSMH=`, `EH=`, ... | `[[spec]] atom = ...; z = ...; r = ...; rsmh = [...]` | one `[[spec]]` table per species; `R/W=` and `R/A=` kept as `"r/a"` quoted-key |
-| `BZ_NKABC` / `BZ_METAL` / `BZ_TETRA` | `[bz].nkabc` / `.metal` / `.tetra` | |
-| `HAM_NSPIN` / `HAM_SO` / `HAM_XCFUN` / `HAM_GMAX` / `HAM_PWMODE` / `HAM_PWEMAX` | `[ham].nspin` etc. | |
-| `HAM_FORCES` / `HAM_OVEPS` / `HAM_FRZWF` / `HAM_REL` | `[ham].forces` etc. | |
-| `HAM_ScaledSigma` | `[ham].scaledsigma` | lowercase |
-| `HAM_READP` / `HAM_PNUFIX` | `[ham].readp` / `.pnufix` | `HAM_V0FIX` is the command-line option `--v0fix` |
-| `esm_input.dat` (separate positional file) | **`[esm]`** section | retired 2026-09-16; not read — `ctrlg_absorb.py <sname>` converts it, see [ESM](#esm-effective-screening-medium) |
-| `ITER_NIT` / `ITER_MIX` / `ITER_CONV` / `ITER_CONVC` / `ITER_UMIX` / `ITER_TOLU` | `[iter].nit` / `.mix` / ... | |
-| `SYMGRP` / `SYMGRPAF` | top-level `symgrp = "..."` (and `symgrpaf`) | not nested in a section |
-| `EWALD_TOL` | `[ewald].tol` | rarely touched |
-| `DYN_MODE` / `DYN_NIT` / `DYN_HESS` / ... | `[dyn].mode` etc. | |
-| `IO_VERBOS` / `IO_TIM` | top-level `verbose` / `time` | promoted out of `[io]` (section dropped) |
-| `<Worb>...</Worb>` block | `[mlo].mlo_lm = """ ... """` | multi-line string |
-| `<QforEPS>...</QforEPS>` block | `[gw].QforEPS = """ ... """` (likewise `QforGW`) | |
-| `n1n2n3` (GWinput) | `[gw].n1n2n3 = [k1,k2,k3]` | int vector |
-| `HistBin_dw` / `HistBin_ratio` / `niw` (GWinput) | `[gw].HistBin_dw` etc. | unchanged names (upper and lower case as in GWinput) |
-| `esmr`, `SmearX0` / `GaussianFilterX0`, `GaussSmear`, `delta`, `dw`, `omg_c`, `WgtQ0P` (GWinput) | `[gw].t_sigmaw` and `[gw].t_tetrakbt` (K; `t_tetrakbt` is required) | the old keys and what happens to them: [gwinput](./gwinput) Table 1 (表 1), [kBT](./kBT) §2.5 Table 2 (表 2) |
-| product-basis cut-offs (`tolerance`, `lcutmx` from `<PRODUCT_BASIS>`) | `[product_basis].pb_tolerance` / `.pb_lcutmx` | |
-| product-basis per-atom tables (`nlx`, `valence`, `core`) | `[product_basis].nlx` / `.valence` / `.core` (end of the file; a separate `PB.<sname>.toml` before 2026-09) | |
-
-The full schema lives in
-[`SRC/exec/pylib/ctrl_schema.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/pylib/ctrl_schema.py)
-(the conversion source of truth).  Annotations / inline comments are
-applied by
-[`SRC/exec/pylib/toml_comments.py`](https://github.com/tkotani/ecalj/blob/main/SRC/exec/pylib/toml_comments.py).
-
+磁気モーメントがあるときは、`fsmom`（n_up − n_down）も要ります（`fsmommethod = 1`）。
+サンプル: `Samples/AtomDimer/N2`（箱の中の N₂ と N 原子。結合長と結合エネルギー）。
+`ctrlgenToml.py --systype=molecule` が書く雛形は `tetra = true`、`w = 0.01` で、上の値（サンプル `Samples/AtomDimer/N2` のもの）と違います。
+どちらがよいかはまだ確かめていません（2026-11-14）。
+H₂ から Kr₂ までの分子に PMT 法を使った例: T. Kotani and H. Kino, J. Phys. Soc. Jpn. **82**, 124714 (2013),
+[doi:10.7566/JPSJ.82.124714](https://doi.org/10.7566/JPSJ.82.124714)
+（[pdf](../presentations/KotaniKino2013PMTMolecule.pdf)）。
 
 ---
 
-# ESM (Effective Screening Medium)
+## LDA+U {#lda-u-toml}
 
-A slab with a vacuum layer is not a periodic crystal, but a plane-wave /
-smooth-density code solves Poisson's equation as if it were. ESM
-(Otani & Sugino, [PRB 73, 115407 (2006)](https://doi.org/10.1103/PhysRevB.73.115407);
-implemented here by M. Obata, Kanazawa Univ.) replaces the periodic Green
-function of the electrostatics with one that carries the boundary condition
-you actually want — vacuum, or a metal electrode — on each side of the slab.
-ESM combined with QSGW is used in
-[PRB 101, 205120 (2020)](https://doi.org/10.1103/PhysRevB.101.205120).
-
-**Turn it on for every slab with a vacuum layer.** Without it the `G=0`
-component of the Coulomb potential is fixed by the periodic convention
-instead of by the vacuum level, and the whole eigenvalue spectrum shifts.
-The shift is not small: on the `Samples/MLOsamples/FeMgO` slab (30.5 a.u. of
-vacuum) it is **4.4 eV**, while the total energy, `Vesav` and the magnetic
-moment all agree to 8–13 digits, so nothing looks wrong until you compare
-Fermi energies. Two directories that differ only in whether ESM was on will
-produce band plots on different energy zeros.
-
-## The `[esm]` section
-
-```toml
-[esm]
-boundary  = "vac/slab/vac"  # vacuum(-z)/slab/vacuum(+z)
-origin    = -8.63717        # (a.u.) z-translation of the density
-shiftmode = 0               # 0: origin is absolute, 1: in units of the cell length
-zb        = [23.907104, -23.907104]   # (a.u.) boundaries z1esm, z2esm
-potential = [0.0, 0.0]      # (Ry) on the +z / -z sides
-field     = [0.0, 0.0]      # (Ry/a.u.) on the +z / -z sides
-```
-
-**No `[esm]` section at all means ESM is off.** That is the right thing for
-a bulk crystal and the wrong thing for a slab, so `lmf` prints a warning when
-`c` is more than 3× the longer of `a`, `b` and no `[esm]` is present.
-
-`ctrlgenToml.py` writes a commented-out `[esm]` template (with the
-`# === ESM` heading and one line per key) into every new file, right after
-`[ham]`; for a slab, uncomment it and set the numbers with care. A bulk
-crystal leaves it commented — no `[esm]` section means ESM off.
-
-| key | meaning | legacy `esm_input.dat` |
-|---|---|---|
-| `boundary` | which boundary condition on each side (table below) | line 1, `jesm` |
-| `origin` | z-translation applied to the density before solving. The code uses `-origin` internally, so this is **the same number as line 2** of the old file | line 2, `tresm` |
-| `shiftmode` | `0`: `origin` is in a.u.; `1`: in units of the cell length | line 2, `jtresm` |
-| `zb` | the two boundary planes `z1esm`, `z2esm` in a.u. Omit to get `±alat·plat[2][2]/2` | line 3 |
-| `potential` | fixed potential on the +z / -z side (Ry). Used by `metal/...` and the `:v-e` / `:e-v` forms | line 4 |
-| `field` | fixed electric field on the +z / -z side (Ry/a.u.). Used by the `:field` form | line 5 |
-
-### `boundary` values
-
-| value | system | `jesm` |
-|---|---|---|
-| `"off"` (or the section absent) | ESM disabled — plain periodic | 0 |
-| `"vac/slab/vac"` | vacuum on both sides | 1 |
-| `"metal/slab/metal"` | metal electrode on both sides | 2 |
-| `"vac/slab/metal"` | vacuum on −z, metal on +z | 3 |
-| `"metal/slab/vac"` | metal on −z, vacuum on +z | 4 |
-| `"vac/slab/vac:field"` | vacuum both sides, `field` imposed | 5 |
-| `"metal/slab/metal:v-e"` | `potential` on −z, `field` on +z | 6 |
-| `"metal/slab/metal:e-v"` | `field` on −z, `potential` on +z | 7 |
-| `"periodic:esm"` | same result as `off`, computed through the ESM path | 10 |
-
-A bare integer is also accepted, so mechanically converted files keep
-working; the strings are preferred because `1` and `3` are not
-distinguishable by eye.
-
-**To apply an electric field to a slab**, use `"vac/slab/vac:field"` with
-`field = [E, -E]`, or hold the two electrodes at fixed potentials with
-`"metal/slab/metal"` and `potential = [V1, V2]`.
-
-## Migration from `esm_input.dat`
-
-Before 2026-09-16, ESM was configured by a separate positional file
-`esm_input.dat` — six lines of bare numbers with no keys. It had two
-problems: you could not tell what the numbers meant without reading
-`esmsmves.f90`, and **a missing file disabled ESM silently** (`lmf` printed
-one line and carried on). Copying a sample directory without that one file
-therefore changed the physics without any error.
-
-The Fortran reads `ctrlg.<sname>.toml` and nothing else (since 2026-09-17;
-for one day in between `lmf` converted the file itself). A leftover
-`esm_input.dat` makes `lmf` / `lmfa` / `lmchk` **abort** with a message
-naming the converter — abort rather than ignore, so a slab never runs
-without ESM by accident:
-
-```bash
-ctrlg_absorb.py <sname>      # esm_input.dat -> [esm] in ctrlg.<sname>.toml
-                             # (and PB.<sname>.toml -> [product_basis], if present)
-```
-
-| situation | what `ctrlg_absorb.py` does |
-|---|---|
-| `ctrlg.<sname>.toml` already has `[esm]` | the TOML wins. `esm_input.dat` is moved to `esm_input.dat.bk`, whose header records that its settings were **not** used |
-| no `[esm]` in the TOML | the file is converted, the `[esm]` block is inserted (with comments, before the GW sections), and the original is moved to `esm_input.dat.bk` with a header saying where it went |
-
-`Legacy2toml.py` performs the same conversion when it migrates a legacy
-directory.
-
-## Worked example — Fe/MgO slab
-
-`Samples/MLOsamples/FeMgO` (`c/a = 8.50`, 30.5 a.u. of vacuum, 7 empty
-spheres filling it):
-
-```toml
-[esm]
-boundary  = "vac/slab/vac"
-origin    = -8.63717
-shiftmode = 0
-zb        = [23.907104, -23.907104]   # alat*plat[2][2]/2 = 23.903861; set by hand here
-potential = [0.0, 0.0]
-field     = [0.0, 0.0]
-```
-
-With and without this section, on the same `rst.<sname>`:
-
-| | E_F (Ry) | Vesav (eV) | `val*vef` (Ry) |
-|---|---|---|---|
-| `[esm]` present | −0.38286150 | −2.12295183 | −257.64 |
-| `[esm]` absent | −0.05833040 | −2.12295183 | −253.66 |
-
-`Vesav` agrees to 8 digits, so the density and the electrostatics are the
-same — only the zero of energy moves, by 0.3245 Ry = 4.4155 eV. Check
-`llmf_ef` (or any `lmf` log) for which one you got:
-
-```
-effective screening medium method jesm=  1        <- ESM on
-system : vaccum(-z)/slab/vaccum(+z)
-
-esmsmves: ESM is off (no [esm] section in ctrlg.<sname>.toml)   <- ESM off
-```
-
-## Where it is implemented
-
-`SRC/subroutines/esmsmves.f90` (the solver; called from `smves`) and
-`SRC/subroutines/m_lmfinit.f90::readesm` (reads `[esm]`, runs the migration).
-
----
-
-# LDA+U (TOML)
-
-LDA+U is selected per species by writing the `idu`, `uh`, `jh`
-vectors into each `[[spec]]` table.  Indices `[s, p, d, f]`:
+LDA+U は、種ごとに、各 `[[spec]]` の表に `idu`、`uh`、`jh` のベクトルを書いて選びます。添字は `[s, p, d, f]` です。
 
 ```toml
 [[spec]]
@@ -514,22 +332,18 @@ uh   = [0.0, 0.0, 0.10, 0.632]    # Hubbard U (Ry)
 jh   = [0.0, 0.0, 0.00, 0.055]    # exchange J (Ry)
 ```
 
-Mode codes (`idu[l]`):
-- `0` — no U on this l-channel
-- `1` — **AMF** (Around-Mean-Field), Petukhov, PRB 67, 153106 (2003)
-- `2` — **FLL** (Fully Localized Limit), Liechtenstein, PRB 52, R5467 (1995)
-- `12` / `21` / ... — same code +10 means "skip LDA+U when `sigm.<sname>` exists"
-  (so a QSGW run with `sigm` falls back to plain QSGW).
+`idu[l]` の値:
+- `0` — この l には U を入れない
+- `1` — **AMF**（Around-Mean-Field）、Petukhov, PRB 67, 153106 (2003)
+- `2` — **FLL**（Fully Localized Limit）、Liechtenstein, PRB 52, R5467 (1995)
+- `12` / `21` / ... — 同じ値に 10 を足すと、「`sigm.<sname>` があるときは LDA+U を使わない」の意味になります
+  （`sigm` のある QSGW の計算は、ただの QSGW になります）。
 
-`dmatu.<sname>` (density matrix) is read & written automatically — it is
-the LDA+U analogue of `rst.<sname>`.  A first-shot LDA run without U
-populates it.  You can override the initial occupation by hand-writing
-`occnum.<sname>` (one line of `2l+1` numbers per spin) — see the
-[legacy LDA+U notes](./lmf_legacy_ctrl#lda-u) for the ErAs example and
-the spin-configuration hazard.
+`dmats.<sname>`（密度行列）は自動で読み書きします。LDA+U での `rst.<sname>` に当たるものです。U なしの最初の LDA の計算で作られます。
+`occnum.<sname>`（スピンごとに `2l+1` 個の数を 1 行）を手で書くと、初期の占有を指定できます。ErAs の例とスピン配置の落とし穴は
+[古い LDA+U の覚え書き](./lmf_legacy_ctrl#lda-u) にあります。
 
-Mixing of the dmat happens **independently** of the charge with linear
-mixing:
+密度行列の混合は、電荷の混合とは**別に**、線形の混合で行います。
 
 ```toml
 [iter]
@@ -537,13 +351,11 @@ umix = 0.2          # dmat mixing beta (0..1)
 tolu = 0.0          # rms tol where dmat mixing stops (0 = always mix)
 ```
 
-Check the dmat once with `lmf <sname> --quit=dmat` — it stops after the
-initial setup and prints the matrix without writing any restart files.
+`lmf <sname> --quit=dmat` で、密度行列を一度確かめてください。初期の設定の後で止まり、再開のファイルを書かずに行列を表示します。
 
-# Core hole (TOML)
+## コアホール {#core-hole-toml}
 
-Partial core-hole occupancy implements Slater transition-state ideas
-(useful for XAS / unbinding 4f).  Set per species:
+コアの占有を部分的に変えることで、Slater の遷移状態の考え方を実現します（XAS や、4f を外すときに使えます）。種ごとに設定します。
 
 ```toml
 [[spec]]
@@ -556,24 +368,20 @@ c-hq    = [-11.0]                  # excess electron charge in that channel
 # c-hq    = [-7.0, 7.0]            # optional 2nd entry = spin moment
 ```
 
-Charge bookkeeping:
+電荷の勘定:
 ```
 Q(spin1) = full_core_count + c-hq[1]/2 + c-hq[2]/2
 Q(spin2) = full_core_count + c-hq[1]/2 - c-hq[2]/2
 ```
-Negative `c-hq[1]` removes electrons (a hole); the optional `c-hq[2]`
-polarises the core (used e.g. for the Gd 4f trick — `c-hq = [-7, 7]`
-freezes 7-up / 0-down in the 4f core while 5f remains valence).
+`c-hq[1]` が負なら電子を取り除きます（穴）。2 番目の `c-hq[2]` はコアを分極させます
+（例えば Gd の 4f の技法: `c-hq = [-7, 7]` で、4f のコアを上向き 7、下向き 0 に固定し、5f は価電子のままにします）。
 
-Confirm neutrality with `lmfa <sname> | grep -i 'add core hole'`.  See
-the [legacy core-hole walkthrough](./lmf_legacy_ctrl#core-hole-options)
-for the full Gd / Nd / CrN case study.
+中性になっていることを `lmfa <sname> | grep -i 'add core hole'` で確かめてください。Gd、Nd、CrN の例は
+[古いコアホールの説明](./lmf_legacy_ctrl#core-hole-options) にあります。
 
-# Local orbitals (TOML)
+## ローカル軌道 {#local-orbitals-toml}
 
-The local-orbital channel `pz` is the analog of the continuously-variable
-principal quantum number `p`.  Both are per-species, per-`l` vectors in
-`[[spec]]`:
+ローカル軌道 `pz` は、連続な主量子数 `p` に対応するものです。どちらも `[[spec]]` の中の、種ごと・`l` ごとのベクトルです。
 
 ```toml
 [[spec]]
@@ -587,100 +395,74 @@ pz  = [0.0, 0.0, 3.9, 0.0]       # 3d treated as semicore local orbital
 # add 10 to pz[l] to attach a smooth-Hankel tail (extended local orbital).
 ```
 
-Notes:
-- Integer part of `pz` ↔ `p` controls the principal quantum number used
-  for the radial function (semicore → `int(pz) = int(p) − 1`,
-  high-lying → `int(pz) = int(p) + 1`).
-- Fractional part: `0.9` for semicore, `0.3` for high-lying is the
-  common choice; smaller fractional ⇒ lower linearization energy.
-- `pz[l] + 10` (i.e. write `pz = [0, 0, 13.9, 0]`) attaches a smooth-Hankel
-  tail (extended local orbital).  Use this when the deep state spills
-  into the interstitial.
-- Verify the configuration with `lmfa <sname> | grep -i conf` — the line
-  shows which states are treated as core / valence / lo.
+注:
+- `pz` と `p` の整数部分が、動径関数の主量子数を決めます（semicore なら `int(pz) = int(p) − 1`、高い準位なら `int(pz) = int(p) + 1`）。
+- 小数部分は、semicore で `0.9`、高い準位で `0.3` がふつうです。小数部分が小さいほど、線形化のエネルギーは低くなります。
+- `pz[l] + 10`（つまり `pz = [0, 0, 13.9, 0]` と書く）で、スムーズ Hankel の尾を付けます（拡張ローカル軌道）。深い状態が格子間領域にはみ出すときに使います。
+- `lmfa <sname> | grep -i conf` で配置を確かめてください。どの状態をコア、価電子、ローカル軌道として扱っているかが分かります。
 
-Common pitfalls:
-- Conventional (non-extended) local orbitals on semicore states rely on
-  the valence envelope for representation outside the MT sphere — keep at
-  least one `rsmh` for that l small (`~1`) with `eh` rather negative
-  (`~-1`).
-- Extended-lo matching can fail ("`mtchre: failed to match phi'/phi`")
-  when the fractional part of `pz` is too close to 1.0 — reduce it
-  (e.g. `0.98 → 0.85`).
-- The `p` with the higher principal quantum number is automatically
-  frozen — only the deepest state is allowed to float (controlled by
-  `idmod`).
+よくある落とし穴:
+- ふつうの（拡張でない）ローカル軌道を semicore に使うと、MT 球の外の表現は価電子の包絡関数に頼ることになります。その l の `rsmh` を少なくとも一つ小さく（1 くらい）、`eh` をかなり負に（−1 くらい）しておいてください。
+- `pz` の小数部分が 1.0 に近すぎると、拡張ローカル軌道の接続が失敗することがあります（"`mtchre: failed to match phi'/phi`"）。小さくしてください（例えば `0.98 → 0.85`）。
+- 主量子数の大きい方の `p` は自動で固定され、いちばん深い状態だけが動けます（`idmod` で制御します）。
 
-See the [legacy local-orbital notes](./lmf_legacy_ctrl#old-note-for-local-orbitals)
-for the historical sm-Hankel mtchre discussion.
+スムーズ Hankel の `mtchre` の昔の議論は、[古いローカル軌道の覚え書き](./lmf_legacy_ctrl#old-note-for-local-orbitals) にあります。
 
-# SYMGRP / symgrp — space-group specification
+## SYMGRP / symgrp — 空間群の指定 {#symgrp}
 
-In TOML the space-group spec is the top-level `symgrp` string:
+TOML では、空間群の指定は最上位の文字列 `symgrp` です。
 
 ```toml
 symgrp     = "find"           # auto-detect from lattice + species (default)
 symgrpaf   = "find"           # AF symmetry (optional): spglib finds it from the af labels; generators only for the old search
 ```
 
-`symgrp` either takes the literal string `"find"` (auto-detect) or a
-space-separated list of generators.  The generators are the same as the
-legacy `SYMGRP` token:
+`symgrp` には、文字列 `"find"`（自動で見つける）か、空白で区切った生成元の並びを書きます。生成元は、古い `SYMGRP` と同じです。
 
-- `R<n>X`, `R<n>Y`, `R<n>Z`, `R<n>D` — `n`-fold rotation around X, Y, Z, (1,1,1).
-- `M<axis>` — mirror.
-- `I` — inversion.
-- `<axis> = X | Y | Z | D | (nx,ny,nz)` — pick a Cartesian axis or an
-  explicit direction.
-- Products with `*`, e.g. `I*R4X`.
-- Translations:  `r6z:(0,0,0.4778973)` (Cartesian) or
-  `r6z::(0,0,1/3)` (fractional, multiples of `plat`).
+- `R<n>X`、`R<n>Y`、`R<n>Z`、`R<n>D` — X、Y、Z、(1,1,1) のまわりの `n` 回回転
+- `M<axis>` — 鏡映
+- `I` — 反転
+- `<axis> = X | Y | Z | D | (nx,ny,nz)` — 直交座標の軸か、方向を直接指定
+- `*` で積をとる。例 `I*R4X`
+- 並進: `r6z:(0,0,0.4778973)`（直交座標）、`r6z::(0,0,1/3)`（分率座標、`plat` の倍数）
 
-Example (cubic):
+例（立方晶）:
 ```toml
 symgrp = "R4X MX R3D"        # 4-fold around X, mirror in X, 3-fold around (1,1,1) ⇒ 48 symops
 ```
 
-Generators with `find` (an old form, still accepted): spglib finds the whole group, and the generators must be operations
-of it (lmf stops otherwise); they do not change the group.
+`find` と一緒に生成元を書く（古い形で、いまも受け付けます）と、spglib が群全体を見つけ、生成元はその操作でなければいけません（違えば `lmf` は止まります）。生成元は群を変えません。
 ```toml
 symgrp = "R4Z*I MX*I R3D find"   # zinc blende: the same 24 operations as symgrp = "find"
 ```
 
-Disable symmetry entirely:
+対称性をすべて切るには:
 ```toml
 symgrp = "e"
 ```
 
-`lmchk` prints the recognised symops at the top of its console output —
-use it to verify the symmetry was parsed as intended.  The inversion is
-implicit in the DFT path when the potential is local; pay attention to
-the inversion-related notes in the console banner.
+`lmchk` は、認識した対称操作を画面の出力の始めに表示します。対称性が意図どおりに読まれたか、これで確かめてください。
+ポテンシャルが局所的なとき、DFT の計算では反転は暗に含まれます。画面の出力の冒頭の、反転についての注意を見てください。
 
-## Symmetry from spglib: `symmetry.<sname>.json` (2026-10)
+### spglib による対称性: `symmetry.<sname>.json`（2026-10） {#spglib-symmetry}
 
-With `symgrp = "find"` (the default), lmf, lmchk and the MLO programs find the space group with spglib, which is built
-into ecalj (`SRC/external/spglib`, version 2.6.0; no Python needed). The operations $x' = Rx + t$, in the fractional
-coordinates of `plat` ($R$ integer), are written to `symmetry.<sname>.json` in the working directory together with the
-space-group number and symbol and the structure they belong to. The next run reads this file; when the structure differs
-(alat, plat, species, `af` labels or positions, also through `--ctrlg:` overrides), the operations are found again and
-the file is rewritten. The console tells which: `mksym: N operations, read from ...` or `found by spglib, <symbol>
-(<number>), written to ...`.
+`symgrp = "find"`（既定）のとき、`lmf`、`lmchk`、MLO のプログラムは spglib で空間群を見つけます。spglib は ecalj に組み込んであります（`SRC/external/spglib`、版 2.6.0。Python は要りません）。
+操作 $x' = Rx + t$（`plat` の分率座標で、$R$ は整数）を、空間群の番号と記号、それが属する構造と一緒に、作業ディレクトリの `symmetry.<sname>.json` に書きます。
+次の実行はこのファイルを読みます。構造が違えば（alat、plat、種、`af` のラベル、位置。`--ctrlg:` の上書きを含む）、操作を見つけ直してファイルを書き直します。
+どちらだったかは画面の出力で分かります: `mksym: N operations, read from ...` または `found by spglib, <symbol> (<number>), written to ...`。
 
-* Pure translations of a supercell (a cell larger than the primitive one, e.g. the 8-atom cubic cell of Si) are operations
-  too: 192 for Si8. Total energies, MLO bands and QSGW quasiparticle energies agree with those of the primitive operations.
-* AF: with `af = ±k` on the sites of the AF pairs, the magnetic symmetry of spglib gives the operations; those with time
-  reversal exchange up and down. `symgrpaf = "find"` switches the AF mode on with these operations (2026-10-02). Generators in
-  `symgrpaf` (the old form, e.g. `"i:( 1 1 1 )"` for NiO) are accepted and must be among these AF operations. Use `pwmode = 11` with it.
-* `symgrp` with generators (to lower the symmetry on purpose, e.g. `"r4z"` for an orbital-ordered 4f state) uses the
-  generators: the group they generate, as before, and writes no file. With such a `symgrp`, `symgrpaf` needs generators (not `"find"`).
-* The old search of ecalj (the operations of the lattice and those leaving the crystal invariant, `ECALJ_SYMFIND=ecalj`) was removed
-  on 2026-10-02; spglib is the only finder. The input forms above are all still accepted.
-* `symfind.py <sname>` (Python spglib) makes the same file outside lmf.
+* 超格子（基本単位胞より大きい単位胞。例えば Si の 8 原子の立方晶の単位胞）の純粋な並進も操作に含まれます。Si8 では 192 個です。全エネルギー、MLO のバンド、QSGW の準粒子エネルギーは、基本単位胞の操作のときと一致します。
+* 反強磁性: 反強磁性の対のサイトに `af = ±k` を書くと、spglib の磁気対称性が操作を与えます。時間反転を伴う操作は上と下のスピンを入れ替えます。`symgrpaf = "find"` で、これらの操作で反強磁性のモードに入ります（2026-10-02）。
+  `symgrpaf` の生成元（古い形。例えば NiO の `"i:( 1 1 1 )"`）も受け付け、それはこの反強磁性の操作の中になければいけません。`pwmode = 11` と一緒に使ってください。
+  NiO などでの手順は [その他の説明](./UsageDetailed#antiferro-symmetry-without-soc) にあります。
+* 生成元を書いた `symgrp`（わざと対称性を下げるとき。例えば軌道秩序のある 4f の状態での `"r4z"`）では、その生成元が生成する群を前と同じように使い、ファイルは書きません。このときの `symgrpaf` には生成元が要ります（`"find"` は使えません）。
+* ecalj の古い探し方（格子の操作と、結晶を不変に保つ操作を探す。`ECALJ_SYMFIND=ecalj`）は 2026-10-02 に外しました。探すのは spglib だけです。上の入力の形はどれもいまも受け付けます。
+* `symfind.py <sname>`（Python の spglib）で、`lmf` の外でも同じファイルを作れます。
 
-# Q: Should the Harris-Foulkes and Hohenberg-Kohn Sham functionals agree at self-consistency?
-(due to Mark van Schilfgaarde)
-A: Yes. If they do not, either you have not reached self-consistency, or a tolerance is set too loosely in the evaluation of the matrix elements. A likely culprit is that the mesh of points for the interstitial integrals is not fine enough. Here is part of an output where mesh of 14x14x14 divisions were used for the interstitial density.
+## Q: 自己無撞着のとき、Harris-Foulkes と Hohenberg-Kohn-Sham の汎関数は一致するべきか？ {#q-should-the-harris-foulkes-and-hohenberg-kohn-sham-functionals-agree-at-self-consistency}
+（Mark van Schilfgaarde による）
+A: はい。一致しないなら、自己無撞着に達していないか、行列要素の評価の許容誤差が緩すぎます。よくある原因は、格子間領域の積分のメッシュが細かくないことです。
+次は、格子間の密度に 14×14×14 の分割のメッシュを使ったときの出力の一部です。
 
 ```
  GVLIST: gmax = 4.702 a.u. created 973 vectors of 2744 (35%)
@@ -699,7 +481,9 @@ A: Yes. If they do not, either you have not reached self-consistency, or a toler
   E        1    1.50  -0.30   4.823    2.01E-05     973*
 ```
 
-The table reflects how well each of the basis orbitals is converged in a PW expansion, which is used to make matrix elements of the interstitial potential. Only the E s orbital is converged below the specified tolerance (10-5 ). Convergence in the Te d orbital is particularly poor; however, the Te d is only minimally part of the bonding, and its poor convergence doesn't affect the energy much. In this case (3 Te atoms), the HF and HK total energies differ by ~10-4 Ry. Below is a table showing the convergence in HF energy as a function of the number of divisions, and also the difference between HK and HF energies.
+この表は、格子間のポテンシャルの行列要素を作るのに使う平面波展開で、各基底の軌道がどれだけ収束しているかを示します。
+指定した許容誤差（$10^{-5}$）より下まで収束しているのは E の s 軌道だけです。Te の d 軌道の収束は特に悪いですが、Te の d は結合にほとんど関わらないので、エネルギーにはあまり影響しません。
+この場合（Te 3 原子）、HF と HK の全エネルギーの差は 10⁻⁴ Ry くらいです。分割の数に対する HF のエネルギーの収束と、HK と HF のエネルギーの差を次の表に示します。
 ```
   n       ehf         ehf-ehk
   14 -14561.140624    0.000089
@@ -708,14 +492,10 @@ The table reflects how well each of the basis orbitals is converged in a PW expa
   20 -14561.131170    0.000000
 ```
 
-# Legacy reference
+## 古い文書
 
-The bulk of historical `Category_Token` reference, old physics-notes
-(APW test, sm-Hankel mtchre discussion, old SPEC notes, old tetrahedron
-memo) has been moved to a dedicated page:
+昔の `Category_Token` の説明の大部分と、物理の古い覚え書き（APW のテスト、スムーズ Hankel の `mtchre` の議論、古い SPEC の覚え書き、古い四面体法のメモ）は、別のページに移しました。
 
-- [Legacy `ctrl.<sname>` reference (Category_Token)](./lmf_legacy_ctrl)
+- [古い `ctrl.<sname>` の説明（Category_Token）](./lmf_legacy_ctrl)
 
-That page is the canonical place to look up the *meaning* of a legacy
-key, then translate to TOML via the
-[Legacy ↔ TOML map](#legacy-ctrl-lt-sname-gt-↔-toml-path-map) above.
+古いキーの*意味*はそのページで引き、[古いキーと TOML のパスの対応](./toml_migration#legacy-toml-map) で TOML に直してください。
