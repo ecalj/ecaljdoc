@@ -49,13 +49,11 @@ features:
 
 > **加筆中**: このサイトにはまだ不完全な部分が多く、書き足している途中です。
 
-## For developers / 開発者へ
+## For developers
 
 The development notes are not on this site. Start from `MD/README.md` in the [ecalj repository](https://github.com/tkotani/ecalj)
 (reading order, rules, and jumps by topic: finite temperature, MLO, magnons, GPU).
 Claude Code starts from `CLAUDE.md` at the top of the repository. An AI assistant guiding a user starts from [GetStarted with AI](/manual/getstartedAI).
-
-ecalj は小谷岳生と共同研究者が開発している（2026-02 から Claude Code と一緒に）。
 
 開発の記録はこのサイトには無い。[ecalj のリポジトリ](https://github.com/tkotani/ecalj)の `MD/README.md` から読む
 （読む順、決まり、話題ごとのジャンプ: 有限温度、MLO、マグノン、GPU）。Claude Code は最上位の `CLAUDE.md` から始める。
