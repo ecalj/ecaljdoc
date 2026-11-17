@@ -1,6 +1,6 @@
 # GetStarted with AI
 
-> English version of the page [manual/getstartedAI](../../manual/getstartedAI.md). The pages at the top of ecaljdoc are the reference; this one was made from manual/getstartedAI.md of commit 296542c3a (source blob dc583c78a821).
+> English version of the page [manual/getstartedAI](../../manual/getstartedAI.md). The pages at the top of ecaljdoc are the reference; this one was made from manual/getstartedAI.md of commit b83a084a8 (source blob e1a1de8fd1ea).
 
 Give this page to an AI and it will guide you through ecalj. People do not need to read this page.
 
@@ -20,7 +20,6 @@ claude        # then say: "Read ecaljdoc/manual/getstartedAI.md and guide me thr
 The AI asks what you want to do, explains ecalj briefly, and walks you through installation, a first calculation (GaAs) and the
 tests, in your language.
 On clusters (`qsub` / `sbatch`), Claude Code submits the jobs and watches them (reads the logs, reacts to errors, restarts after a failure).
-The documents and tools of ecalj (`ctrlgenToml.py`, `Legacy2toml.py`, `testecalj`, the scheduler of `ecalj_auto`, ...) are also made together with Claude Code.
 :::
 
 **For the AI**: the rest of this page is written for you. It tells you what to read, in which order, and how to guide the person.
@@ -42,7 +41,7 @@ The license (with the notes on AI) is on the [License](./license) page. Read it 
 3. Input: one TOML file per material, `ctrlg.<sname>.toml`, generated from a POSCAR (VASP format) by `vasp2ctrl` and `ctrlgenToml.py`.
    Most settings are automatic.
 4. Runs on CPUs (MPI) and NVIDIA GPUs (`--gpu`; the precision of the GW products is chosen by `--prec=tf32|fp32|fp64`).
-5. Open source (AGPLv3), developed by T. Kotani and co-workers, largely together with Claude Code.
+5. Open source (AGPLv3).
 
 ## What to read, and in which order
 

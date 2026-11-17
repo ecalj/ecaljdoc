@@ -17,7 +17,6 @@ claude        # then say: "ecaljdoc/manual/getstartedAI.md を読んで、ecalj 
 
 AI がやりたいことを尋ね、ecalj を短く説明し、インストール、最初の計算（GaAs）、試験まで、あなたの言葉で案内します。
 クラスタ（`qsub` / `sbatch`）では、Claude Code がジョブを投入し、走っているジョブを見張ります（ログを見る、エラーに対応する、失敗したら再開する）。
-ecalj の文書と道具（`ctrlgenToml.py`、`Legacy2toml.py`、`testecalj`、`ecalj_auto` のスケジューラなど）も Claude Code と一緒に作っています。
 :::
 
 **AI へ**: このページの残りはあなたに向けて書いています。何をどの順に読み、人をどう案内するかを書きます。
@@ -37,7 +36,7 @@ ecalj の文書と道具（`ctrlgenToml.py`、`Legacy2toml.py`、`testecalj`、`
 3. 入力: 物質ごとに TOML のファイル一つ、`ctrlg.<sname>.toml`。POSCAR（VASP の形式）から `vasp2ctrl` と `ctrlgenToml.py` で作る。
    設定のほとんどは自動。
 4. CPU（MPI）と NVIDIA の GPU（`--gpu`。GW の行列積の精度は `--prec=tf32|fp32|fp64` で選ぶ）で走る。
-5. オープンソース（AGPLv3）。小谷岳生と共同研究者が開発し、その多くを Claude Code と一緒に進めている。
+5. オープンソース（AGPLv3）。
 
 ## 何をどの順に読むか
 

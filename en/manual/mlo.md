@@ -1,6 +1,6 @@
 # MLO — an automatic modeling method in place of maximal localization and similar methods
 
-> English version of the page [manual/mlo](../../manual/mlo.md). The pages at the top of ecaljdoc are the reference; this one was made from manual/mlo.md of commit d98852485 (source blob 901da2de2260).
+> English version of the page [manual/mlo](../../manual/mlo.md). The pages at the top of ecaljdoc are the reference; this one was made from manual/mlo.md of commit 7a24dfdf0 (source blob 3a99ea57d1dd).
 
 ecalj branch `mlo3` / 2026-09-16 17:02 JST
 
@@ -45,7 +45,7 @@ The loss numbers come from `SRC/exec/mlo_losscheck.py <sample dir>`.
 
 | | | |
 |---|---|---|
-| §1 | [**Final form**](#mlo-final) | Formulas and defaults. If you read anything, this alone is enough |
+| §1 | [**Theory of MLO**](#mlo-final) | Formulas and defaults. If you read anything, this alone is enough |
 | §2 | [**Minimal model**](#mlo-minimal) | Take all bands in the window. Measurements and band plots for 11 systems |
 | §3 | [**Model taking a subset of bands**](#mlo-partial) | Only d / only 4f. The window-type loss cannot be used |
 | §4 | [**SOC**](#mlo-soc) | `job_mlo_soc`. Added afterwards as a perturbation |
@@ -58,10 +58,18 @@ The loss numbers come from `SRC/exec/mlo_losscheck.py <sample dir>`.
 
 ---
 
-## Final form {#mlo-final}
+## Theory of MLO {#mlo-final}
 
-MLO is built from the resolution of the identity in the PMT basis, through the eigenstates
-$\Psi^{\mathrm{MTO}}$ of the chosen MTO subspace:
+The PMT basis consists of MTOs and APWs ($F_i$ of Eq. (1) in [Band-structure method of ecalj](../theory/pmt.md)). Symbols in this section:
+
+- $|F^{\mathrm{MTO}}_{\mathbf{k}n}\rangle$: the Bloch sums of the MTOs chosen for the model out of the PMT basis (the channels of `mlo_lm`; $n$ numbers the orbitals).
+  The space they span is called the **MTO subspace**
+- $|\Psi^{\mathrm{PMT}}_{\mathbf{k}n'}\rangle$: the eigenstates solved in the whole PMT basis (the first-principles bands), with energies $\varepsilon_{n'}$
+- $|\Psi^{\mathrm{MTO}}_{\mathbf{k}n''}\rangle$: the eigenstates solved only within the MTO subspace, with energies $\varepsilon^{\mathrm{MTO}}_{n''}$
+- $|F^{\mathrm{MLO}}_{\mathbf{k}n}\rangle$: the MLOs to be made, one for each $|F^{\mathrm{MTO}}_{\mathbf{k}n}\rangle$
+
+MLO is built from the resolution of the identity by the PMT eigenstates, $\sum_{n'}|\Psi^{\mathrm{PMT}}_{\mathbf{k}n'}\rangle\langle\Psi^{\mathrm{PMT}}_{\mathbf{k}n'}|=1$,
+through the MTO eigenstates $\Psi^{\mathrm{MTO}}$:
 
 $$
 |F^{\mathrm{MLO}}_{\mathbf{k}n}\rangle
@@ -99,8 +107,8 @@ e^{\mathrm{cut}}_{n''}&=\max\bigl(\varepsilon_{\mathrm{CBM}}+\Delta,\;\varepsilo
 \tag{4}
 $$
 
-$\varepsilon_{\mathrm{CBM}}$ is the **global** conduction band minimum ($E_F$ in metals).
-There are only two parameters, $\Delta$ and $w$ (**all in eV**), and there is no per-material tuning.
+$\varepsilon_{\mathrm{CBM}}$ is the conduction band minimum of the system ($E_F$ in metals).
+There are only two parameters, $\Delta$ and $w$ (**all in eV**), and they need not be tuned per material.
 
 $$
 \boxed{\;\Delta = 2.0\ {\rm eV},\qquad w = 2.0\ {\rm eV}\;}
@@ -110,9 +118,9 @@ $$
 Their roles are clearly different. **$\Delta$ is a declaration of "how far up you want agreement"**, not
 a fitting parameter. It means that a range of $\Delta$ above the band edge is required,
 so **set it to the same value as the top of the evaluation window** (both are 2 eV by default).
-**$w$ is the only tuning knob**, and it is the one to change when the residual is large (§7).
+$w$ is the one that may be changed when the fitting residual is large (§7). Basically, however, it is not tuned.
 
-**Implemented as `mlo_method = 4`.** The global conduction band edge does not need to be computed anew;
+The conduction band edge of the system does not need to be computed anew;
 lmf has already obtained it in the BZ integration of the SCF and written it to `efermi.lmf`
 (`evtop` = VBM, `ecbot` = CBM. In metals it becomes the level just above $E_F$, so
 **one quantity covers both metals and insulators**).
@@ -121,15 +129,15 @@ $(\varepsilon_{\mathrm{ecbot}}-E_F)$
 (because `qplist.dat` sometimes uses `estaticav` as the zero).
 If `efermi.lmf` is absent it falls back to $E_F$.
 
-The **per-material tuning parameters have become zero**. There is no longer any need to switch `mlo_emax` between 0 / 5 / 7 / auto.
-**`mlo_method = 4` is the default, so you do not even need to write it.**
+The **per-material tuning parameters have become zero**
+(to former users: this is implemented as `mlo_method = 4`, which is the default, so you do not even need to write it.
+There is no longer any need to switch `mlo_emax` between 0 / 5 / 7 / auto).
 
 ### `mlo_lm` — can in principle be automated
 
-`mlo_lm` (in `[mlo]`; which lm channels form the MTO subspace. Until 2026-09-17 it was
-named `mlo_lm` in `[blocks]`, and the old location and name are still read) is written
-per material. **It is not a tuning knob but the definition of the model itself**, and it is always needed for MLO
-regardless of the method.
+`mlo_lm` is a key written in `[mlo]`; it sets which lm channels form the MTO subspace.
+It is written per material. **It is not a tuning knob but the definition of the model itself**, and it is always needed for MLO
+regardless of the method. Until 2026-09-17 it was put in `[blocks]`; the old location is still read.
 
 **The default written by `gwinit`** (from 2026-09-25; before that all lines were commented out with `!`. f and `mlo_lm2` from 2026-10-01):
 
@@ -475,7 +483,7 @@ these first-principles bands, and the denominator of the $m^*$ ratio is the same
 
 ![Al2O3_Cr](../../manual/mlo/Al2O3_Cr.png)
 
-Al₂O₃:Cr (50 orbitals) — **this system is the key point of the final form**. The O 2p valence band (−2 to −4 eV),
+Al₂O₃:Cr (50 orbitals) — **this system is the key point of §1**. The O 2p valence band (−2 to −4 eV),
 the Cr d levels in the gap (near $E_F$), the CBM (+6.5 eV) and the bands further above all lie on the reference.
 If the floor is put at $E_F+\Delta$, the CBM is not constrained and the gap shrinks by 128 meV.
 The hand-set `mlo_emax = 7 eV` was there to catch this CBM,
@@ -1260,7 +1268,7 @@ What got worse was C.sp (14.9 → 26.7 meV), a system on the side that wants a l
 
 ## Remaining problems {#mlo-problems}
 
-All of the following were remeasured with `mlo_method = 4` (the final form of §1).
+All of the following were remeasured with `mlo_method = 4` (§1).
 
 ### Solved
 
@@ -1593,7 +1601,7 @@ kept for reference. Most are differences from the May value M. The DOS column of
 
 The history leading to this method — that the five `mlo_method`s were in fact one and the same formula,
 what the original samples were doing, the intermediate stage with the floor at $E_F+\Delta$,
-the measured grounds for the three design decisions leading to the final form, and the bugs found along the way in the evaluator and in
+the measured grounds for the three design decisions leading to the present form, and the bugs found along the way in the evaluator and in
 `m_hreduction.f90` — is summarized on a separate page:
 
 **Development record (MD/mlo_backup.md in the repository, not on the site)**
